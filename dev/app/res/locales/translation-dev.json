@@ -1,0 +1,8 @@
+﻿{
+	"page-common": {
+		"appName" : "CDP Boilerplate"
+	},
+	"page-main": {
+		"description" : "This is Main Page."
+	}
+}

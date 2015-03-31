@@ -1,0 +1,8 @@
+{
+    "framework" : "jasmine",
+    "launch_in_dev" : ["chrome"],
+    "src_files" : [ "app/modules/jquery/scripts/jquery.js",
+                         "app/modules/underscore/scripts/underscore.js", 
+                         "app/modules/backbone/scripts/backbone.js",
+                    "tests/jasmine/*.js" ]
+}

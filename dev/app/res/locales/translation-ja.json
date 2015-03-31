@@ -1,0 +1,8 @@
+{
+	"page-common": {
+		"appName" : "CDP ボイラープレート"
+	},
+	"page-main": {
+		"description" : "これはメインページです。"
+	}
+}

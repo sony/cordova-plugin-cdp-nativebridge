@@ -1,0 +1,7 @@
+{
+  "name": "CDP-Template",
+  "version": "3.0.0",
+  "devDependencies": {
+    "jsdom": "3.1.2"
+  }
+}
