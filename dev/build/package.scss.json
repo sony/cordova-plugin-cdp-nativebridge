@@ -1,7 +1,0 @@
-{
-  "name": "CDP-Template",
-  "version": "3.0.0",
-  "devDependencies": {
-    "grunt-contrib-compass": "1.0.1"
-  }
-}

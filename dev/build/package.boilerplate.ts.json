@@ -1,7 +1,0 @@
-{
-  "name": "CDP-Template",
-  "version": "3.0.0",
-  "devDependencies": {
-    "grunt-string-replace": "1.0.0"
-  }
-}
