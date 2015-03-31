@@ -29,17 +29,6 @@ module Config {
 			"sylvester": "modules/sylvester/scripts/sylvester",
 			"iscroll": "modules/iscroll/scripts/iscroll-probe",
 			"flipsnap": "modules/flipsnap/scripts/flipsnap",
-			/*
-			>>>>ATELIERMARKUP>>>>
-			<TYPE>MODULE_ENTRY</TYPE>
-			<BASEDIR>app</BASEDIR>
-			<TEMPLATE>
-			"{{moduleName}}": "{{modulePath}}",
-			</TEMPLATE>
-			<INSERT>*/
-			/*</INSERT>
-			<<<<ATELIERMARKUP<<<<
-			*/
 
 			// cdp modules
 			"cdp.core": "modules/sony/cdp/scripts/cdp.core",
@@ -63,19 +52,6 @@ module Config {
 		},
 
 		shim: {
-			/*
-			>>>>ATELIERMARKUP>>>>
-			<TYPE>MODULE_SHIM_ENTRY</TYPE>
-			<TEMPLATE>
-			"{{moduleName}}": {
-				{{#deps}}"deps": {{{deps}}},{{/deps}}
-				{{#exports}}"exports": "{{exports}}",{{/exports}}
-			},
-			</TEMPLATE>
-			<INSERT>*/
-			/*</INSERT>
-			<<<<ATELIERMARKUP<<<<
-			*/
 		},
 	};
 	// global export
@@ -120,7 +96,7 @@ module Config {
 	 * コンフリクトを避けるために使用される文字列
 	 * CDP.Tools.Touche の touch event 定義に使用される
 	 */
-	export var namespace = "cdp.";
+	export var namespace = "cdp";
 
 	/**
 	 * ビルド設定判定

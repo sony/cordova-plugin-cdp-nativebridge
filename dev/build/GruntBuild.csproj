@@ -46,6 +46,7 @@
     <Content Include="tasks\build.application.js" />
     <Content Include="tasks\build.cordova.js" />
     <Content Include="tasks\build.core.js" />
+    <Content Include="tasks\build.dev.bed.js" />
     <Content Include="tasks\build.glue_ts_cordova.js" />
     <Content Include="tasks\build.legacy.command.js" />
     <Content Include="tasks\build.library.module.js" />

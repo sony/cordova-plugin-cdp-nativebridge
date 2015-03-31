@@ -1,8 +1,8 @@
 ﻿{
 	"page-common": {
-		"appName" : "CDP Boilerplate"
+		"appName" : "Native Bridge Dev Bed"
 	},
 	"page-main": {
-		"description" : "This is Main Page."
+		"description" : "This is an empty application."
 	}
 }

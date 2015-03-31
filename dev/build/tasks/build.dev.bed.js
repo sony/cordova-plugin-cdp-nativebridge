@@ -1,47 +1,62 @@
 /*
- * scss compile tasks
+ * dev bed tasks
  */
 
 module.exports = function (grunt) {
 
-    var fs = require('fs'),
-        path = require('path');
-
     grunt.extendConfig({
 
-        // compass scss
-        compass: {
-            app: {
-                options: {
-                    basePath: '<%= orgsrc %>/<%= stylesheets %>',
-                },
+        // config variable entries: root
+        cdvtests: 'cdvtests',
+
+        clean: {
+            dev_plugins: {
+                files: [
+                    {// app/scripts.
+                        expand: true,
+                        cwd: '<%= orgsrc %>/<%= plugins %>',
+                        src: ['**/*.js', '**/*.map'],
+                    },
+                ],
             },
         },
 
-    });
+        // file copy
+        copy: {
+            // for cdvtests
+            dev_bed: {
+                files: [
+                    {// test frameworks
+                        expand: true,
+                        cwd: '<%= orgsrc %>',
+                        src: ['<%= cdvtests %>/**'],
+                        dest: '<%= pkgdir %>'
+                    },
+                ]
+            },
 
-    // load plugin(s).
-    grunt.loadNpmTasks('grunt-contrib-compass');
+            // deploy.
+            deploy: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= tmpdir %>/<%= plugins %>/com.sony.cdp.plugin.nativebridge',
+                        src: ['**'],
+                        dest: '../../',
+                    },
+                ],
+            },
+        },
+    });
 
     //__________________________________________________________________________________________________________________________________________________________________________________________//
 
-    // Helper API
-    grunt.cdp = grunt.cdp || {};
+    grunt.cdp = grunt.createCustomTaskEntry(grunt.cdp, 'app_after_package');
+    grunt.cdp.custom_tasks['app_after_package'].release.push('copy:dev_bed');
+    grunt.cdp.custom_tasks['app_after_package'].debug.push('copy:dev_bed');
 
-    //! add compass target file to config.
-    grunt.cdp.setCompassTarget = function (key, basePath) {
-        var compass;
-        var configPath = path.join(basePath, 'config.rb');
-        if (fs.existsSync(configPath)) {
-            compass = grunt.config.get('compass');
-            // always overwrite.
-            compass[key] = {
-                options: {
-                    basePath: basePath,
-                },
-            };
-            grunt.config.set('compass', compass);
-        }
-    };
+    //__________________________________________________________________________________________________________________________________________________________________________________________//
 
+    grunt.registerTask('clean_dev', ['clean:dev_plugins']);
+    grunt.registerTask('deploy', ['plugin', 'copy:deploy', 'clean:tmpdir']);
 };

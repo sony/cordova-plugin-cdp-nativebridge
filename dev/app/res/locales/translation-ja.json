@@ -1,8 +1,8 @@
 {
 	"page-common": {
-		"appName" : "CDP ボイラープレート"
+		"appName" : "Native Bridge Dev Bed"
 	},
 	"page-main": {
-		"description" : "これはメインページです。"
+		"description" : "ビルド確認用アプリケーションです。"
 	}
 }
