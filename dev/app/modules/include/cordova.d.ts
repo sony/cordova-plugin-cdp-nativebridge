@@ -36,7 +36,7 @@ interface Cordova {
      */
     // [CDP modified]: change inteface.
 //  exec(success: () => any, fail: () => any, service: string, action: string, args?: string[]): void;
-    exec(success: (...args: any[]) => any, fail: (...args: any[]) => any, service: string, action: string, args?: string[]): void;
+    exec(success: (...args: any[]) => any, fail: (...args: any[]) => any, service: string, action: string, args?: any[]): void;
     /** Gets the operating system name. */
     platformId: string;
     /** Gets Cordova framework version */

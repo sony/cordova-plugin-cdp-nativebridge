@@ -1,4 +1,5 @@
-/// <reference path="../../../../../modules/include/cordova.d.ts" />
+/// <reference path="../../../../../../modules/include/cordova.d.ts" />
+/// <reference path="NativeBridge/Interfaces.ts" />
 var CDP;
 (function (CDP) {
     var Plugin;
