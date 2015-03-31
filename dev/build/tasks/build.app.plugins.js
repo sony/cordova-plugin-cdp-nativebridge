@@ -163,11 +163,9 @@ module.exports = function (grunt) {
 
         if (fs.existsSync(root)) {
             fs.readdirSync(root).forEach(function (id) {
-                console.log('id: ' + id);
                 var plugin = {};
                 var pluginDir = path.join(root, id);
                 var srcDir = path.join(pluginDir, grunt.config.get('plugins_www'));
-                console.log('id2: ' + id);
                 if (fs.statSync(pluginDir).isDirectory() && fs.statSync(srcDir).isDirectory()) {
                     plugin.id = id;
                     plugin.scripts = queryTargetScripts(srcDir);

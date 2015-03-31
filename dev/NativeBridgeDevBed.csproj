@@ -144,6 +144,9 @@
     <Content Include="app\cdvtests\topcoat-0.7.5\img\spinner.png" />
     <Content Include="app\cdvtests\topcoat-0.7.5\img\spinner2x.png" />
     <Content Include="app\index.html" />
+    <TypeScriptCompile Include="app\lib\scripts\cdp.nativebridge.d.ts" />
+    <TypeScriptCompile Include="app\lib\scripts\cdp.nativebridge.ts" />
+    <TypeScriptCompile Include="app\lib\scripts\CDP\NativeBridge\Base.ts" />
     <TypeScriptCompile Include="app\modules\include\cdp.slideshow.d.ts" />
     <TypeScriptCompile Include="app\modules\include\cdp.tools.container.d.ts" />
     <TypeScriptCompile Include="app\modules\include\cdp.tools.d.ts" />
@@ -179,9 +182,18 @@
     <TypeScriptCompile Include="app\modules\include\sylvester.d.ts" />
     <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\cdp.plugin.nativebridge.d.ts" />
     <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\cdp.plugin.nativebridge.ts" />
+    <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\Include.ts" />
+    <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge.ts" />
     <TypeScriptCompile Include="app\scripts\app.ts" />
     <TypeScriptCompile Include="app\scripts\config.ts" />
     <TypeScriptCompile Include="app\scripts\init.ts" />
+    <Content Include="app\lib\scripts\cdp.nativebridge.js">
+      <DependentUpon>cdp.nativebridge.ts</DependentUpon>
+    </Content>
+    <Content Include="app\lib\scripts\CDP\NativeBridge\Base.js">
+      <DependentUpon>Base.ts</DependentUpon>
+    </Content>
+    <Content Include="app\lib\scripts\CDP\NativeBridge\_module.scripts.html" />
     <Content Include="app\modules\backbone\scripts\backbone-1.1.2.js" />
     <Content Include="app\modules\backbone\scripts\backbone-1.1.2.min.js" />
     <Content Include="app\modules\backbone\scripts\backbone.js" />
@@ -374,6 +386,15 @@
     <Content Include="app\modules\underscore\scripts\underscore-1.7.0.min.js" />
     <Content Include="app\modules\underscore\scripts\underscore.js" />
     <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\plugin.xml" />
+    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\cdp.plugin.nativebridge.js">
+      <DependentUpon>cdp.plugin.nativebridge.ts</DependentUpon>
+    </Content>
+    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\Include.js">
+      <DependentUpon>Include.ts</DependentUpon>
+    </Content>
+    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge.js">
+      <DependentUpon>NativeBridge.ts</DependentUpon>
+    </Content>
     <Content Include="app\scripts\app.js">
       <DependentUpon>app.ts</DependentUpon>
     </Content>
@@ -447,7 +468,21 @@
     <Content Include="app\cdvtests\topcoat-0.7.5\NOTICE" />
     <Content Include="app\cdvtests\topcoat-0.7.5\package.json" />
     <Content Include="app\cdvtests\topcoat-0.7.5\README.md" />
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\.gitkeep" />
+    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\cdp.plugin.nativebridge.js.map">
+      <DependentUpon>cdp.plugin.nativebridge.ts</DependentUpon>
+    </Content>
+    <Content Include="app\lib\scripts\CDP\NativeBridge\Base.js.map">
+      <DependentUpon>Base.ts</DependentUpon>
+    </Content>
+    <Content Include="app\lib\scripts\cdp.nativebridge.js.map">
+      <DependentUpon>cdp.nativebridge.ts</DependentUpon>
+    </Content>
+    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge.js.map">
+      <DependentUpon>NativeBridge.ts</DependentUpon>
+    </Content>
+    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\Include.js.map">
+      <DependentUpon>Include.ts</DependentUpon>
+    </Content>
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

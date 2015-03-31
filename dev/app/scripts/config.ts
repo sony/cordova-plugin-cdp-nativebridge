@@ -49,6 +49,7 @@ module Config {
 			"cdp.slideshow": "modules/sony/cdp/scripts/cdp.slideshow",
 
 			// internal lib modules
+			"cdp.nativebridge": "lib/scripts/cdp.nativebridge",
 		},
 
 		shim: {
