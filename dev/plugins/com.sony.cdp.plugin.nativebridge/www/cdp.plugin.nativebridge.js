@@ -1,16 +1,234 @@
 /// <reference path="../../../../../../modules/include/cordova.d.ts" />
 /// <reference path="NativeBridge/Interfaces.ts" />
+/* tslint:disable:max-line-length forin */
 var CDP;
 (function (CDP) {
     var Plugin;
     (function (Plugin) {
+        var TAG = "[CDP.Plugin.NativeBridge] ";
+        var _uitls = cordova.require("cordova/utils");
         /**
          * @class NativeBridge
          * @brief Native Bridge の主クラス
+         *        [JavaScript instance : Native Instance] = [1 : 1] となる
          */
         var NativeBridge = (function () {
-            function NativeBridge() {
+            /**
+             * constructor
+             *
+             * @param pacakgeId {String} [in] クラスを特定するための付加情報. Java の Package 名 (com.sony.cdp.hoge)
+             */
+            function NativeBridge(pacakgeId) {
+                this._execTaskHistory = {};
+                this._packageId = pacakgeId;
+                this._objectId = "object:" + _uitls.createUUID();
             }
+            ///////////////////////////////////////////////////////////////////////
+            // public methods
+            /**
+             * タスクの実行
+             * 指定した service 名, action 名に対応する Native Class の method を呼び出す。
+             *
+             * @param success {Function}     [in] success call back
+             * @param fail    {Function}     [in] fail call back
+             * @param service {String}       [in] Native Class のクラス名を指定
+             * @param action  {String}       [in] Native Class のメソッド名を指定
+             * @param args    {ArgsInfo}     [in] makeArgsInfo() の戻り値を指定
+             * @param options {ExecOptions?} [in] 実行オプションを指定
+             * @return task ID {String}
+             */
+            NativeBridge.prototype.exec = function (success, fail, service, action, args, options) {
+                var _this = this;
+                var opt = NativeBridge._extend({
+                    post: true,
+                    pluginAction: "execTask",
+                }, options);
+                var errorMsg;
+                var taskId = this._objectId + "-task:" + _uitls.createUUID();
+                var execInfo = {
+                    packageId: this._packageId,
+                    objectId: this._objectId,
+                    taskId: taskId,
+                    service: service,
+                    action: action,
+                    rawArgs: args,
+                };
+                var _fireCallback = function (taskId, func, result, post) {
+                    // history から削除
+                    if (null != taskId && null != _this._execTaskHistory[taskId]) {
+                        delete _this._execTaskHistory[taskId];
+                    }
+                    if (null != func) {
+                        if (!post) {
+                            func(result);
+                        }
+                        else {
+                            setTimeout(function () {
+                                func(result);
+                            });
+                        }
+                    }
+                };
+                // すでに dispose されていた場合はエラー
+                if (null == this._objectId) {
+                    errorMsg = TAG + "this object is already disposed.";
+                    _fireCallback(null, fail, {
+                        code: NativeBridge.ERROR_INVALID_OPERATION,
+                        message: errorMsg,
+                        name: TAG + "ERROR_INVALID_OPERATION"
+                    }, opt.post);
+                    console.error(errorMsg);
+                    return null;
+                }
+                // history 管理に追加
+                if ("execTask" === opt.pluginAction) {
+                    this._execTaskHistory[taskId] = false;
+                }
+                // exec 実行
+                cordova.exec(function (result) {
+                    if (_this._execTaskHistory[taskId]) {
+                        errorMsg = TAG + "[taskId:" + taskId + "] is canceled.";
+                        _fireCallback(taskId, fail, {
+                            code: NativeBridge.ERROR_CANCEL,
+                            message: errorMsg,
+                            name: TAG + "ERROR_CANCEL"
+                        }, opt.post);
+                        console.log(errorMsg);
+                    }
+                    else {
+                        _fireCallback(taskId, success, result, opt.post);
+                    }
+                }, function (result) {
+                    _fireCallback(taskId, fail, result, opt.post);
+                }, "NativeBridge", opt.pluginAction, [execInfo, execInfo.rawArgs]);
+                return taskId;
+            };
+            /**
+             * タスクのキャンセル
+             *
+             * @param taskId  {String}       [in] タスク ID を指定. exec() の戻り値. null 指定で全キャンセル
+             * @param options {ExecOptions?} [in] 実行オプションを指定
+             * @param success {Function?}    [in] success call back
+             * @param fail    {Function?}    [in] fail call back
+             */
+            NativeBridge.prototype.cancel = function (taskId, options, success, fail) {
+                var opt = NativeBridge._extend({ post: false }, options);
+                opt.pluginAction = "cancelTask";
+                if (null == taskId) {
+                    this._setAllCancel();
+                }
+                else if (null != this._execTaskHistory[taskId]) {
+                    this._execTaskHistory[taskId] = true;
+                }
+                this.exec(success, fail, null, null, {}, opt);
+            };
+            /**
+             * インスタンスの破棄
+             * Native の参照を解除する。以降、exec は無効となる。
+             *
+             * @param options {ExecOptions?} [in] 実行オプションを指定
+             * @param success {Function?}    [in] success call back
+             * @param fail    {Function?}    [in] fail call back
+             */
+            NativeBridge.prototype.dispose = function (options, success, fail) {
+                var opt = NativeBridge._extend({ post: false }, options);
+                opt.pluginAction = "disposeTask";
+                this._setAllCancel();
+                this.exec(success, fail, null, null, {}, opt);
+                this._objectId = null;
+            };
+            ///////////////////////////////////////////////////////////////////////
+            // public static methods
+            //! ArgInfo に変換
+            NativeBridge.makeArgsInfo = function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                var argsInfo = {};
+                args.forEach(function (value, index) {
+                    argsInfo[index] = value;
+                });
+                return argsInfo;
+            };
+            Object.defineProperty(NativeBridge, "SUCCESS_OK", {
+                ///////////////////////////////////////////////////////////////////////
+                // const valiable
+                // Result code
+                get: function () {
+                    return 0x0000;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(NativeBridge, "ERROR_FAIL", {
+                get: function () {
+                    return 0x0001;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(NativeBridge, "ERROR_CANCEL", {
+                get: function () {
+                    return 0x0002;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(NativeBridge, "ERROR_INVALID_ARG", {
+                get: function () {
+                    return 0x0003;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(NativeBridge, "ERROR_NOT_IMPLEMENT", {
+                get: function () {
+                    return 0x0004;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(NativeBridge, "ERROR_NOT_SUPPORT", {
+                get: function () {
+                    return 0x0005;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(NativeBridge, "ERROR_INVALID_OPERATION", {
+                get: function () {
+                    return 0x0006;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(NativeBridge, "ERROR_CLASS_NOT_FOUND", {
+                get: function () {
+                    return 0x0007;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            ///////////////////////////////////////////////////////////////////////
+            // private methods
+            //! history をすべて cancel 候補に変換
+            NativeBridge.prototype._setAllCancel = function () {
+                for (var key in this._execTaskHistory) {
+                    if (this._execTaskHistory.hasOwnProperty(key)) {
+                        this._execTaskHistory[key] = true;
+                    }
+                }
+            };
+            ///////////////////////////////////////////////////////////////////////
+            // private static methods
+            //! オプション初期化用
+            NativeBridge._extend = function (dst, src) {
+                for (var key in src) {
+                    dst[key] = src[key];
+                }
+                return dst;
+            };
             return NativeBridge;
         })();
         Plugin.NativeBridge = NativeBridge;

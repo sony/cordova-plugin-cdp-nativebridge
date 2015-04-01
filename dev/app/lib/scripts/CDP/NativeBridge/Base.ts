@@ -11,5 +11,9 @@ module CDP {
 		 */
 		export class Base {
 		}
+
+		// TODO: test
+		var hoge = new CDP.Plugin.NativeBridge("com.sony.cdp.hoge");
+		var a: CDP.Plugin.NativeBridge.ExecInfo;
 	}
 }
