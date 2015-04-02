@@ -417,6 +417,7 @@
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge.tests\plugin.xml" />
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge.tests\tests.js" />
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge\plugin.xml" />
+    <Content Include="plugins\com.sony.cdp.plugin.nativebridge\src\android\BridgeManager.java" />
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge\src\android\NativeBridge.java" />
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge\tests\plugin.xml" />
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge\tests\tests.js" />

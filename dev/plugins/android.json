@@ -11,6 +11,10 @@
                         {
                             "xml": "<feature name=\"NativeBridge\"><param name=\"android-package\" value=\"com.sony.cdp.plugin.nativebridge.NativeBridge\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"NativeBridge\"><param name=\"android-package\" value=\"com.sony.cdp.plugin.nativebridge.BridgeManager\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -18,13 +22,13 @@
         }
     },
     "installed_plugins": {
-        "com.sony.cdp.plugin.nativebridge": {
-            "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
-        },
         "com.sony.cdp.plugin.nativebridge.tests": {
             "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
         },
         "org.apache.cordova.test-framework": {
+            "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
+        },
+        "com.sony.cdp.plugin.nativebridge": {
             "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
         }
     },

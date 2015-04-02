@@ -7,10 +7,11 @@
   <platform name="android">
     <config-file parent="/*" target="res/xml/config.xml">
       <feature name="NativeBridge">
-        <param name="android-package" value="com.sony.cdp.plugin.nativebridge" />
+        <param name="android-package" value="com.sony.cdp.plugin.nativebridge.BridgeManager" />
       </feature>
     </config-file>
     <config-file parent="/*" target="AndroidManifest.xml" />
+    <source-file src="src/android/BridgeManager.java" target-dir="src/com/sony/cdp/plugin/nativebridge" />
     <source-file src="src/android/NativeBridge.java" target-dir="src/com/sony/cdp/plugin/nativebridge" />
   </platform>
   <platform name="ios">
