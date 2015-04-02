@@ -9,10 +9,6 @@
                 "parents": {
                     "/*": [
                         {
-                            "xml": "<feature name=\"NativeBridge\"><param name=\"android-package\" value=\"com.sony.cdp.plugin.nativebridge.NativeBridge\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<feature name=\"NativeBridge\"><param name=\"android-package\" value=\"com.sony.cdp.plugin.nativebridge.BridgeManager\" /></feature>",
                             "count": 1
                         }

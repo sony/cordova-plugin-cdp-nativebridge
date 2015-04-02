@@ -2,6 +2,7 @@ package com.sony.cdp.plugin.nativebridge;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +15,7 @@ import android.util.Log;
  */
 public class BridgeManager extends CordovaPlugin {
 
-	private static final String TAG = "[BridgeManager]";
+	private static final String TAG = "[CDP.Plugin][Native][BridgeManager] ";
 
     // Result Code
     private static final int SUCCESS_OK 				= 0x0000;
@@ -45,5 +46,26 @@ public class BridgeManager extends CordovaPlugin {
 	//! "execTask" のエントリ
     private void execTask(JSONObject execInfo, JSONObject argsInfo, CallbackContext callbackContext) {
     	Log.v(TAG, "execTask");
+
+        try {
+        	JSONObject feature = execInfo.getJSONObject("feature");
+        	String className = feature.getJSONObject("android").getString("packageInfo");
+        	String methodName = execInfo.getString("method");
+        	String taskId = execInfo.getString("taskId");
+
+        	{// TODO: test
+                JSONObject result = new JSONObject();
+            	String errorMsg;
+            	errorMsg = TAG + "class not found. class: " + className;
+                result.put("code", ERROR_CLASS_NOT_FOUND);
+                result.put("message", errorMsg);
+                result.put("name", TAG + "ERROR_CLASS_NOT_FOUND");
+                result.put("taskId", taskId);
+
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, result));
+        	}
+        } catch (JSONException e) {
+            Log.e(TAG, "Invalid JSON object", e);
+        }
     }
 }

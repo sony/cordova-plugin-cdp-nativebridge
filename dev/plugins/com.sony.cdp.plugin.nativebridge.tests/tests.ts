@@ -5,9 +5,10 @@
 
 declare var exports: any;
 
-exports.defineAutoTests = function () {
+import NativeBridge = CDP.Plugin.NativeBridge;
+import makeArgs = CDP.Plugin.NativeBridge.makeArgsInfo;
 
-	var makeArgs = CDP.Plugin.NativeBridge.makeArgsInfo;
+exports.defineAutoTests = function () {
 
 	describe("NativeBridge object existance check", () => {
 		it("CDP.Plugin.NativeBridge", () => {
@@ -16,8 +17,8 @@ exports.defineAutoTests = function () {
 	});
 
 	describe("NativeBridge instance check", () => {
-		it("can new CDP.Plugin.NativeBridge", function () {
-			var instance = new CDP.Plugin.NativeBridge({
+		it("can new NativeBridge", function () {
+			var instance = new NativeBridge({
 				name: "Hoge",
 				android: { packageInfo: "com.sony.cdp.nativebridge.cordova.Hoge" },
 				ios: { packageInfo: "CDVNBHoge" }
@@ -26,12 +27,12 @@ exports.defineAutoTests = function () {
 		});
 
 		it("different instance", function () {
-			var inst1: any = new CDP.Plugin.NativeBridge({
+			var inst1: any = new NativeBridge({
 				name: "Hoge",
 				android: { packageInfo: "com.sony.cdp.nativebridge.cordova.Hoge" },
 				ios: { packageInfo: "CDVNBHoge" }
 			});
-			var inst2: any = new CDP.Plugin.NativeBridge({
+			var inst2: any = new NativeBridge({
 				name: "Hoge",
 				android: { packageInfo: "com.sony.cdp.nativebridge.cordova.Hoge" },
 				ios: { packageInfo: "CDVNBHoge" }
@@ -45,17 +46,17 @@ exports.defineAutoTests = function () {
 	});
 
 	describe("Class not found check",() => {
-		var value;
+		var value: NativeBridge.IResult;
+		var taskId: string;
 		var callbacks;
 
 		beforeEach((done) => {
 			callbacks = {
 				win: (arg) => {
-					value = arg;
 					done();
 				},
 				fail: (err) => {
-					console.log("callbacks.fail");
+					value = err;
 					done();
 				}
 			};
@@ -69,7 +70,7 @@ exports.defineAutoTests = function () {
 				ios: { packageInfo: "CDVNBHoge" }
 			});
 
-			instance.exec(callbacks.win, callbacks.fail, "foo", makeArgs(1, null, "test"));
+			taskId = instance.exec(callbacks.win, callbacks.fail, "foo", makeArgs(1, null, "test"));
 		});
 
 		it("to have been called", () => {
@@ -78,7 +79,10 @@ exports.defineAutoTests = function () {
 		});
 
 		it("check return value", () => {
-			expect(value).toBe("test");
+			expect(value).toBeDefined();
+			expect(value.code).toBe(NativeBridge.ERROR_CLASS_NOT_FOUND);
+			expect(value.message).toBe("[CDP.Plugin][Native][BridgeManager] class not found. class: com.sony.cdp.nativebridge.cordova.Hoge");
+			expect(value.taskId).toBe(taskId);
 		});
 	});
 
