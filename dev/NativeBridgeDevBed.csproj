@@ -415,7 +415,9 @@
     <Content Include="hooks\before_prepare\kick_grunt.js" />
     <Content Include="platforms\android\src\com\sony\cdp\plugin\nativebridge\NativeBridge.java" />
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge.tests\plugin.xml" />
-    <Content Include="plugins\com.sony.cdp.plugin.nativebridge.tests\tests.js" />
+    <Content Include="plugins\com.sony.cdp.plugin.nativebridge.tests\tests.js">
+      <DependentUpon>tests.ts</DependentUpon>
+    </Content>
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge\plugin.xml" />
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge\src\android\BridgeManager.java" />
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge\src\android\NativeBridge.java" />
@@ -424,6 +426,7 @@
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge\www\cdp.plugin.nativebridge.js" />
     <Content Include="test-runner.js" />
     <Content Include="web.config" />
+    <TypeScriptCompile Include="plugins\com.sony.cdp.plugin.nativebridge.tests\tests.ts" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -503,6 +506,9 @@
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge.tests\.fetch.json" />
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge\.fetch.json" />
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge\src\ios\NativeBridge.m" />
+    <Content Include="plugins\com.sony.cdp.plugin.nativebridge.tests\tests.js.map">
+      <DependentUpon>tests.ts</DependentUpon>
+    </Content>
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
