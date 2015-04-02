@@ -7,13 +7,39 @@ module CDP {
 
 		export module NativeBridge {
 			/**
+			 * @interface PlatformInfo
+			 * @brief Platform 情報
+			 */
+			export interface PlatformInfo {
+				packageInfo?: string;		//!< package 情報. 主クラス ex) "com.sony.cdp.nativebridge.hoge.Hoge" / NBPHoge
+			}
+
+			/**
+			 * @interface Feature
+			 * @brief 機能情報
+			 */
+			export interface Feature {
+				name: string;				//!< 拡張した主機能名
+				android?: PlatformInfo;		//!< platform 情報 (android)
+				ios?: PlatformInfo;			//!< platform 情報 (ios)
+			}
+
+			/**
+			 * @interface ConstructOptions
+			 * @brief 初期化に指定するオプション
+			 */
+			export interface ConstructOptions {
+			}
+
+			/**
 			 * @interface IResult
 			 * @brief NativeBridge の基底 Result 情報
 			 */
 			export interface IResult {
-				code: number;
-				message?: string;
-				name?: string;
+				code: number;				//!< エラーコード
+				message?: string;			//!< メッセージ
+				name?: string;				//!< エラー名
+				taskId?: string;			//!< タスクID
 			}
 
 			/**
@@ -21,7 +47,7 @@ module CDP {
 			 * @brief 生引数情報
 			 */
 			export interface ArgsInfo {
-				[index: number]: any;
+				[index: number]: any;		//!< 引数情報 { 0: value, 1: value, 2: value }
 			}
 
 			/**
@@ -29,7 +55,7 @@ module CDP {
 			 * @brief exec() に渡すオプション
 			 */
 			export interface ExecOptions {
-				post?: boolean;
+				post?: boolean;				//!< callback へ post するか否か
 			}
 
 			/**
@@ -37,12 +63,11 @@ module CDP {
 			 * @brief cordova.exec() に渡す情報
 			 */
 			export interface ExecInfo {
-				packageId: string;
-				objectId: string;
-				taskId: string;
-				service: string;
-				action: string;
-				rawArgs: ArgsInfo;
+				feature: Feature;			//!< 機能情報を格納
+				objectId: string;			//!< インスタンス固有のオブジェクトID
+				taskId: string;				//!< タスクID
+				method: string;				//!< 対象クラスのメソッド名
+				args: ArgsInfo;				//!< 引数情報を格納
 			}
 		}
 
@@ -50,6 +75,8 @@ module CDP {
 		//___________________________________________________________________________________________________________________//
 
 
+		import ConstructOptions = NativeBridge.ConstructOptions;
+		import Feature = NativeBridge.Feature;
 		import IResult = NativeBridge.IResult;
 		import ArgsInfo = NativeBridge.ArgsInfo;
 		import ExecOptions = NativeBridge.ExecOptions;
@@ -65,17 +92,18 @@ module CDP {
 		 */
 		export class NativeBridge {
 
-			private _packageId: string;
+			private _feature: Feature;
 			private _objectId: string;
 			private _execTaskHistory: { [taskId: string]: boolean } = {};
 
 			/**
 			 * constructor
 			 *
-			 * @param pacakgeId {String} [in] クラスを特定するための付加情報. Java の Package 名 (com.sony.cdp.hoge)
+			 * @param feature {Feature}           [in] 機能情報
+			 * @param options {ConstructOptions?} [in] オプション情報
 			 */
-			constructor(pacakgeId: string) {
-				this._packageId = pacakgeId;
+			constructor(feature: Feature, options?: ConstructOptions) {
+				this._feature = feature;
 				this._objectId = "object:" + _uitls.createUUID();
 			}
 
@@ -84,33 +112,29 @@ module CDP {
 
 			/**
 			 * タスクの実行
-			 * 指定した service 名, action 名に対応する Native Class の method を呼び出す。
+			 * 指定した method 名に対応する Native Class の method を呼び出す。
 			 *
 			 * @param success {Function}     [in] success call back
 			 * @param fail    {Function}     [in] fail call back
-			 * @param service {String}       [in] Native Class のクラス名を指定
-			 * @param action  {String}       [in] Native Class のメソッド名を指定
+			 * @param method  {String}       [in] Native Class のメソッド名を指定
 			 * @param args    {ArgsInfo}     [in] makeArgsInfo() の戻り値を指定
 			 * @param options {ExecOptions?} [in] 実行オプションを指定
 			 * @return task ID {String} 
 			 */
-			public exec(success: (result?: IResult) => void, fail: (result?: IResult) => void, service: string, action: string, args: ArgsInfo, options?: ExecOptions): string {
+			public exec(success: (result?: IResult) => void, fail: (result?: IResult) => void, method: string, args: ArgsInfo, options?: ExecOptions): string {
 				var opt: any = NativeBridge._extend({
 					post: true,
 					pluginAction: "execTask",
 				}, options);
 
-				var errorMsg: string;
-
 				var taskId = this._objectId + "-task:" + _uitls.createUUID();
 
 				var execInfo: ExecInfo = {
-					packageId: this._packageId,
+					feature: this._feature,
 					objectId: this._objectId,
 					taskId: taskId,
-					service: service,
-					action: action,
-					rawArgs: args,
+					method: method,
+					args: args,
 				};
 
 				var _fireCallback = (taskId: string, func: (result?: IResult) => void, result: IResult, post: boolean): void => {
@@ -128,6 +152,8 @@ module CDP {
 						}
 					}
 				};
+
+				var errorMsg: string;
 
 				// すでに dispose されていた場合はエラー
 				if (null == this._objectId) {
@@ -163,8 +189,7 @@ module CDP {
 					},
 					(result: IResult): void => {
 						_fireCallback(taskId, fail, result, opt.post);
-						// TODO: Root Service クラス変更
-					}, "NativeBridge", opt.pluginAction, [execInfo, execInfo.rawArgs]
+					}, "NativeBridge", opt.pluginAction, [execInfo, execInfo.args]
 				);
 
 				return taskId;
@@ -183,12 +208,12 @@ module CDP {
 				opt.pluginAction = "cancelTask";
 
 				if (null == taskId) {	// all cancel.
-					this._setAllCancel();
+					this._setCancelAll();
 				} else if (null != this._execTaskHistory[taskId]) {
 					this._execTaskHistory[taskId] = true;
 				}
 
-				this.exec(success, fail, null, null, {}, opt);
+				this.exec(success, fail, null, {}, opt);
 			}
 
 			/**
@@ -202,8 +227,8 @@ module CDP {
 			public dispose(options?: ExecOptions, success?: (result?: IResult) => void, fail?: (result?: IResult) => void): void {
 				var opt: any = NativeBridge._extend({ post: false }, options);
 				opt.pluginAction = "disposeTask";
-				this._setAllCancel();
-				this.exec(success, fail, null, null, {}, opt);
+				this._setCancelAll();
+				this.exec(success, fail, null, {}, opt);
 				this._objectId = null;
 			}
 
@@ -236,7 +261,7 @@ module CDP {
 			// private methods
 
 			//! history をすべて cancel 候補に変換
-			private _setAllCancel(): void {
+			private _setCancelAll(): void {
 				for (var key in this._execTaskHistory) {
 					if (this._execTaskHistory.hasOwnProperty(key)) {
 						this._execTaskHistory[key] = true;

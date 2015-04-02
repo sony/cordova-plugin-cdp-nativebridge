@@ -16,42 +16,40 @@ var CDP;
             /**
              * constructor
              *
-             * @param pacakgeId {String} [in] クラスを特定するための付加情報. Java の Package 名 (com.sony.cdp.hoge)
+             * @param feature {Feature}           [in] 機能情報
+             * @param options {ConstructOptions?} [in] オプション情報
              */
-            function NativeBridge(pacakgeId) {
+            function NativeBridge(feature, options) {
                 this._execTaskHistory = {};
-                this._packageId = pacakgeId;
+                this._feature = feature;
                 this._objectId = "object:" + _uitls.createUUID();
             }
             ///////////////////////////////////////////////////////////////////////
             // public methods
             /**
              * タスクの実行
-             * 指定した service 名, action 名に対応する Native Class の method を呼び出す。
+             * 指定した method 名に対応する Native Class の method を呼び出す。
              *
              * @param success {Function}     [in] success call back
              * @param fail    {Function}     [in] fail call back
-             * @param service {String}       [in] Native Class のクラス名を指定
-             * @param action  {String}       [in] Native Class のメソッド名を指定
+             * @param method  {String}       [in] Native Class のメソッド名を指定
              * @param args    {ArgsInfo}     [in] makeArgsInfo() の戻り値を指定
              * @param options {ExecOptions?} [in] 実行オプションを指定
              * @return task ID {String}
              */
-            NativeBridge.prototype.exec = function (success, fail, service, action, args, options) {
+            NativeBridge.prototype.exec = function (success, fail, method, args, options) {
                 var _this = this;
                 var opt = NativeBridge._extend({
                     post: true,
                     pluginAction: "execTask",
                 }, options);
-                var errorMsg;
                 var taskId = this._objectId + "-task:" + _uitls.createUUID();
                 var execInfo = {
-                    packageId: this._packageId,
+                    feature: this._feature,
                     objectId: this._objectId,
                     taskId: taskId,
-                    service: service,
-                    action: action,
-                    rawArgs: args,
+                    method: method,
+                    args: args,
                 };
                 var _fireCallback = function (taskId, func, result, post) {
                     // history から削除
@@ -69,6 +67,7 @@ var CDP;
                         }
                     }
                 };
+                var errorMsg;
                 // すでに dispose されていた場合はエラー
                 if (null == this._objectId) {
                     errorMsg = TAG + "this object is already disposed.";
@@ -100,7 +99,7 @@ var CDP;
                     }
                 }, function (result) {
                     _fireCallback(taskId, fail, result, opt.post);
-                }, "NativeBridge", opt.pluginAction, [execInfo, execInfo.rawArgs]);
+                }, "NativeBridge", opt.pluginAction, [execInfo, execInfo.args]);
                 return taskId;
             };
             /**
@@ -115,12 +114,12 @@ var CDP;
                 var opt = NativeBridge._extend({ post: false }, options);
                 opt.pluginAction = "cancelTask";
                 if (null == taskId) {
-                    this._setAllCancel();
+                    this._setCancelAll();
                 }
                 else if (null != this._execTaskHistory[taskId]) {
                     this._execTaskHistory[taskId] = true;
                 }
-                this.exec(success, fail, null, null, {}, opt);
+                this.exec(success, fail, null, {}, opt);
             };
             /**
              * インスタンスの破棄
@@ -133,8 +132,8 @@ var CDP;
             NativeBridge.prototype.dispose = function (options, success, fail) {
                 var opt = NativeBridge._extend({ post: false }, options);
                 opt.pluginAction = "disposeTask";
-                this._setAllCancel();
-                this.exec(success, fail, null, null, {}, opt);
+                this._setCancelAll();
+                this.exec(success, fail, null, {}, opt);
                 this._objectId = null;
             };
             ///////////////////////////////////////////////////////////////////////
@@ -213,7 +212,7 @@ var CDP;
             ///////////////////////////////////////////////////////////////////////
             // private methods
             //! history をすべて cancel 候補に変換
-            NativeBridge.prototype._setAllCancel = function () {
+            NativeBridge.prototype._setCancelAll = function () {
                 for (var key in this._execTaskHistory) {
                     if (this._execTaskHistory.hasOwnProperty(key)) {
                         this._execTaskHistory[key] = true;
