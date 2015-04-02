@@ -9,7 +9,7 @@ import NativeBridge = CDP.Plugin.NativeBridge;
 import makeArgs = CDP.Plugin.NativeBridge.makeArgsInfo;
 
 exports.defineAutoTests = function () {
-
+/*
 	describe("NativeBridge object existance check", () => {
 		it("CDP.Plugin.NativeBridge", () => {
 			expect(CDP.Plugin.NativeBridge).toBeDefined();
@@ -83,6 +83,39 @@ exports.defineAutoTests = function () {
 			expect(value.code).toBe(NativeBridge.ERROR_CLASS_NOT_FOUND);
 			expect(value.message).toBe("[CDP.Plugin][Native][BridgeManager] class not found. class: com.sony.cdp.nativebridge.cordova.Hoge");
 			expect(value.taskId).toBe(taskId);
+		});
+	});
+*/
+	describe("Method check",() => {
+		var value: NativeBridge.IResult;
+		var taskId: string;
+		var callbacks;
+
+		beforeEach((done) => {
+			callbacks = {
+				win: (arg) => {
+					done();
+				},
+				fail: (err) => {
+					done();
+				}
+			};
+
+			spyOn(callbacks, 'win').and.callThrough();
+			spyOn(callbacks, 'fail').and.callThrough();
+
+			var instance = new CDP.Plugin.NativeBridge({
+				name: "Hoge",
+				android: { packageInfo: "com.sony.cdp.sample.SimpleBridge" },
+				ios: { packageInfo: "CDVNBSimpleBridge" }
+			});
+
+			taskId = instance.exec(callbacks.win, callbacks.fail, "coolMethod", makeArgs(1, false, "test", { ok: true }));
+		});
+
+		it("to have been called",() => {
+			expect(callbacks.win).toHaveBeenCalled();
+			expect(callbacks.fail).not.toHaveBeenCalled();
 		});
 	});
 
