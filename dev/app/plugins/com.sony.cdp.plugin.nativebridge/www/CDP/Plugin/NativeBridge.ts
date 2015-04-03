@@ -40,6 +40,7 @@ module CDP {
 				message?: string;			//!< メッセージ
 				name?: string;				//!< エラー名
 				taskId?: string;			//!< タスクID
+				params?: any[];				//!< 任意のパラメータ
 			}
 
 			/**

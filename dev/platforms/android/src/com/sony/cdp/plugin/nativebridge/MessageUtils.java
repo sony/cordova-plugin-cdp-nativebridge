@@ -10,12 +10,12 @@ import android.util.Log;
 import android.util.SparseArray;
 
 /**
- * @class ResultUtils
- * @brief cdp.plugin.nativebridge の結果を生成するユーティリティクラス
+ * @class MessageUtils
+ * @brief cdp.plugin.nativebridge のメッセージを生成するユーティリティクラス
  */
-public class ResultUtils {
+public class MessageUtils {
 
-    private static final String TAG = "[com.sony.cdp.plugin.nativebridge][Native][ResultUtil] ";
+    private static final String TAG = "[com.sony.cdp.plugin.nativebridge][Native][MessageUtils] ";
 
     // Result Code
     public static final int SUCCESS_OK                 = 0x0000;
@@ -36,7 +36,7 @@ public class ResultUtils {
     /**
      * Result 情報を生成
      */
-    public static JSONObject makeResult(int code, String message, String taskId, Object... args) {
+    public static JSONObject makeMessage(int code, String message, String taskId, Object... params) {
         if (null == mErrorTbl) {
             init();
         }
@@ -54,12 +54,12 @@ public class ResultUtils {
             if (null != taskId) {
                 result.put("taskId", taskId);
             }
-            if (0 < args.length) {
-                JSONArray argsInfo = new JSONArray();
-                for (int i = 0; i < args.length; i++) {
-                    argsInfo.put(args[i]);
+            if (0 < params.length) {
+                JSONArray paramsInfo = new JSONArray();
+                for (int i = 0; i < params.length; i++) {
+                    paramsInfo.put(params[i]);
                 }
-                result.put("args", argsInfo);
+                result.put("params", paramsInfo);
             }
         } catch (JSONException e) {
             Log.e(TAG, "create result JSON object failed.", e);
@@ -72,23 +72,23 @@ public class ResultUtils {
      * Result 情報を生成
      * Helper 関数
      */
-    public static JSONObject makeResult(String message, String taskId, Object... args) {
-        return makeResult(SUCCESS_OK, message, taskId, args);
+    public static JSONObject makeMessage(String message, String taskId, Object... params) {
+        return makeMessage(SUCCESS_OK, message, taskId, params);
     }
 
     /**
      * Result 情報を生成
      * Helper 関数
      */
-    public static JSONObject makeResult(String taskId, Object... args) {
-        return makeResult(SUCCESS_OK, null, taskId, args);
+    public static JSONObject makeMessage(String taskId, Object... params) {
+        return makeMessage(SUCCESS_OK, null, taskId, params);
     }
 
     /**
      * Success 情報を送信
      */
     public static void sendSuccessResult(CallbackContext callbackContext, String taskId) {
-        sendSuccessResult(callbackContext, makeResult(taskId));
+        sendSuccessResult(callbackContext, makeMessage(taskId));
     }
 
     /**
@@ -97,7 +97,7 @@ public class ResultUtils {
     public static void sendSuccessResult(CallbackContext callbackContext, JSONObject result) {
         try {
             if (null == result) {
-                result = makeResult(null);
+                result = makeMessage(null);
             } else if (result.isNull("code")) {
                 result.put("code", SUCCESS_OK);
             }
@@ -111,7 +111,7 @@ public class ResultUtils {
      * Error 情報を送信
      */
     public static void sendErrorResult(CallbackContext callbackContext, String taskId, int code, String message) {
-        sendErrorResult(callbackContext, makeResult(code, message, taskId));
+        sendErrorResult(callbackContext, makeMessage(code, message, taskId));
     }
 
     /**
@@ -120,7 +120,7 @@ public class ResultUtils {
     public static void sendErrorResult(CallbackContext callbackContext, JSONObject result) {
         try {
             if (null == result) {
-                result = makeResult(ERROR_FAIL, null, null);
+                result = makeMessage(ERROR_FAIL, null, null);
             } else if (result.isNull("code")) {
                 result.put("code", ERROR_FAIL);
             }

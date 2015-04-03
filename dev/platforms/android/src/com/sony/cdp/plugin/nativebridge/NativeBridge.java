@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -45,6 +46,7 @@ public class NativeBridge {
      * @return                Whether the action was valid.
      */
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        Log.w(TAG, "execute() method should be override from sub class.");
         return false;
     }
 
@@ -69,7 +71,7 @@ public class NativeBridge {
                 mCurrentCookie = new Cookie(callbackContext, taskId);
                 method.invoke(this, argValues);
                 if (mCurrentCookie.needSendResult) {
-                    ResultUtils.sendSuccessResult(callbackContext, taskId);
+                    MessageUtils.sendSuccessResult(callbackContext, taskId);
                 }
                 return true;
 
@@ -88,24 +90,6 @@ public class NativeBridge {
             }
         }
         return false;
-    }
-
-    /**
-     * 値を JavaScript へ通知
-     * sendPluginResult() と等価
-     * TBD.
-     */
-    public void sendMessage() {
-        // TODO:
-    }
-
-    /**
-     * 値を JavaScript へ通知
-     * sendPluginResult() と等価
-     * TBD.
-     */
-    public void sendMessage(boolean keepCallback) {
-        // TODO:
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -137,10 +121,10 @@ public class NativeBridge {
      *
      * @param value [in] Native から JavaScript へ返す値を指定
      */
-    protected void returnResult(Object value) {
+    protected void returnParames(Object param) {
         if (null != mCurrentCookie && Thread.currentThread().getName().equals(mCurrentCookie.threadId)) {
             mCurrentCookie.needSendResult = false;
-            ResultUtils.sendSuccessResult(mCurrentCookie.callbackContext, ResultUtils.makeResult(mCurrentCookie.taskId, value));
+            MessageUtils.sendSuccessResult(mCurrentCookie.callbackContext, MessageUtils.makeMessage(mCurrentCookie.taskId, param));
         } else {
             Log.e(TAG, "Calling returnMessage() is permitted only from method entry thread.");
         }
@@ -148,15 +132,39 @@ public class NativeBridge {
 
     /**
      * 値を JavaScript へ通知
-     * ワーカースレッドから使用可能
-     * keepCallback は false が指定される
+     * sendPluginResult() と等価
+     * TBD.
      */
-    protected void doneResult(Cookie cookie, Object... values) {
+    protected void sendParams(Cookie cookie, Object... params) {
+        sendParams(true, cookie, params);
+    }
+
+    /**
+     * 値を JavaScript へ通知
+     * sendPluginResult() と等価
+     * TBD.
+     */
+    protected void sendParams(boolean keepCallback, Cookie cookie, Object... params) {
         if (null == cookie || null == cookie.callbackContext) {
             Log.e(TAG, "Invalid cookie object.");
             return;
         }
-        ResultUtils.sendSuccessResult(cookie.callbackContext, ResultUtils.makeResult(cookie.taskId, values));
+        PluginResult result = new PluginResult(PluginResult.Status.OK, MessageUtils.makeMessage(cookie.taskId, params));
+        result.setKeepCallback(keepCallback);
+        cookie.callbackContext.sendPluginResult(result);
+    }
+
+    /**
+     * 値を JavaScript へ通知
+     * ワーカースレッドから使用可能
+     * keepCallback は false が指定される
+     */
+    protected void doneParams(Cookie cookie, Object... params) {
+        if (null == cookie || null == cookie.callbackContext) {
+            Log.e(TAG, "Invalid cookie object.");
+            return;
+        }
+        MessageUtils.sendSuccessResult(cookie.callbackContext, MessageUtils.makeMessage(cookie.taskId, params));
     }
 
     ///////////////////////////////////////////////////////////////////////

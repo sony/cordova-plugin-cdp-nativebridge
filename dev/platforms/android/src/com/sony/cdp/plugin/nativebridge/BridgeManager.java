@@ -51,16 +51,16 @@ public class BridgeManager extends CordovaPlugin {
             {
                 NativeBridge bridge = getBridgeClass(objectId, className);
                 if (null == bridge) {
-                    ResultUtils.sendErrorResult(callbackContext, taskId, ResultUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + className));
+                    MessageUtils.sendErrorResult(callbackContext, taskId, MessageUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + className));
                     return;
                 }
 
                 if (compatible) {
                     if (!bridge.execute(methodName, argsInfo, callbackContext)) {
-                        ResultUtils.sendErrorResult(callbackContext, taskId, ResultUtils.ERROR_NOT_IMPLEMENT, (TAG + "execute() is not implemented. class: " + className));
+                        MessageUtils.sendErrorResult(callbackContext, taskId, MessageUtils.ERROR_NOT_IMPLEMENT, (TAG + "execute() is not implemented. class: " + className));
                     }
                 } else if (!bridge.invoke(callbackContext, taskId, methodName, argsInfo)) {
-                    ResultUtils.sendErrorResult(callbackContext, taskId, ResultUtils.ERROR_METHOD_NOT_FOUND, (TAG + "method not found. method: " + className + "#" + methodName));
+                    MessageUtils.sendErrorResult(callbackContext, taskId, MessageUtils.ERROR_METHOD_NOT_FOUND, (TAG + "method not found. method: " + className + "#" + methodName));
                 }
             }
 
