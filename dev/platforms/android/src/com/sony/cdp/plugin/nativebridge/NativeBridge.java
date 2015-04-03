@@ -80,7 +80,7 @@ public class NativeBridge {
      * sendPluginResult() と等価
      * TBD.
      */
-    public void notifyMessage() {
+    public void sendMessage() {
         // TODO:
     }
 
@@ -89,7 +89,7 @@ public class NativeBridge {
      * sendPluginResult() と等価
      * TBD.
      */
-    public void notifyMessage(boolean keepCallback) {
+    public void sendMessage(boolean keepCallback) {
         // TODO:
     }
 
@@ -116,16 +116,32 @@ public class NativeBridge {
 
     /**
      * 結果を JavaScript へ返却
+     * 関数の return ステートメント同等のセマンティックスを持つ
      * method 呼び出されたスレッドからのみコール可能
-     * keepCallback は false が指定される
+     * keepCallback は false が指定される。
+     *
+     * @param value [in] Native から JavaScript へ返す値を指定
      */
-    protected void returnMessage() {
+    protected void returnResult(Object value) {
         if (null != mCurrentCookie && Thread.currentThread().getName().equals(mCurrentCookie.threadId)) {
             mCurrentCookie.needSendResult = false;
-            // TODO:
+            ResultUtils.sendSuccessResult(mCurrentCookie.callbackContext, ResultUtils.makeResult(mCurrentCookie.taskId, value));
         } else {
             Log.e(TAG, "Calling returnMessage() is permitted only from method entry thread.");
         }
+    }
+
+    /**
+     * 値を JavaScript へ通知
+     * ワーカースレッドから使用可能
+     * keepCallback は false が指定される
+     */
+    protected void doneResult(Cookie cookie, Object... values) {
+        if (null == cookie || null == cookie.callbackContext) {
+            Log.e(TAG, "Invalid cookie object.");
+            return;
+        }
+        ResultUtils.sendSuccessResult(cookie.callbackContext, ResultUtils.makeResult(cookie.taskId, values));
     }
 
     ///////////////////////////////////////////////////////////////////////

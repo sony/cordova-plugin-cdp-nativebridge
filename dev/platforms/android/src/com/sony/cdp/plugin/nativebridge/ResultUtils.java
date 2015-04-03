@@ -2,6 +2,7 @@ package com.sony.cdp.plugin.nativebridge;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,18 +34,73 @@ public class ResultUtils {
     // public static methods
 
     /**
-     * Success 情報を送信
+     * Result 情報を生成
      */
-    public static void sendSuccessResult(CallbackContext callbackContext, String taskId) {
+    public static JSONObject makeResult(int code, String message, String taskId, Object... args) {
         if (null == mErrorTbl) {
             init();
         }
-        try {
-            JSONObject result = new JSONObject();
-            result.put("code", SUCCESS_OK);
-            result.put("name", TAG + mErrorTbl.get(SUCCESS_OK));
-            result.put("taskId", taskId);
 
+        JSONObject result = null;
+
+        try {
+            String name = (null != mErrorTbl.get(code)) ? mErrorTbl.get(code) : String.format("ERROR_CUSTOM:0x%x", code);
+            result = new JSONObject();
+            result.put("code", code);
+            result.put("name", TAG + name);
+            if (null != message) {
+                result.put("message", message);
+            }
+            if (null != taskId) {
+                result.put("taskId", taskId);
+            }
+            if (0 < args.length) {
+                JSONArray argsInfo = new JSONArray();
+                for (int i = 0; i < args.length; i++) {
+                    argsInfo.put(args[i]);
+                }
+                result.put("args", argsInfo);
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "create result JSON object failed.", e);
+        }
+
+        return result;
+    }
+
+    /**
+     * Result 情報を生成
+     * Helper 関数
+     */
+    public static JSONObject makeResult(String message, String taskId, Object... args) {
+        return makeResult(SUCCESS_OK, message, taskId, args);
+    }
+
+    /**
+     * Result 情報を生成
+     * Helper 関数
+     */
+    public static JSONObject makeResult(String taskId, Object... args) {
+        return makeResult(SUCCESS_OK, null, taskId, args);
+    }
+
+    /**
+     * Success 情報を送信
+     */
+    public static void sendSuccessResult(CallbackContext callbackContext, String taskId) {
+        sendSuccessResult(callbackContext, makeResult(taskId));
+    }
+
+    /**
+     * Success 情報を送信
+     */
+    public static void sendSuccessResult(CallbackContext callbackContext, JSONObject result) {
+        try {
+            if (null == result) {
+                result = makeResult(null);
+            } else if (result.isNull("code")) {
+                result.put("code", SUCCESS_OK);
+            }
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, result));
         } catch (JSONException e) {
             Log.e(TAG, "create result JSON object failed.", e);
@@ -55,16 +111,19 @@ public class ResultUtils {
      * Error 情報を送信
      */
     public static void sendErrorResult(CallbackContext callbackContext, String taskId, int code, String message) {
-        if (null == mErrorTbl) {
-            init();
-        }
-        try {
-            JSONObject result = new JSONObject();
-            result.put("code", code);
-            result.put("message", message);
-            result.put("name", TAG + mErrorTbl.get(code));
-            result.put("taskId", taskId);
+        sendErrorResult(callbackContext, makeResult(code, message, taskId));
+    }
 
+    /**
+     * Error 情報を送信
+     */
+    public static void sendErrorResult(CallbackContext callbackContext, JSONObject result) {
+        try {
+            if (null == result) {
+                result = makeResult(ERROR_FAIL, null, null);
+            } else if (result.isNull("code")) {
+                result.put("code", ERROR_FAIL);
+            }
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, result));
         } catch (JSONException e) {
             Log.e(TAG, "create result JSON object failed.", e);
