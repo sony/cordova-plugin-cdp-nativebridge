@@ -56,7 +56,7 @@ public class BridgeManager extends CordovaPlugin {
                 }
 
                 if (compatible) {
-                    if (!bridge.execute(methodName, argsInfo, callbackContext)) {
+                    if (!bridge.execute(methodName, argsInfo, callbackContext, taskId)) {
                         MessageUtils.sendErrorResult(callbackContext, taskId, MessageUtils.ERROR_NOT_IMPLEMENT, (TAG + "execute() is not implemented. class: " + className));
                     }
                 } else if (!bridge.invoke(callbackContext, taskId, methodName, argsInfo)) {

@@ -18,6 +18,10 @@ import android.util.Log;
 public class NativeBridge {
     private static final String TAG = "[com.sony.cdp.plugin.nativebridge][Native][NativeBridge] ";
 
+    /**
+     * @class Cookie
+     * @brief Cookie 情報を格納
+     */
     public class Cookie {
         public final CallbackContext callbackContext;
         public final String          taskId;
@@ -43,9 +47,10 @@ public class NativeBridge {
      * @param action          The action to execute.
      * @param args            The exec() arguments.
      * @param callbackContext The callback context used when calling back into JavaScript.
+     * @param taskId          The task ID. (NativeBridge extended argument)
      * @return                Whether the action was valid.
      */
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext, String taskId) throws JSONException {
         Log.w(TAG, "execute() method should be override from sub class.");
         return false;
     }
@@ -53,16 +58,22 @@ public class NativeBridge {
     /**
      * メソッド呼び出し
      * BridgeManager からコールされる
+     *
+     * @param callbackContext [in] Callback Context
+     * @param taskId          [in] task ID
+     * @param mehtodName      [in] 呼び出し対象のメソッド名
+     * @param args            [in] exec() の引数リスト
+     * @return ハンドリング時に true を返却
      */
-    public boolean invoke(CallbackContext callbackContext, String taskId, String methodName, JSONArray argsInfo) {
+    public boolean invoke(CallbackContext callbackContext, String taskId, String methodName, JSONArray args) {
         synchronized (this) {
             try {
                 Class<?> cls = this.getClass();
-                int length = argsInfo.length();
+                int length = args.length();
                 Class<?>[] argTypes = new Class[length];
                 Object[] argValues = new Object[length];
                 for (int i = 0; i < length; i++) {
-                    Object arg = argsInfo.get(i);
+                    Object arg = args.get(i);
                     argTypes[i] = normalizeType(arg.getClass());
                     argValues[i] = arg;
                 }
@@ -98,6 +109,7 @@ public class NativeBridge {
     /**
      * Cookie の取得
      * method 呼び出されたスレッドからのみ Cookie 取得が可能
+     * compatible オプションを伴って呼ばれた場合は無効になる。
      *
      * @return Cooke オブジェクト
      */
@@ -119,7 +131,7 @@ public class NativeBridge {
      * method 呼び出されたスレッドからのみコール可能
      * keepCallback は false が指定される。
      *
-     * @param value [in] Native から JavaScript へ返す値を指定
+     * @param param [in] Native から JavaScript へ返す値を指定
      */
     protected void returnParames(Object param) {
         if (null != mCurrentCookie && Thread.currentThread().getName().equals(mCurrentCookie.threadId)) {
@@ -132,8 +144,10 @@ public class NativeBridge {
 
     /**
      * 値を JavaScript へ通知
-     * sendPluginResult() と等価
-     * TBD.
+     * sendPluginResult() のヘルパー関数。 既定で keepCallback を有効にする。
+     *
+     * @param cookie [in] cookie オブジェクトを指定
+     * @param params [in] パラメータを可変引数で指定
      */
     protected void sendParams(Cookie cookie, Object... params) {
         sendParams(true, cookie, params);
@@ -141,8 +155,11 @@ public class NativeBridge {
 
     /**
      * 値を JavaScript へ通知
-     * sendPluginResult() と等価
-     * TBD.
+     * sendPluginResult() のヘルパー関数
+     *
+     * @param keepCallback [in] keepCallback 値
+     * @param cookie       [in] cookie オブジェクトを指定
+     * @param params       [in] パラメータを可変引数で指定
      */
     protected void sendParams(boolean keepCallback, Cookie cookie, Object... params) {
         if (null == cookie || null == cookie.callbackContext) {
@@ -158,6 +175,9 @@ public class NativeBridge {
      * 値を JavaScript へ通知
      * ワーカースレッドから使用可能
      * keepCallback は false が指定される
+     *
+     * @param cookie [in] cookie オブジェクトを指定
+     * @param params [in] パラメータを可変引数で指定
      */
     protected void doneParams(Cookie cookie, Object... params) {
         if (null == cookie || null == cookie.callbackContext) {

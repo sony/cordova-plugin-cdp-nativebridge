@@ -85,7 +85,7 @@ exports.defineAutoTests = function () {
 		});
 	});
 
-	describe("Method check",() => {
+	describe("Simple method call check",() => {
 		var value: NativeBridge.IResult;
 		var taskId: string;
 		var callbacks;
@@ -93,6 +93,7 @@ exports.defineAutoTests = function () {
 		beforeEach((done) => {
 			callbacks = {
 				win: (arg) => {
+					value = arg;
 					done();
 				},
 				fail: (err) => {
@@ -115,6 +116,16 @@ exports.defineAutoTests = function () {
 		it("to have been called",() => {
 			expect(callbacks.win).toHaveBeenCalled();
 			expect(callbacks.fail).not.toHaveBeenCalled();
+		});
+
+		it("check return value",() => {
+			expect(value).toBeDefined();
+			expect(value.code).toBe(NativeBridge.SUCCESS_OK);
+			expect(value.message).not.toBeDefined();
+			expect(value.taskId).toBe(taskId);
+			expect(value.params).toBeDefined();
+			expect(value.params.length).toBe(1);
+			expect(value.params[0]).toBe("arg1: 1, arg2: false, arg3: test, “ú–{Œê‚ÅOK: true");
 		});
 	});
 };
