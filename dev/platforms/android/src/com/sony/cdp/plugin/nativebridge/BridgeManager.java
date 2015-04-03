@@ -46,6 +46,7 @@ public class BridgeManager extends CordovaPlugin {
             String methodName = execInfo.getString("method");
             String objectId = execInfo.getString("objectId");
             String taskId = execInfo.getString("taskId");
+            boolean compatible = execInfo.getBoolean("compatible");
 
             {
                 NativeBridge bridge = getBridgeClass(objectId, className);
@@ -54,7 +55,11 @@ public class BridgeManager extends CordovaPlugin {
                     return;
                 }
 
-                if (!bridge.invoke(callbackContext, taskId, methodName, argsInfo)) {
+                if (compatible) {
+                    if (!bridge.execute(methodName, argsInfo, callbackContext)) {
+                        ResultUtils.sendErrorResult(callbackContext, taskId, ResultUtils.ERROR_NOT_IMPLEMENT, (TAG + "execute() is not implemented. class: " + className));
+                    }
+                } else if (!bridge.invoke(callbackContext, taskId, methodName, argsInfo)) {
                     ResultUtils.sendErrorResult(callbackContext, taskId, ResultUtils.ERROR_METHOD_NOT_FOUND, (TAG + "method not found. method: " + className + "#" + methodName));
                 }
             }

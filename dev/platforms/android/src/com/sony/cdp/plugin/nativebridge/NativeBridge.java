@@ -34,6 +34,21 @@ public class NativeBridge {
     // public methods
 
     /**
+     * Cordova 互換ハンドラ
+     * BridgeManager からコールされる。
+     * compatible オプションが有効な場合、このメソッドがコールされる。
+     * クライアントは本メソッドをオーバーライド可能
+     *
+     * @param action          The action to execute.
+     * @param args            The exec() arguments.
+     * @param callbackContext The callback context used when calling back into JavaScript.
+     * @return                Whether the action was valid.
+     */
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        return false;
+    }
+
+    /**
      * メソッド呼び出し
      * BridgeManager からコールされる
      */

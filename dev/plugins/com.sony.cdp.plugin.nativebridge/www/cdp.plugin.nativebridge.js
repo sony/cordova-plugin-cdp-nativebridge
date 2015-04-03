@@ -41,6 +41,7 @@ var CDP;
                 var _this = this;
                 var opt = NativeBridge._extend({
                     post: true,
+                    compatible: false,
                     pluginAction: "execTask",
                 }, options);
                 var taskId = this._objectId + "-task:" + _uitls.createUUID();
@@ -49,6 +50,7 @@ var CDP;
                     objectId: this._objectId,
                     taskId: taskId,
                     method: method,
+                    compatible: opt.compatible,
                     args: args || [],
                 };
                 var _fireCallback = function (taskId, func, result, post) {
@@ -113,6 +115,7 @@ var CDP;
             NativeBridge.prototype.cancel = function (taskId, options, success, fail) {
                 var opt = NativeBridge._extend({ post: false }, options);
                 opt.pluginAction = "cancelTask";
+                opt.compatible = false;
                 if (null == taskId) {
                     this._setCancelAll();
                 }
@@ -132,6 +135,7 @@ var CDP;
             NativeBridge.prototype.dispose = function (options, success, fail) {
                 var opt = NativeBridge._extend({ post: false }, options);
                 opt.pluginAction = "disposeTask";
+                opt.compatible = false;
                 this._setCancelAll();
                 this.exec(success, fail, null, [], opt);
                 this._objectId = null;

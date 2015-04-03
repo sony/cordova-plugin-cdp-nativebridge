@@ -48,6 +48,7 @@ module CDP {
 			 */
 			export interface ExecOptions {
 				post?: boolean;				//!< callback へ post するか否か
+				compatible?: boolean;		//!< cordova 標準と同じ引数で Native を呼びたい場合には true. default: false. (binary 転送時に有用)
 			}
 
 			/**
@@ -59,6 +60,7 @@ module CDP {
 				objectId: string;			//!< インスタンス固有のオブジェクトID
 				taskId: string;				//!< タスクID
 				method: string;				//!< 対象クラスのメソッド名
+				compatible: boolean;		//!< cordova 標準と同じ引数で Native をコール
 				args: any[];				//!< 引数情報を格納
 			}
 		}
@@ -115,6 +117,7 @@ module CDP {
 			public exec(success: (result?: IResult) => void, fail: (result?: IResult) => void, method: string, args: any[], options?: ExecOptions): string {
 				var opt: any = NativeBridge._extend({
 					post: true,
+					compatible: false,
 					pluginAction: "execTask",
 				}, options);
 
@@ -125,6 +128,7 @@ module CDP {
 					objectId: this._objectId,
 					taskId: taskId,
 					method: method,
+					compatible: opt.compatible,
 					args: args || [],
 				};
 
@@ -197,6 +201,7 @@ module CDP {
 			public cancel(taskId: string, options?: ExecOptions, success?: (result?: IResult) => void, fail?: (result?: IResult) => void): void {
 				var opt: any = NativeBridge._extend({ post: false }, options);
 				opt.pluginAction = "cancelTask";
+				opt.compatible = false;
 
 				if (null == taskId) {	// all cancel.
 					this._setCancelAll();
@@ -218,6 +223,7 @@ module CDP {
 			public dispose(options?: ExecOptions, success?: (result?: IResult) => void, fail?: (result?: IResult) => void): void {
 				var opt: any = NativeBridge._extend({ post: false }, options);
 				opt.pluginAction = "disposeTask";
+				opt.compatible = false;
 				this._setCancelAll();
 				this.exec(success, fail, null, [], opt);
 				this._objectId = null;
