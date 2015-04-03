@@ -6,11 +6,10 @@
 declare var exports: any;
 
 import NativeBridge = CDP.Plugin.NativeBridge;
-import makeArgs = CDP.Plugin.NativeBridge.makeArgsInfo;
 
 exports.defineAutoTests = function () {
-/*
-	describe("NativeBridge object existance check", () => {
+
+	describe("NativeBridge object existance check",() => {
 		it("CDP.Plugin.NativeBridge", () => {
 			expect(CDP.Plugin.NativeBridge).toBeDefined();
 		});
@@ -70,7 +69,7 @@ exports.defineAutoTests = function () {
 				ios: { packageInfo: "CDVNBHoge" }
 			});
 
-			taskId = instance.exec(callbacks.win, callbacks.fail, "foo", makeArgs(1, null, "test"));
+			taskId = instance.exec(callbacks.win, callbacks.fail, "foo", [1, null, "test"]);
 		});
 
 		it("to have been called", () => {
@@ -81,11 +80,11 @@ exports.defineAutoTests = function () {
 		it("check return value", () => {
 			expect(value).toBeDefined();
 			expect(value.code).toBe(NativeBridge.ERROR_CLASS_NOT_FOUND);
-			expect(value.message).toBe("[CDP.Plugin][Native][BridgeManager] class not found. class: com.sony.cdp.nativebridge.cordova.Hoge");
+			expect(value.message).toBe("[com.sony.cdp.plugin.nativebridge][Native][BridgeManager] class not found. class: com.sony.cdp.nativebridge.cordova.Hoge");
 			expect(value.taskId).toBe(taskId);
 		});
 	});
-*/
+
 	describe("Method check",() => {
 		var value: NativeBridge.IResult;
 		var taskId: string;
@@ -110,7 +109,7 @@ exports.defineAutoTests = function () {
 				ios: { packageInfo: "CDVNBSimpleBridge" }
 			});
 
-			taskId = instance.exec(callbacks.win, callbacks.fail, "coolMethod", makeArgs(1, false, "test", { ok: true }));
+			taskId = instance.exec(callbacks.win, callbacks.fail, "coolMethod", [1, false, "test", { ok: true }]);
 		});
 
 		it("to have been called",() => {
@@ -118,39 +117,4 @@ exports.defineAutoTests = function () {
 			expect(callbacks.fail).not.toHaveBeenCalled();
 		});
 	});
-
-	/*
-	  describe('coolMethod call test', function() {
-	
-		var value;
-		var callbacks;
-	
-		beforeEach(function(done) {
-		  callbacks = {
-			win: function(arg){
-			  value = arg;
-			  done();
-			},
-			fail: function(err){
-			  console.log("callbacks.fail");
-			  done();
-			}
-		  };
-	
-		  spyOn(callbacks, 'win').and.callThrough();
-		  spyOn(callbacks, 'fail').and.callThrough();
-		  
-		  com.sony.cdp.plugin.nativebridge.coolMethod("test", callbacks.win, callbacks.fail);
-		});
-	
-		it("to have been called", function() {
-		  expect(callbacks.win).toHaveBeenCalled();
-		});
-	
-		it("check return value", function() {
-		  expect(value).toBe("test");
-		});
-	
-	  });
-	*/
 };

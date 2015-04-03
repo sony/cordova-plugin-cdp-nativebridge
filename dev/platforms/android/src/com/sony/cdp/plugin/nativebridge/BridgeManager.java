@@ -5,13 +5,11 @@ import java.util.Map;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
-import android.util.SparseArray;
 
 /**
  * @class BridgeManager
@@ -19,36 +17,8 @@ import android.util.SparseArray;
  */
 public class BridgeManager extends CordovaPlugin {
 
-    private static final String TAG = "[CDP.Plugin][Native][BridgeManager] ";
-
-    // Result Code
-    private static final int SUCCESS_OK                 = 0x0000;
-    private static final int ERROR_FAIL                 = 0x0001;
-    private static final int ERROR_CANCEL               = 0x0002;
-    private static final int ERROR_INVALID_ARG          = 0x0003;
-    private static final int ERROR_NOT_IMPLEMENT        = 0x0004;
-    private static final int ERROR_NOT_SUPPORT          = 0x0005;
-    private static final int ERROR_INVALID_OPERATION    = 0x0006;
-    private static final int ERROR_CLASS_NOT_FOUND      = 0x0007;
-    private static final int ERROR_METHOD_NOT_FOUND     = 0x0008;
-
-    private SparseArray<String> mErrorTbl = new SparseArray<String>();
+    private static final String TAG = "[com.sony.cdp.plugin.nativebridge][Native][BridgeManager] ";
     private Map<String, NativeBridge> mBrdiges = new HashMap<String, NativeBridge>();
-
-    //! constructor
-    public BridgeManager() {
-        super();
-        mErrorTbl.put(SUCCESS_OK,               "SUCCESS_OK");
-        mErrorTbl.put(ERROR_FAIL,               "ERROR_FAIL");
-        mErrorTbl.put(ERROR_CANCEL,             "ERROR_CANCEL");
-        mErrorTbl.put(ERROR_INVALID_ARG,        "ERROR_INVALID_ARG");
-        mErrorTbl.put(ERROR_NOT_IMPLEMENT,      "ERROR_NOT_IMPLEMENT");
-        mErrorTbl.put(ERROR_NOT_SUPPORT,        "ERROR_NOT_SUPPORT");
-        mErrorTbl.put(ERROR_INVALID_OPERATION,  "ERROR_INVALID_OPERATION");
-        mErrorTbl.put(ERROR_CLASS_NOT_FOUND,    "ERROR_CLASS_NOT_FOUND");
-        mErrorTbl.put(ERROR_CLASS_NOT_FOUND,    "ERROR_CLASS_NOT_FOUND");
-        mErrorTbl.put(ERROR_METHOD_NOT_FOUND,   "ERROR_METHOD_NOT_FOUND");
-    }
 
     ///////////////////////////////////////////////////////////////////////
     // Override: CordovaPlugin
@@ -57,7 +27,7 @@ public class BridgeManager extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("execTask")) {
-            execTask(args.getJSONObject(0), args.getJSONObject(1), callbackContext);
+            execTask(args.getJSONObject(0), args.getJSONArray(1), callbackContext);
             return true;
         }
         return false;
@@ -67,7 +37,7 @@ public class BridgeManager extends CordovaPlugin {
     // private methods
 
     //! "execTask" のエントリ
-    private void execTask(JSONObject execInfo, JSONObject argsInfo, CallbackContext callbackContext) {
+    private void execTask(JSONObject execInfo, JSONArray argsInfo, CallbackContext callbackContext) {
         Log.v(TAG, "execTask");
 
         try {
@@ -80,12 +50,12 @@ public class BridgeManager extends CordovaPlugin {
             {
                 NativeBridge bridge = getBridgeClass(objectId, className);
                 if (null == bridge) {
-                    sendErrorResult(callbackContext, taskId, ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + className));
+                    ResultUtils.sendErrorResult(callbackContext, taskId, ResultUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + className));
                     return;
                 }
 
                 if (!bridge.invoke(callbackContext, taskId, methodName, argsInfo)) {
-                    sendErrorResult(callbackContext, taskId, ERROR_METHOD_NOT_FOUND, (TAG + "method not found. method: " + className + "#" + methodName));
+                    ResultUtils.sendErrorResult(callbackContext, taskId, ResultUtils.ERROR_METHOD_NOT_FOUND, (TAG + "method not found. method: " + className + "#" + methodName));
                 }
             }
 
@@ -125,22 +95,5 @@ public class BridgeManager extends CordovaPlugin {
             Log.d(TAG, "class not found. class: " + className, e);
         }
         return ret;
-    }
-
-    /**
-     * Error 情報を送信
-     */
-    private void sendErrorResult(CallbackContext callbackContext, String taskId, int code, String message) {
-        try {
-            JSONObject result = new JSONObject();
-            result.put("code", code);
-            result.put("message", message);
-            result.put("name", TAG + mErrorTbl.get(code));
-            result.put("taskId", taskId);
-
-            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, result));
-        } catch (JSONException e) {
-            Log.e(TAG, "create result JSON object failed.", e);
-        }
     }
 }

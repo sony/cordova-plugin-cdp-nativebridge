@@ -4,8 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.cordova.CallbackContext;
+import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.util.Log;
 
@@ -15,7 +15,7 @@ import android.util.Log;
  * @brief Base Bridge クラス
  */
 public class NativeBridge {
-    private static final String TAG = "[CDP.Plugin][Native][NativeBridge] ";
+    private static final String TAG = "[com.sony.cdp.plugin.nativebridge][Native][NativeBridge] ";
 
     public class Cookie {
         public final CallbackContext callbackContext;
@@ -37,7 +37,7 @@ public class NativeBridge {
      * メソッド呼び出し
      * BridgeManager からコールされる
      */
-    public boolean invoke(CallbackContext callbackContext, String taskId, String methodName, JSONObject argsInfo) {
+    public boolean invoke(CallbackContext callbackContext, String taskId, String methodName, JSONArray argsInfo) {
         synchronized (this) {
             try {
                 Class<?> cls = this.getClass();
@@ -45,7 +45,7 @@ public class NativeBridge {
                 Class<?>[] argTypes = new Class[length];
                 Object[] argValues = new Object[length];
                 for (int i = 0; i < length; i++) {
-                    Object arg = argsInfo.get(String.valueOf(i));
+                    Object arg = argsInfo.get(i);
                     argTypes[i] = normalizeType(arg.getClass());
                     argValues[i] = arg;
                 }
@@ -54,6 +54,7 @@ public class NativeBridge {
                 mCurrentCookie = new Cookie(callbackContext, taskId);
                 method.invoke(this, argValues);
                 if (mCurrentCookie.needSendResult) {
+                    ResultUtils.sendSuccessResult(callbackContext, taskId);
                 }
                 return true;
 

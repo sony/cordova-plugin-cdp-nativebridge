@@ -49,7 +49,7 @@ var CDP;
                     objectId: this._objectId,
                     taskId: taskId,
                     method: method,
-                    args: args,
+                    args: args || [],
                 };
                 var _fireCallback = function (taskId, func, result, post) {
                     // history から削除
@@ -119,7 +119,7 @@ var CDP;
                 else if (null != this._execTaskHistory[taskId]) {
                     this._execTaskHistory[taskId] = true;
                 }
-                this.exec(success, fail, null, {}, opt);
+                this.exec(success, fail, null, [], opt);
             };
             /**
              * インスタンスの破棄
@@ -133,22 +133,8 @@ var CDP;
                 var opt = NativeBridge._extend({ post: false }, options);
                 opt.pluginAction = "disposeTask";
                 this._setCancelAll();
-                this.exec(success, fail, null, {}, opt);
+                this.exec(success, fail, null, [], opt);
                 this._objectId = null;
-            };
-            ///////////////////////////////////////////////////////////////////////
-            // public static methods
-            //! ArgInfo に変換
-            NativeBridge.makeArgsInfo = function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i - 0] = arguments[_i];
-                }
-                var argsInfo = {};
-                args.forEach(function (value, index) {
-                    argsInfo[index] = value;
-                });
-                return argsInfo;
             };
             Object.defineProperty(NativeBridge, "SUCCESS_OK", {
                 ///////////////////////////////////////////////////////////////////////

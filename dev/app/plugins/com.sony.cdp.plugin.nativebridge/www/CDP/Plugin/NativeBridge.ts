@@ -43,14 +43,6 @@ module CDP {
 			}
 
 			/**
-			 * @interface ArgsInfo
-			 * @brief 生引数情報
-			 */
-			export interface ArgsInfo {
-				[index: number]: any;		//!< 引数情報 { 0: value, 1: value, 2: value }
-			}
-
-			/**
 			 * @interface ExecOptions
 			 * @brief exec() に渡すオプション
 			 */
@@ -67,7 +59,7 @@ module CDP {
 				objectId: string;			//!< インスタンス固有のオブジェクトID
 				taskId: string;				//!< タスクID
 				method: string;				//!< 対象クラスのメソッド名
-				args: ArgsInfo;				//!< 引数情報を格納
+				args: any[];				//!< 引数情報を格納
 			}
 		}
 
@@ -78,7 +70,6 @@ module CDP {
 		import ConstructOptions = NativeBridge.ConstructOptions;
 		import Feature = NativeBridge.Feature;
 		import IResult = NativeBridge.IResult;
-		import ArgsInfo = NativeBridge.ArgsInfo;
 		import ExecOptions = NativeBridge.ExecOptions;
 		import ExecInfo = NativeBridge.ExecInfo;
 
@@ -121,7 +112,7 @@ module CDP {
 			 * @param options {ExecOptions?} [in] 実行オプションを指定
 			 * @return task ID {String} 
 			 */
-			public exec(success: (result?: IResult) => void, fail: (result?: IResult) => void, method: string, args: ArgsInfo, options?: ExecOptions): string {
+			public exec(success: (result?: IResult) => void, fail: (result?: IResult) => void, method: string, args: any[], options?: ExecOptions): string {
 				var opt: any = NativeBridge._extend({
 					post: true,
 					pluginAction: "execTask",
@@ -134,7 +125,7 @@ module CDP {
 					objectId: this._objectId,
 					taskId: taskId,
 					method: method,
-					args: args,
+					args: args || [],
 				};
 
 				var _fireCallback = (taskId: string, func: (result?: IResult) => void, result: IResult, post: boolean): void => {
@@ -213,7 +204,7 @@ module CDP {
 					this._execTaskHistory[taskId] = true;
 				}
 
-				this.exec(success, fail, null, {}, opt);
+				this.exec(success, fail, null, [], opt);
 			}
 
 			/**
@@ -228,20 +219,8 @@ module CDP {
 				var opt: any = NativeBridge._extend({ post: false }, options);
 				opt.pluginAction = "disposeTask";
 				this._setCancelAll();
-				this.exec(success, fail, null, {}, opt);
+				this.exec(success, fail, null, [], opt);
 				this._objectId = null;
-			}
-
-			///////////////////////////////////////////////////////////////////////
-			// public static methods
-
-			//! ArgInfo に変換
-			public static makeArgsInfo(...args: any[]): ArgsInfo {
-				var argsInfo: ArgsInfo = {};
-				args.forEach((value, index) => {
-					argsInfo[index] = value;
-				});
-				return argsInfo;
 			}
 
 			///////////////////////////////////////////////////////////////////////
