@@ -134,17 +134,20 @@ public class MessageUtils {
     // private methods
 
     //! テーブルの初期化
-    private static void init() {
-        mErrorTbl = new SparseArray<String>();
-        mErrorTbl.put(SUCCESS_OK,               "SUCCESS_OK");
-        mErrorTbl.put(ERROR_FAIL,               "ERROR_FAIL");
-        mErrorTbl.put(ERROR_CANCEL,             "ERROR_CANCEL");
-        mErrorTbl.put(ERROR_INVALID_ARG,        "ERROR_INVALID_ARG");
-        mErrorTbl.put(ERROR_NOT_IMPLEMENT,      "ERROR_NOT_IMPLEMENT");
-        mErrorTbl.put(ERROR_NOT_SUPPORT,        "ERROR_NOT_SUPPORT");
-        mErrorTbl.put(ERROR_INVALID_OPERATION,  "ERROR_INVALID_OPERATION");
-        mErrorTbl.put(ERROR_CLASS_NOT_FOUND,    "ERROR_CLASS_NOT_FOUND");
-        mErrorTbl.put(ERROR_CLASS_NOT_FOUND,    "ERROR_CLASS_NOT_FOUND");
-        mErrorTbl.put(ERROR_METHOD_NOT_FOUND,   "ERROR_METHOD_NOT_FOUND");
+    private synchronized static void init() {
+        // double checked locking pattern
+        if (null == mErrorTbl) {
+            mErrorTbl = new SparseArray<String>();
+            mErrorTbl.put(SUCCESS_OK,               "SUCCESS_OK");
+            mErrorTbl.put(ERROR_FAIL,               "ERROR_FAIL");
+            mErrorTbl.put(ERROR_CANCEL,             "ERROR_CANCEL");
+            mErrorTbl.put(ERROR_INVALID_ARG,        "ERROR_INVALID_ARG");
+            mErrorTbl.put(ERROR_NOT_IMPLEMENT,      "ERROR_NOT_IMPLEMENT");
+            mErrorTbl.put(ERROR_NOT_SUPPORT,        "ERROR_NOT_SUPPORT");
+            mErrorTbl.put(ERROR_INVALID_OPERATION,  "ERROR_INVALID_OPERATION");
+            mErrorTbl.put(ERROR_CLASS_NOT_FOUND,    "ERROR_CLASS_NOT_FOUND");
+            mErrorTbl.put(ERROR_CLASS_NOT_FOUND,    "ERROR_CLASS_NOT_FOUND");
+            mErrorTbl.put(ERROR_METHOD_NOT_FOUND,   "ERROR_METHOD_NOT_FOUND");
+        }
     }
 }
