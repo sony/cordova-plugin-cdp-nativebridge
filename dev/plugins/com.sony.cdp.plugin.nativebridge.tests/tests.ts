@@ -105,7 +105,7 @@ exports.defineAutoTests = function () {
 			spyOn(callbacks, 'fail').and.callThrough();
 
 			var instance = new CDP.Plugin.NativeBridge({
-				name: "Hoge",
+				name: "SimpleBridge",
 				android: { packageInfo: "com.sony.cdp.sample.SimpleBridge" },
 				ios: { packageInfo: "CDVNBSimpleBridge" }
 			});

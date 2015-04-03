@@ -209,6 +209,13 @@ var CDP;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(NativeBridge, "ERROR_METHOD_NOT_FOUND", {
+                get: function () {
+                    return 0x0008;
+                },
+                enumerable: true,
+                configurable: true
+            });
             ///////////////////////////////////////////////////////////////////////
             // private methods
             //! history をすべて cancel 候補に変換

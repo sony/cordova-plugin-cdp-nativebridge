@@ -15,72 +15,144 @@ import android.util.Log;
  * @brief Base Bridge クラス
  */
 public class NativeBridge {
-	private static final String TAG = "[CDP.Plugin][Native][NativeBridge] ";
+    private static final String TAG = "[CDP.Plugin][Native][NativeBridge] ";
 
-	private CallbackContext mCurrentCallbackContext = null;
+    public class Cookie {
+        public final CallbackContext callbackContext;
+        public final String          taskId;
+        public final String          threadId = Thread.currentThread().getName();
+        public        boolean        needSendResult = true;
+        Cookie(CallbackContext ctx, String id) {
+            callbackContext = ctx;
+            taskId = id;
+        }
+    }
 
-	///////////////////////////////////////////////////////////////////////
-	// public methods
+    private Cookie mCurrentCookie = null;
 
-	/**
-	 * メソッド呼び出し
-	 * BridgeManager からコールされる
-	 */
-	public boolean invoke(CallbackContext callbackContext, String taskId, String methodName, JSONObject argsInfo) {
-		synchronized(this) {
+    ///////////////////////////////////////////////////////////////////////
+    // public methods
 
-			try {
-				Class<?> cls = this.getClass();
-				int length = argsInfo.length();
-				Class<?>[] argTypes = new Class[length];
-				Object[] argValues = new Object[length];
-				for (int i = 0; i < length; i++) {
-					Object arg = argsInfo.get(String.valueOf(i));
-					argTypes[i] = changeType(arg.getClass());
-					argValues[i] = arg;
-				}
-				Method method = cls.getMethod(methodName, argTypes);
-				method.invoke(this, argValues);
+    /**
+     * メソッド呼び出し
+     * BridgeManager からコールされる
+     */
+    public boolean invoke(CallbackContext callbackContext, String taskId, String methodName, JSONObject argsInfo) {
+        synchronized (this) {
+            try {
+                Class<?> cls = this.getClass();
+                int length = argsInfo.length();
+                Class<?>[] argTypes = new Class[length];
+                Object[] argValues = new Object[length];
+                for (int i = 0; i < length; i++) {
+                    Object arg = argsInfo.get(String.valueOf(i));
+                    argTypes[i] = normalizeType(arg.getClass());
+                    argValues[i] = arg;
+                }
+                Method method = cls.getMethod(methodName, argTypes);
 
-	        } catch (JSONException e) {
-	            Log.e(TAG, "Invalid JSON object", e);
-	        } catch (NoSuchMethodException e) {
-	            Log.d(TAG, "method not found", e);
-			} catch (IllegalAccessException e) {
-	            Log.e(TAG, "Illegal Access", e);
-			} catch (IllegalArgumentException e) {
-	            Log.e(TAG, "Invalid Arg", e);
-			} catch (InvocationTargetException e) {
-	            Log.e(TAG, "Invocation Target Exception", e);
-			}
-		}
-		return false;
-	}
+                mCurrentCookie = new Cookie(callbackContext, taskId);
+                method.invoke(this, argValues);
+                if (mCurrentCookie.needSendResult) {
+                }
+                return true;
 
-	///////////////////////////////////////////////////////////////////////
-	// protected methods
+            } catch (JSONException e) {
+                Log.e(TAG, "Invalid JSON object", e);
+            } catch (NoSuchMethodException e) {
+                Log.d(TAG, "method not found", e);
+            } catch (IllegalAccessException e) {
+                Log.e(TAG, "Illegal Access", e);
+            } catch (IllegalArgumentException e) {
+                Log.e(TAG, "Invalid Arg", e);
+            } catch (InvocationTargetException e) {
+                Log.e(TAG, "Invocation Target Exception", e);
+            } finally {
+                mCurrentCookie = null;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * CallbackContext の取得
-	 * 別スレッド処理や、keepCallback を設定するときに取得する。
-	 */
-	protected CallbackContext getCallbackContext() {
-		return mCurrentCallbackContext;
-	}
+    /**
+     * 値を JavaScript へ通知
+     * sendPluginResult() と等価
+     * TBD.
+     */
+    public void notifyMessage() {
+        // TODO:
+    }
 
-	///////////////////////////////////////////////////////////////////////
-	// private methods
+    /**
+     * 値を JavaScript へ通知
+     * sendPluginResult() と等価
+     * TBD.
+     */
+    public void notifyMessage(boolean keepCallback) {
+        // TODO:
+    }
 
-	//! 型変換
-	private Class<?> changeType(Class<?> src) {
-		String type = src.getName();
-		if (type.equals("java.lang.Integer")) {
-			return int.class;
-		} else if (type.equals("java.lang.Boolean")) {
-			return boolean.class;
-		} else {
-			return src;
-		}
-	}
+    ///////////////////////////////////////////////////////////////////////
+    // protected methods
+
+    /**
+     * Cookie の取得
+     * method 呼び出されたスレッドからのみ Cookie 取得が可能
+     *
+     * @return Cooke オブジェクト
+     */
+    protected Cookie getCookie() {
+        synchronized (this) {
+            if (null != mCurrentCookie && Thread.currentThread().getName().equals(mCurrentCookie.threadId)) {
+                mCurrentCookie.needSendResult = false;
+                return mCurrentCookie;
+            } else {
+                Log.e(TAG, "Calling getCookie() is permitted only from method entry thread.");
+                return null;
+            }
+        }
+    }
+
+    /**
+     * 結果を JavaScript へ返却
+     * method 呼び出されたスレッドからのみコール可能
+     * keepCallback は false が指定される
+     */
+    protected void returnMessage() {
+        if (null != mCurrentCookie && Thread.currentThread().getName().equals(mCurrentCookie.threadId)) {
+            mCurrentCookie.needSendResult = false;
+            // TODO:
+        } else {
+            Log.e(TAG, "Calling returnMessage() is permitted only from method entry thread.");
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+    // private methods
+
+    /**
+     * 型の正規化
+     * オブジェクトをプリミティブに変換する
+     * 数値型は、すべて double にする. (JavaScript との対象性より)
+     *
+     * @param src [in] 型情報
+     * @return 正規化された型情報
+     */
+    private Class<?> normalizeType(Class<?> src) {
+        String type = src.getName();
+        if (    type.equals("java.lang.Byte")
+            ||  type.equals("java.lang.Short")
+            ||  type.equals("java.lang.Integer")
+            ||  type.equals("java.lang.Long")
+            ||  type.equals("java.lang.Float")
+            ||  type.equals("java.lang.Double")
+        ) {
+            return double.class;
+        } else if (type.equals("java.lang.Boolean")) {
+            return boolean.class;
+        } else {
+            return src;
+        }
+    }
 
 }

@@ -256,6 +256,7 @@ module CDP {
 			public static get ERROR_NOT_SUPPORT(): number		{ return 0x0005; }
 			public static get ERROR_INVALID_OPERATION(): number { return 0x0006; }
 			public static get ERROR_CLASS_NOT_FOUND(): number	{ return 0x0007; }
+			public static get ERROR_METHOD_NOT_FOUND(): number	{ return 0x0008; }
 
 			///////////////////////////////////////////////////////////////////////
 			// private methods

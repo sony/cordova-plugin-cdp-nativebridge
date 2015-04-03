@@ -13,6 +13,6 @@ public class SimpleBridge extends NativeBridge {
 	/**
 	 * サンプルメソッド
 	 */
-	public void coolMethod(int arg1, boolean arg2, String arg3, JSONObject arg4) {
+	public void coolMethod(double arg1, boolean arg2, String arg3, JSONObject arg4) {
 	}
 }
