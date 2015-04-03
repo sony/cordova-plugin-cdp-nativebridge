@@ -128,4 +128,49 @@ exports.defineAutoTests = function () {
 			expect(value.params[0]).toBe("arg1: 1, arg2: false, arg3: test, “ú–{Œê‚ÅOK: true");
 		});
 	});
+
+	describe("Cordova compatible method call check",() => {
+		var value;
+		var taskId: string;
+		var callbacks;
+
+		beforeEach((done) => {
+			callbacks = {
+				win: (arg) => {
+					value = arg;
+					done();
+				},
+				fail: (err) => {
+					done();
+				}
+			};
+
+			spyOn(callbacks, 'win').and.callThrough();
+			spyOn(callbacks, 'fail').and.callThrough();
+
+			var instance = new CDP.Plugin.NativeBridge({
+				name: "SimpleBridge",
+				android: { packageInfo: "com.sony.cdp.sample.SimpleBridge" },
+				ios: { packageInfo: "CDVNBSimpleBridge" }
+			});
+
+			taskId = instance.exec(callbacks.win, callbacks.fail, "compatibleCheck", [1, false, "test", { ok: true }], { compatible: true });
+		});
+
+		it("to have been called",() => {
+			expect(callbacks.win).toHaveBeenCalled();
+			expect(callbacks.fail).not.toHaveBeenCalled();
+		});
+
+		it("check return value",() => {
+			expect(value).toBeDefined();
+			expect(value.length).toBe(2);
+			expect(value[0]).toBe(taskId);
+			expect(value[1].arg1).toBe(1);
+			expect(value[1].arg2).toBe(false);
+			expect(value[1].arg3).toBe("test");
+			expect(value[1].arg4).toBeDefined();
+			expect(value[1].arg4.ok).toBe(true);
+		});
+	});
 };
