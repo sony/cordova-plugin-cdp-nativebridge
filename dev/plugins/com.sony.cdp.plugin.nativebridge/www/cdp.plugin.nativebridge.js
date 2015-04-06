@@ -139,6 +139,7 @@ var CDP;
             NativeBridge.prototype.dispose = function (options, success, fail) {
                 var opt = NativeBridge._extend({ post: false }, options);
                 opt.pluginAction = "disposeTask";
+                opt.taskId = null;
                 opt.compatible = false;
                 this._setCancelAll();
                 this.exec(success, fail, null, [], opt);

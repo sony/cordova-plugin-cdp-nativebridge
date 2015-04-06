@@ -40,6 +40,9 @@ public final class BridgeManager extends CordovaPlugin {
         } else if (action.equals("cancelTask")) {
             cancelTask(args.getJSONObject(0), callbackContext);
             return true;
+        } else if (action.equals("disposeTask")) {
+            disposeTask(args.getJSONObject(0), callbackContext);
+            return true;
         }
         return false;
     }
@@ -55,8 +58,6 @@ public final class BridgeManager extends CordovaPlugin {
      * @param callbackContext [in] Callback Context
      */
     private void execTask(JSONObject execInfo, JSONArray argsInfo, CallbackContext callbackContext) {
-        Log.v(TAG, "execTask");
-
         try {
             NativeBridge.Cookie cookie = NativeBridge.newCookie(cordova, callbackContext, execInfo);
 
@@ -77,7 +78,9 @@ public final class BridgeManager extends CordovaPlugin {
             }
 
         } catch (JSONException e) {
-            Log.e(TAG, "Invalid JSON object", e);
+            String errorMsg = "Invalid JSON object.";
+            Log.e(TAG, errorMsg, e);
+            MessageUtils.sendErrorResult(callbackContext, null, MessageUtils.ERROR_INVALID_ARG, (TAG + errorMsg));
         }
     }
 
@@ -86,9 +89,10 @@ public final class BridgeManager extends CordovaPlugin {
      *
      * @param execInfo        [in] 実行情報を格納
      * @param callbackContext [in] Callback Context
+     * @return 対象のオブジェクト ID を返却
      */
-    private void cancelTask(JSONObject execInfo, CallbackContext callbackContext) {
-        Log.v(TAG, "cancelTask");
+    private String cancelTask(JSONObject execInfo, CallbackContext callbackContext) {
+        String objectId = null;
 
         try {
             NativeBridge.Cookie cookie = NativeBridge.newCookie(cordova, callbackContext, execInfo);
@@ -97,14 +101,33 @@ public final class BridgeManager extends CordovaPlugin {
                 NativeBridge bridge = getBridgeClass(cookie.objectId, cookie.className);
                 if (null == bridge) {
                     MessageUtils.sendErrorResult(callbackContext, cookie.taskId, MessageUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + cookie.className));
-                    return;
+                    return null;
                 }
 
                 bridge.cancel(cookie);
+                MessageUtils.sendSuccessResult(callbackContext, MessageUtils.makeMessage(null));
+                objectId = cookie.objectId;
             }
 
         } catch (JSONException e) {
-            Log.e(TAG, "Invalid JSON object", e);
+            String errorMsg = "Invalid JSON object.";
+            Log.e(TAG, errorMsg, e);
+            MessageUtils.sendErrorResult(callbackContext, null, MessageUtils.ERROR_INVALID_ARG, (TAG + errorMsg));
+        }
+
+        return objectId;
+    }
+
+    /**
+     * "disposelTask" のエントリ
+     *
+     * @param execInfo        [in] 実行情報を格納
+     * @param callbackContext [in] Callback Context
+     */
+    private void disposeTask(JSONObject execInfo, CallbackContext callbackContext) {
+        String objectId = cancelTask(execInfo, callbackContext);
+        if (null != objectId) {
+            mBrdiges.remove(objectId);
         }
     }
 

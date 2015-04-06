@@ -229,6 +229,7 @@ module CDP {
 			public dispose(options?: ExecOptions, success?: (result?: IResult) => void, fail?: (result?: IResult) => void): void {
 				var opt: any = NativeBridge._extend({ post: false }, options);
 				opt.pluginAction = "disposeTask";
+				opt.taskId = null;
 				opt.compatible = false;
 				this._setCancelAll();
 				this.exec(success, fail, null, [], opt);

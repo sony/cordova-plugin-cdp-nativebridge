@@ -2,6 +2,7 @@
 /// <reference path="../../app/modules/include/cordova.d.ts" />
 /// <reference path="../../app/plugins/com.sony.cdp.plugin.nativebridge/www/cdp.plugin.nativebridge.d.ts" />
 
+/* tslint:disable:max-line-length */
 
 declare var exports: any;
 
@@ -70,8 +71,8 @@ exports.defineAutoTests = function () {
 				}
 			};
 
-			spyOn(callbacks, 'win').and.callThrough();
-			spyOn(callbacks, 'fail').and.callThrough();
+			spyOn(callbacks, "win").and.callThrough();
+			spyOn(callbacks, "fail").and.callThrough();
 
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "Hoge",
@@ -111,8 +112,8 @@ exports.defineAutoTests = function () {
 				}
 			};
 
-			spyOn(callbacks, 'win').and.callThrough();
-			spyOn(callbacks, 'fail').and.callThrough();
+			spyOn(callbacks, "win").and.callThrough();
+			spyOn(callbacks, "fail").and.callThrough();
 
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleBridge",
@@ -155,8 +156,8 @@ exports.defineAutoTests = function () {
 				}
 			};
 
-			spyOn(callbacks, 'win').and.callThrough();
-			spyOn(callbacks, 'fail').and.callThrough();
+			spyOn(callbacks, "win").and.callThrough();
+			spyOn(callbacks, "fail").and.callThrough();
 
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleBridge",
@@ -200,8 +201,8 @@ exports.defineAutoTests = function () {
 				}
 			};
 
-			spyOn(callbacks, 'win').and.callThrough();
-			spyOn(callbacks, 'fail').and.callThrough();
+			spyOn(callbacks, "win").and.callThrough();
+			spyOn(callbacks, "fail").and.callThrough();
 
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleBridge",
@@ -244,8 +245,8 @@ exports.defineAutoTests = function () {
 				}
 			};
 
-			spyOn(callbacks, 'win').and.callThrough();
-			spyOn(callbacks, 'fail').and.callThrough();
+			spyOn(callbacks, "win").and.callThrough();
+			spyOn(callbacks, "fail").and.callThrough();
 
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleBridge",
@@ -300,8 +301,8 @@ exports.defineAutoTests = function () {
 				}
 			};
 
-			spyOn(callbacks, 'win').and.callThrough();
-			spyOn(callbacks, 'fail').and.callThrough();
+			spyOn(callbacks, "win").and.callThrough();
+			spyOn(callbacks, "fail").and.callThrough();
 
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleBridge",
@@ -341,8 +342,8 @@ exports.defineAutoTests = function () {
 				}
 			};
 
-			spyOn(callbacks, 'win').and.callThrough();
-			spyOn(callbacks, 'fail').and.callThrough();
+			spyOn(callbacks, "win").and.callThrough();
+			spyOn(callbacks, "fail").and.callThrough();
 
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleBridge",
@@ -361,6 +362,71 @@ exports.defineAutoTests = function () {
 			expect(value.length).toBeGreaterThan(3);
 			expect(error).toBeDefined();
 			expect(error.code).toBe(NativeBridge.ERROR_CANCEL);
+		});
+	});
+
+	describe("Dispose call check",() => {
+		var value: NativeBridge.IResult[] = [];
+		var taskId: string;
+		var error: { dispose?: NativeBridge.IResult; cancel?: NativeBridge.IResult } = {};
+		var errorHandlers, disposeCallbacks, callbacks;
+
+		beforeEach((done) => {
+			var disposed = false;
+			var instance = new CDP.Plugin.NativeBridge({
+				name: "SimpleBridge",
+				android: { packageInfo: "com.sony.cdp.sample.SimpleBridge" },
+				ios: { packageInfo: "CDVNBSimpleBridge" }
+			});
+
+			errorHandlers = {
+				win: (arg) => {
+					done();
+				},
+				fail: (err) => {
+					error.dispose = err;
+					if (null != error.cancel && null != error.dispose) {
+						done();
+					}
+				}
+			};
+
+			disposeCallbacks = {
+				win: (arg) => {
+					instance.exec(errorHandlers.win, errorHandlers.fail, "progressMethod");
+				},
+				fail: (err) => {
+					done();
+				}
+			};
+
+			callbacks = {
+				win: (arg) => {
+					if (5 === value.length && !disposed) {
+						disposed = true;
+						instance.dispose(null, disposeCallbacks.win, disposeCallbacks.fail);
+					} else if (value.length < 5) {
+						value.push(arg);
+					}
+				},
+				fail: (err) => {
+					error.cancel = err;
+					if (null != error.cancel && null != error.dispose) {
+						done();
+					}
+				}
+			};
+
+			taskId = instance.exec(callbacks.win, callbacks.fail, "progressMethod");
+		});
+
+		it("check return value",() => {
+			expect(value).toBeDefined();
+			expect(value.length).toBe(5);
+			expect(error.cancel).toBeDefined();
+			expect(error.cancel.code).toBe(NativeBridge.ERROR_CANCEL);
+			expect(error.dispose).toBeDefined();
+			expect(error.dispose.code).toBe(NativeBridge.ERROR_INVALID_OPERATION);
 		});
 	});
 };
