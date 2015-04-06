@@ -7,6 +7,7 @@ import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.util.Log;
 
@@ -24,12 +25,21 @@ public class NativeBridge {
      */
     public class Cookie {
         public final CallbackContext callbackContext;
+        public final String          className;
+        public final String          methodName;
+        public final String          objectId;
         public final String          taskId;
+        public final boolean        compatible;
         public final String          threadId = Thread.currentThread().getName();
         public        boolean        needSendResult = true;
-        Cookie(CallbackContext ctx, String id) {
-            callbackContext = ctx;
-            taskId = id;
+        Cookie(CallbackContext ctx, JSONObject execInfo) throws JSONException {
+            this.callbackContext    = ctx;
+            JSONObject feature = execInfo.getJSONObject("feature");
+            this.className  = feature.getJSONObject("android").getString("packageInfo");
+            this.methodName = execInfo.getString("method");
+            this.objectId   = execInfo.getString("objectId");
+            this.taskId     = execInfo.getString("taskId");
+            this.compatible = execInfo.getBoolean("compatible");
         }
     }
 
@@ -47,10 +57,10 @@ public class NativeBridge {
      * @param action          The action to execute.
      * @param args            The exec() arguments.
      * @param callbackContext The callback context used when calling back into JavaScript.
-     * @param taskId          The task ID. (NativeBridge extended argument)
+     * @param cookie          The execute cookie. (NativeBridge extended argument)
      * @return                Whether the action was valid.
      */
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext, String taskId) throws JSONException {
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext, Cookie cookie) throws JSONException {
         Log.w(TAG, "execute() method should be override from sub class.");
         return false;
     }
@@ -59,13 +69,12 @@ public class NativeBridge {
      * メソッド呼び出し
      * BridgeManager からコールされる
      *
-     * @param callbackContext [in] Callback Context
-     * @param taskId          [in] task ID
-     * @param mehtodName      [in] 呼び出し対象のメソッド名
-     * @param args            [in] exec() の引数リスト
+     * @param mehtodName    [in] 呼び出し対象のメソッド名
+     * @param args          [in] exec() の引数リスト
+     * @param cookie        [in] Callback Context
      * @return ハンドリング時に true を返却
      */
-    public boolean invoke(CallbackContext callbackContext, String taskId, String methodName, JSONArray args) {
+    public boolean invoke(String methodName, JSONArray args, Cookie cookie) {
         synchronized (this) {
             try {
                 Class<?> cls = this.getClass();
@@ -79,10 +88,10 @@ public class NativeBridge {
                 }
                 Method method = cls.getMethod(methodName, argTypes);
 
-                mCurrentCookie = new Cookie(callbackContext, taskId);
+                mCurrentCookie = cookie;
                 method.invoke(this, argValues);
                 if (mCurrentCookie.needSendResult) {
-                    MessageUtils.sendSuccessResult(callbackContext, taskId);
+                    MessageUtils.sendSuccessResult(cookie.callbackContext, cookie.taskId);
                 }
                 return true;
 
@@ -101,6 +110,21 @@ public class NativeBridge {
             }
         }
         return false;
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+    // public static methods
+
+    /**
+     * Cookie の生成
+     * BridgeManager からコールされる
+     *
+     * @param callbackContext [in] callback context
+     * @param execInfo        [in] JavaSript 情報
+     * @throws JSONException
+     */
+    public static Cookie newCookie(CallbackContext callbackContext, JSONObject execInfo) throws JSONException {
+        return new NativeBridge().new Cookie(callbackContext, execInfo);
     }
 
     ///////////////////////////////////////////////////////////////////////

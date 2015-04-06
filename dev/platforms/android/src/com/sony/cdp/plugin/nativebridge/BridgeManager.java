@@ -41,26 +41,21 @@ public class BridgeManager extends CordovaPlugin {
         Log.v(TAG, "execTask");
 
         try {
-            JSONObject feature = execInfo.getJSONObject("feature");
-            String className = feature.getJSONObject("android").getString("packageInfo");
-            String methodName = execInfo.getString("method");
-            String objectId = execInfo.getString("objectId");
-            String taskId = execInfo.getString("taskId");
-            boolean compatible = execInfo.getBoolean("compatible");
+            NativeBridge.Cookie cookie = NativeBridge.newCookie(callbackContext, execInfo);
 
             {
-                NativeBridge bridge = getBridgeClass(objectId, className);
+                NativeBridge bridge = getBridgeClass(cookie.objectId, cookie.className);
                 if (null == bridge) {
-                    MessageUtils.sendErrorResult(callbackContext, taskId, MessageUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + className));
+                    MessageUtils.sendErrorResult(callbackContext, cookie.taskId, MessageUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + cookie.className));
                     return;
                 }
 
-                if (compatible) {
-                    if (!bridge.execute(methodName, argsInfo, callbackContext, taskId)) {
-                        MessageUtils.sendErrorResult(callbackContext, taskId, MessageUtils.ERROR_NOT_IMPLEMENT, (TAG + "execute() is not implemented. class: " + className));
+                if (cookie.compatible) {
+                    if (!bridge.execute(cookie.methodName, argsInfo, callbackContext, cookie)) {
+                        MessageUtils.sendErrorResult(callbackContext, cookie.taskId, MessageUtils.ERROR_NOT_IMPLEMENT, (TAG + "execute() is not implemented. class: " + cookie.className));
                     }
-                } else if (!bridge.invoke(callbackContext, taskId, methodName, argsInfo)) {
-                    MessageUtils.sendErrorResult(callbackContext, taskId, MessageUtils.ERROR_METHOD_NOT_FOUND, (TAG + "method not found. method: " + className + "#" + methodName));
+                } else if (!bridge.invoke(cookie.methodName, argsInfo, cookie)) {
+                    MessageUtils.sendErrorResult(callbackContext, cookie.taskId, MessageUtils.ERROR_METHOD_NOT_FOUND, (TAG + "method not found. method: " + cookie.className + "#" + cookie.methodName));
                 }
             }
 

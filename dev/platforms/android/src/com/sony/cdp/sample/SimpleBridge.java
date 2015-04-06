@@ -36,16 +36,16 @@ public class SimpleBridge extends NativeBridge {
      * @param action          The action to execute.
      * @param args            The exec() arguments.
      * @param callbackContext The callback context used when calling back into JavaScript.
-     * @param taskId          The task ID. (NativeBridge extended argument)
+     * @param cookie          The execute cookie. (NativeBridge extended argument)
      * @return                Whether the action was valid.
      */
 	@Override
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext, String taskId) throws JSONException {
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext, Cookie cookie) throws JSONException {
 	    if (action.equals("compatibleCheck")) {
 	        JSONArray message = new JSONArray();
-	        message.put(taskId);
+	        message.put(cookie.taskId);
 	        JSONObject argsInfo = new JSONObject();
-	        argsInfo.put("taskId", taskId);
+	        argsInfo.put("taskId", cookie.taskId);
 	        argsInfo.put("arg1", args.getInt(0));
 	        argsInfo.put("arg2", args.getBoolean(1));
 	        argsInfo.put("arg3", args.getString(2));
