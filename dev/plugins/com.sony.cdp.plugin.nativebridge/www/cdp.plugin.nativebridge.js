@@ -47,7 +47,7 @@ var CDP;
                     compatible: false,
                     pluginAction: "execTask",
                 }, options);
-                var taskId = this._objectId + "-task:" + _uitls.createUUID();
+                var taskId = ("execTask" !== opt.pluginAction) ? opt.taskId : (this._objectId + "-task:" + _uitls.createUUID());
                 var execInfo = {
                     feature: this._feature,
                     objectId: this._objectId,
@@ -118,6 +118,7 @@ var CDP;
             NativeBridge.prototype.cancel = function (taskId, options, success, fail) {
                 var opt = NativeBridge._extend({ post: false }, options);
                 opt.pluginAction = "cancelTask";
+                opt.taskId = taskId;
                 opt.compatible = false;
                 if (null == taskId) {
                     this._setCancelAll();

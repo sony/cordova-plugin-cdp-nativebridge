@@ -1,5 +1,8 @@
 package com.sony.cdp.sample;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +20,8 @@ import com.sony.cdp.plugin.nativebridge.NativeBridge;
  */
 public class SimpleBridge extends NativeBridge {
     private static final String TAG = "[com.sony.cdp.sample][Native][SimpleBridge] ";
+
+    private Set<String> mCancelableTask = new HashSet<String>();
 
     ///////////////////////////////////////////////////////////////////////
     // public mehtods
@@ -58,6 +63,41 @@ public class SimpleBridge extends NativeBridge {
         });
     }
 
+    /**
+     * ワーカースレッドとキャンセル
+     *
+     * @throws JSONException
+     */
+    public void progressMethod() throws JSONException {
+        final Cookie cookie = getCookie();
+
+        synchronized (this) {
+            mCancelableTask.add(cookie.taskId);
+        }
+
+        cookie.cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                String errorMsg;
+                int progress = 0;
+                try {
+                    while (true) {
+                        if (isCanceled(cookie.taskId)) {
+                            rejectParams(MessageUtils.ERROR_CANCEL, TAG + "progressMethod() canceled.", cookie);
+                            break;
+                        }
+                        sendParams(cookie, progress);
+                        progress++;
+                        Thread.sleep(100);
+                    }
+                } catch (InterruptedException e) {
+                    errorMsg = "InterruptedException occur.";
+                    Log.e(TAG, errorMsg, e);
+                    rejectParams(MessageUtils.ERROR_FAIL, errorMsg, cookie);
+                }
+            }
+        });
+    }
+
     ///////////////////////////////////////////////////////////////////////
     // Override: NativeBridge
 
@@ -89,6 +129,34 @@ public class SimpleBridge extends NativeBridge {
 	        return true;
 	    }
         return false;
+    }
+
+    /**
+     * cancel 呼び出し
+     * BridgeManager からコールされる。
+     * クライアントは本メソッドをオーバーライド可能
+     *
+     * @param cookie [in] The execute cookie. (NativeBridge extended argument)
+     */
+	@Override
+    public void cancel(Cookie cookie) {
+	    synchronized (this) {
+	        if (null != cookie.taskId) {
+	            mCancelableTask.remove(cookie.taskId);
+	        } else {
+	            mCancelableTask.clear();
+	        }
+	    }
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+    // private methods
+
+    //! キャンセル確認
+    private boolean isCanceled(String taskId) {
+        synchronized (this) {
+            return !mCancelableTask.contains(taskId);
+        }
     }
 }
 

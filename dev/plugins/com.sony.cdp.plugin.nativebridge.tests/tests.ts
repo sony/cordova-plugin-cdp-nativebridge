@@ -282,4 +282,85 @@ exports.defineAutoTests = function () {
 		});
 	});
 
+	describe("Cancel call check",() => {
+		var value: NativeBridge.IResult[];
+		var taskId: string;
+		var error: NativeBridge.IResult;
+		var callbacks;
+
+		beforeEach((done) => {
+			value = [];
+			callbacks = {
+				win: (arg) => {
+					value.push(arg);
+				},
+				fail: (err) => {
+					error = err;
+					done();
+				}
+			};
+
+			spyOn(callbacks, 'win').and.callThrough();
+			spyOn(callbacks, 'fail').and.callThrough();
+
+			var instance = new CDP.Plugin.NativeBridge({
+				name: "SimpleBridge",
+				android: { packageInfo: "com.sony.cdp.sample.SimpleBridge" },
+				ios: { packageInfo: "CDVNBSimpleBridge" }
+			});
+
+			taskId = instance.exec(callbacks.win, callbacks.fail, "progressMethod");
+			setTimeout(() => {
+				instance.cancel(taskId);
+			}, 500);
+		});
+
+		it("check return value",() => {
+			expect(value).toBeDefined();
+			expect(value.length).toBeGreaterThan(3);
+			expect(error).toBeDefined();
+			expect(error.code).toBe(NativeBridge.ERROR_CANCEL);
+		});
+	});
+
+	describe("Cancel all check",() => {
+		var value: NativeBridge.IResult[];
+		var taskId: string;
+		var error: NativeBridge.IResult;
+		var callbacks;
+
+		beforeEach((done) => {
+			value = [];
+			callbacks = {
+				win: (arg) => {
+					value.push(arg);
+				},
+				fail: (err) => {
+					error = err;
+					done();
+				}
+			};
+
+			spyOn(callbacks, 'win').and.callThrough();
+			spyOn(callbacks, 'fail').and.callThrough();
+
+			var instance = new CDP.Plugin.NativeBridge({
+				name: "SimpleBridge",
+				android: { packageInfo: "com.sony.cdp.sample.SimpleBridge" },
+				ios: { packageInfo: "CDVNBSimpleBridge" }
+			});
+
+			taskId = instance.exec(callbacks.win, callbacks.fail, "progressMethod");
+			setTimeout(() => {
+				instance.cancel(null);
+			}, 500);
+		});
+
+		it("check return value",() => {
+			expect(value).toBeDefined();
+			expect(value.length).toBeGreaterThan(3);
+			expect(error).toBeDefined();
+			expect(error.code).toBe(NativeBridge.ERROR_CANCEL);
+		});
+	});
 };

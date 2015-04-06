@@ -29,6 +29,9 @@ public class BridgeManager extends CordovaPlugin {
         if (action.equals("execTask")) {
             execTask(args.getJSONObject(0), args.getJSONArray(1), callbackContext);
             return true;
+        } else if (action.equals("cancelTask")) {
+            cancelTask(args.getJSONObject(0), callbackContext);
+            return true;
         }
         return false;
     }
@@ -57,6 +60,28 @@ public class BridgeManager extends CordovaPlugin {
                 } else if (!bridge.invoke(cookie.methodName, argsInfo, cookie)) {
                     MessageUtils.sendErrorResult(callbackContext, cookie.taskId, MessageUtils.ERROR_METHOD_NOT_FOUND, (TAG + "method not found. method: " + cookie.className + "#" + cookie.methodName));
                 }
+            }
+
+        } catch (JSONException e) {
+            Log.e(TAG, "Invalid JSON object", e);
+        }
+    }
+
+    //! "cancelTask" のエントリ
+    private void cancelTask(JSONObject execInfo, CallbackContext callbackContext) {
+        Log.v(TAG, "cancelTask");
+
+        try {
+            NativeBridge.Cookie cookie = NativeBridge.newCookie(cordova, callbackContext, execInfo);
+
+            {
+                NativeBridge bridge = getBridgeClass(cookie.objectId, cookie.className);
+                if (null == bridge) {
+                    MessageUtils.sendErrorResult(callbackContext, cookie.taskId, MessageUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + cookie.className));
+                    return;
+                }
+
+                bridge.cancel(cookie);
             }
 
         } catch (JSONException e) {

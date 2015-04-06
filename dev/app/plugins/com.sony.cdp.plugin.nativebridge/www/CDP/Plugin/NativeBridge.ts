@@ -119,14 +119,14 @@ module CDP {
 			 * @param options {ExecOptions?} [in] 実行オプションを指定
 			 * @return task ID {String} 
 			 */
-			public exec(success: (result?: IResult) => void, fail: (result?: IResult) => void, method: string, args: any[], options?: ExecOptions): string {
+			public exec(success: (result?: IResult) => void, fail: (result?: IResult) => void, method: string, args?: any[], options?: ExecOptions): string {
 				var opt: any = NativeBridge._extend({
 					post: true,
 					compatible: false,
 					pluginAction: "execTask",
 				}, options);
 
-				var taskId = this._objectId + "-task:" + _uitls.createUUID();
+				var taskId = ("execTask" !== opt.pluginAction) ? opt.taskId : (this._objectId + "-task:" + _uitls.createUUID());
 
 				var execInfo: ExecInfo = {
 					feature: this._feature,
@@ -206,6 +206,7 @@ module CDP {
 			public cancel(taskId: string, options?: ExecOptions, success?: (result?: IResult) => void, fail?: (result?: IResult) => void): void {
 				var opt: any = NativeBridge._extend({ post: false }, options);
 				opt.pluginAction = "cancelTask";
+				opt.taskId = taskId;
 				opt.compatible = false;
 
 				if (null == taskId) {	// all cancel.

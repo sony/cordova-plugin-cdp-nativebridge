@@ -39,9 +39,9 @@ public class NativeBridge {
             this.callbackContext    = ctx;
             JSONObject feature = execInfo.getJSONObject("feature");
             this.className  = feature.getJSONObject("android").getString("packageInfo");
-            this.methodName = execInfo.getString("method");
+            this.methodName = execInfo.isNull("method") ? null : execInfo.getString("method");
             this.objectId   = execInfo.getString("objectId");
-            this.taskId     = execInfo.getString("taskId");
+            this.taskId     = execInfo.isNull("taskId") ? null : execInfo.getString("taskId");
             this.compatible = execInfo.getBoolean("compatible");
         }
     }
@@ -113,6 +113,17 @@ public class NativeBridge {
             }
         }
         return false;
+    }
+
+    /**
+     * cancel 呼び出し
+     * BridgeManager からコールされる。
+     * クライアントは本メソッドをオーバーライド可能
+     *
+     * @param cookie [in] The execute cookie. (NativeBridge extended argument)
+     */
+    public void cancel(Cookie cookie) {
+        return;
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -242,7 +253,7 @@ public class NativeBridge {
             Log.e(TAG, "Invalid cookie object.");
             return;
         }
-        MessageUtils.sendSuccessResult(cookie.callbackContext, MessageUtils.makeMessage(code, message, cookie.taskId, params));
+        MessageUtils.sendErrorResult(cookie.callbackContext, MessageUtils.makeMessage(code, message, cookie.taskId, params));
     }
 
     ///////////////////////////////////////////////////////////////////////
