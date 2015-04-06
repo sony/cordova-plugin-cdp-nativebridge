@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,15 +25,17 @@ public class NativeBridge {
      * @brief Cookie 情報を格納
      */
     public class Cookie {
-        public final CallbackContext callbackContext;
-        public final String          className;
-        public final String          methodName;
-        public final String          objectId;
-        public final String          taskId;
-        public final boolean        compatible;
-        public final String          threadId = Thread.currentThread().getName();
-        public        boolean        needSendResult = true;
-        Cookie(CallbackContext ctx, JSONObject execInfo) throws JSONException {
+        public final CordovaInterface   cordova;
+        public final CallbackContext    callbackContext;
+        public final String             className;
+        public final String             methodName;
+        public final String             objectId;
+        public final String             taskId;
+        public final boolean           compatible;
+        public final String             threadId = Thread.currentThread().getName();
+        public        boolean           needSendResult = true;
+        Cookie(CordovaInterface cordova, CallbackContext ctx, JSONObject execInfo) throws JSONException {
+            this.cordova            = cordova;
             this.callbackContext    = ctx;
             JSONObject feature = execInfo.getJSONObject("feature");
             this.className  = feature.getJSONObject("android").getString("packageInfo");
@@ -119,12 +122,13 @@ public class NativeBridge {
      * Cookie の生成
      * BridgeManager からコールされる
      *
+     * @param cordova         [in] cordova interface
      * @param callbackContext [in] callback context
      * @param execInfo        [in] JavaSript 情報
      * @throws JSONException
      */
-    public static Cookie newCookie(CallbackContext callbackContext, JSONObject execInfo) throws JSONException {
-        return new NativeBridge().new Cookie(callbackContext, execInfo);
+    public static Cookie newCookie(CordovaInterface cordova, CallbackContext callbackContext, JSONObject execInfo) throws JSONException {
+        return new NativeBridge().new Cookie(cordova, callbackContext, execInfo);
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -209,6 +213,36 @@ public class NativeBridge {
             return;
         }
         MessageUtils.sendSuccessResult(cookie.callbackContext, MessageUtils.makeMessage(cookie.taskId, params));
+    }
+
+    /**
+     * 値を JavaScript へエラーを通知
+     * ヘルパー関数
+     * keepCallback は false が指定される
+     *
+     * @param cookie [in] cookie オブジェクトを指定
+     * @param params [in] パラメータを可変引数で指定
+     */
+    protected void rejectParams(Cookie cookie, Object... params) {
+        rejectParams(MessageUtils.ERROR_FAIL, null, cookie, params);
+    }
+
+    /**
+     * 値を JavaScript へエラーを通知
+     * ワーカースレッドから使用可能
+     * keepCallback は false が指定される
+     *
+     * @param code    [in] エラーコード
+     * @param message [in] エラーメッセージ
+     * @param cookie  [in] cookie オブジェクトを指定
+     * @param params  [in] パラメータを可変引数で指定
+     */
+    protected void rejectParams(int code, String message, Cookie cookie, Object... params) {
+        if (null == cookie || null == cookie.callbackContext) {
+            Log.e(TAG, "Invalid cookie object.");
+            return;
+        }
+        MessageUtils.sendSuccessResult(cookie.callbackContext, MessageUtils.makeMessage(code, message, cookie.taskId, params));
     }
 
     ///////////////////////////////////////////////////////////////////////

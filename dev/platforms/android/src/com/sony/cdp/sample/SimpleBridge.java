@@ -5,6 +5,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
+import com.sony.cdp.plugin.nativebridge.MessageUtils;
 import com.sony.cdp.plugin.nativebridge.NativeBridge;
 
 
@@ -13,7 +16,12 @@ import com.sony.cdp.plugin.nativebridge.NativeBridge;
  * @brief サンプル Bridge クラス
  */
 public class SimpleBridge extends NativeBridge {
-	/**
+    private static final String TAG = "[com.sony.cdp.sample][Native][SimpleBridge] ";
+
+    ///////////////////////////////////////////////////////////////////////
+    // public mehtods
+
+    /**
 	 * サンプルメソッド
 	 *
 	 * @throws JSONException
@@ -23,6 +31,32 @@ public class SimpleBridge extends NativeBridge {
 	    msg += (", 日本語でOK: " + String.valueOf(arg4.getBoolean("ok")));
 	    returnParames(msg);
 	}
+
+    /**
+     * サンプルメソッド (スレッドを扱う例)
+     *
+     * @throws JSONException
+     */
+    public void threadMethod(final double arg1, final boolean arg2, final String arg3, final JSONObject arg4) throws JSONException {
+        final Cookie cookie = getCookie();
+
+        cookie.cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                String errorMsg;
+                try {
+                    sendParams(cookie, (int)arg1, arg2);
+                    sendParams(cookie, arg3, arg4);
+                    String msg = "arg1: " + String.valueOf((int)arg1) + ", arg2: " + String.valueOf(arg2) + ", arg3: " + arg3;
+                    msg += (", 日本語でOK: " + String.valueOf(arg4.getBoolean("ok")));
+                    doneParams(cookie, msg);
+                } catch (JSONException e) {
+                    errorMsg = "Invalid JSON object";
+                    Log.e(TAG, errorMsg, e);
+                    rejectParams(MessageUtils.ERROR_FAIL, errorMsg, cookie);
+                }
+            }
+        });
+    }
 
     ///////////////////////////////////////////////////////////////////////
     // Override: NativeBridge

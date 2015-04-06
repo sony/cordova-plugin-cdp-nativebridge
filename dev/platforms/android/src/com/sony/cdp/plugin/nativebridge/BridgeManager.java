@@ -41,7 +41,7 @@ public class BridgeManager extends CordovaPlugin {
         Log.v(TAG, "execTask");
 
         try {
-            NativeBridge.Cookie cookie = NativeBridge.newCookie(callbackContext, execInfo);
+            NativeBridge.Cookie cookie = NativeBridge.newCookie(cordova, callbackContext, execInfo);
 
             {
                 NativeBridge bridge = getBridgeClass(cookie.objectId, cookie.className);

@@ -88,7 +88,7 @@ module CDP {
 
 			private _feature: Feature;
 			private _objectId: string;
-			private _execTaskHistory: { [taskId: string]: boolean } = {};
+			private _execTaskHistory: { [taskId: string]: boolean };
 
 			/**
 			 * constructor
@@ -97,8 +97,12 @@ module CDP {
 			 * @param options {ConstructOptions?} [in] オプション情報
 			 */
 			constructor(feature: Feature, options?: ConstructOptions) {
+				if (!(this instanceof NativeBridge)) {
+					return new NativeBridge(feature, options);
+				}
 				this._feature = feature;
 				this._objectId = "object:" + _uitls.createUUID();
+				this._execTaskHistory = {};
 			}
 
 			///////////////////////////////////////////////////////////////////////

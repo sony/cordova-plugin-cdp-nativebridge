@@ -20,9 +20,12 @@ var CDP;
              * @param options {ConstructOptions?} [in] オプション情報
              */
             function NativeBridge(feature, options) {
-                this._execTaskHistory = {};
+                if (!(this instanceof NativeBridge)) {
+                    return new NativeBridge(feature, options);
+                }
                 this._feature = feature;
                 this._objectId = "object:" + _uitls.createUUID();
+                this._execTaskHistory = {};
             }
             ///////////////////////////////////////////////////////////////////////
             // public methods
