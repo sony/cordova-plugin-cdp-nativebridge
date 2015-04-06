@@ -1,5 +1,51 @@
 /// <reference path="../../../../../../modules/include/cordova.d.ts" />
-/// <reference path="NativeBridge/Interfaces.ts" />
+var CDP;
+(function (CDP) {
+    var Plugin;
+    (function (Plugin) {
+        var _NativeBridge;
+        (function (_NativeBridge) {
+            /**
+             * @class Patch
+             * @brief cordova 本体への Patch を扱うユーティリティクラス
+             */
+            var Patch = (function () {
+                function Patch() {
+                }
+                ///////////////////////////////////////////////////////////////////////
+                // public static methods
+                /**
+                 * "backbutton" イベントを優先的に扱う patch コード
+                 */
+                Patch.setBackButtonPriority = function (first) {
+                    if (cordova) {
+                        if (first) {
+                            if (null == Patch.s_fireDocumentEventOrg) {
+                                Patch.s_fireDocumentEventOrg = cordova.fireDocumentEvent;
+                            }
+                            cordova.fireDocumentEvent = function (eventType, data, bNoDetach) {
+                                console.error("check eventType: " + eventType);
+                                if ("backbutton" === eventType) {
+                                    Patch.s_fireDocumentEventOrg(eventType, data, true);
+                                }
+                                else {
+                                    Patch.s_fireDocumentEventOrg(eventType, data, bNoDetach);
+                                }
+                            };
+                        }
+                        else if (null != Patch.s_fireDocumentEventOrg) {
+                            cordova.fireDocumentEvent = Patch.s_fireDocumentEventOrg;
+                            Patch.s_fireDocumentEventOrg = null;
+                        }
+                    }
+                };
+                return Patch;
+            })();
+            _NativeBridge.Patch = Patch;
+        })(_NativeBridge = Plugin._NativeBridge || (Plugin._NativeBridge = {}));
+    })(Plugin = CDP.Plugin || (CDP.Plugin = {}));
+})(CDP || (CDP = {}));
+/// <reference path="NativeBridge/Patch.ts" />
 /* tslint:disable:max-line-length forin */
 var CDP;
 (function (CDP) {
@@ -145,6 +191,16 @@ var CDP;
                 this.exec(success, fail, null, [], opt);
                 this._objectId = null;
             };
+            ///////////////////////////////////////////////////////////////////////
+            // public static methods
+            /**
+             * "backbutton" イベントを優先設定
+             *
+             * @param first {Boolean} [in] true: 優先処理 / false: default
+             */
+            NativeBridge.setBackButtonPriority = function (first) {
+                Plugin._NativeBridge.Patch.setBackButtonPriority(first);
+            };
             Object.defineProperty(NativeBridge, "SUCCESS_OK", {
                 ///////////////////////////////////////////////////////////////////////
                 // const valiable
@@ -233,6 +289,10 @@ var CDP;
             return NativeBridge;
         })();
         Plugin.NativeBridge = NativeBridge;
+        ///////////////////////////////////////////////////////////////////////
+        // closure methods
+        // 既定で backbutton を優先処理に設定
+        NativeBridge.setBackButtonPriority(true);
     })(Plugin = CDP.Plugin || (CDP.Plugin = {}));
 })(CDP || (CDP = {}));
 /// <reference path="NativeBridge.ts" />

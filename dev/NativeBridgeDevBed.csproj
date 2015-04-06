@@ -184,7 +184,7 @@
     <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\cdp.plugin.nativebridge.ts" />
     <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\Include.ts" />
     <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge.ts" />
-    <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge\Interfaces.ts" />
+    <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge\Patch.ts" />
     <TypeScriptCompile Include="app\scripts\app.ts" />
     <TypeScriptCompile Include="app\scripts\config.ts" />
     <TypeScriptCompile Include="app\scripts\init.ts" />
@@ -396,8 +396,8 @@
     <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge.js">
       <DependentUpon>NativeBridge.ts</DependentUpon>
     </Content>
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge\Interfaces.js">
-      <DependentUpon>Interfaces.ts</DependentUpon>
+    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge\Patch.js">
+      <DependentUpon>Patch.ts</DependentUpon>
     </Content>
     <Content Include="app\scripts\app.js">
       <DependentUpon>app.ts</DependentUpon>
@@ -493,9 +493,6 @@
     <Content Include="app\lib\scripts\cdp.nativebridge.js.map">
       <DependentUpon>cdp.nativebridge.ts</DependentUpon>
     </Content>
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge\Interfaces.js.map">
-      <DependentUpon>Interfaces.ts</DependentUpon>
-    </Content>
     <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\Include.js.map">
       <DependentUpon>Include.ts</DependentUpon>
     </Content>
@@ -508,6 +505,9 @@
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge\src\ios\NativeBridge.m" />
     <Content Include="plugins\com.sony.cdp.plugin.nativebridge.tests\tests.js.map">
       <DependentUpon>tests.ts</DependentUpon>
+    </Content>
+    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge\Patch.js.map">
+      <DependentUpon>Patch.ts</DependentUpon>
     </Content>
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

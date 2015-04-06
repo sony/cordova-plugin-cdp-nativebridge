@@ -1,4 +1,4 @@
-﻿/// <reference path="NativeBridge/Interfaces.ts" />
+﻿/// <reference path="NativeBridge/Patch.ts" />
 
 /* tslint:disable:max-line-length forin */
 
@@ -237,6 +237,18 @@ module CDP {
 			}
 
 			///////////////////////////////////////////////////////////////////////
+			// public static methods
+
+			/**
+			 * "backbutton" イベントを優先設定
+			 *
+			 * @param first {Boolean} [in] true: 優先処理 / false: default
+			 */
+			public static setBackButtonPriority(first: boolean): void {
+				_NativeBridge.Patch.setBackButtonPriority(first);
+			}
+
+			///////////////////////////////////////////////////////////////////////
 			// const valiable
 
 			// Result code
@@ -273,5 +285,11 @@ module CDP {
 				return dst;
 			}
 		}
+
+		///////////////////////////////////////////////////////////////////////
+		// closure methods
+
+		// 既定で backbutton を優先処理に設定
+		NativeBridge.setBackButtonPriority(true);
 	}
 }
