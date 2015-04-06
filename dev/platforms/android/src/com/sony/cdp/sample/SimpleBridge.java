@@ -28,6 +28,12 @@ public class SimpleBridge extends NativeBridge {
 
     /**
 	 * サンプルメソッド
+	 * JavaScript レイヤで指定したメソッドと引数を受けることができる
+	 * 数値は double 固定
+	 *
+	 * 値を戻すには
+	 *  - returnParams()
+	 * を使用する。
 	 *
 	 * @throws JSONException
 	 */
@@ -39,6 +45,14 @@ public class SimpleBridge extends NativeBridge {
 
     /**
      * サンプルメソッド (スレッドを扱う例)
+     * 引数に "final" を指定しても、リフレクションコール可能
+     * getCookie() より、cordova plugin が扱う変数にアクセスが可能
+     *
+     * スレッド内では
+     *  - sendParams()
+     *  - doneParams()
+     *  - rejectParams()
+     * がそれぞれ使用可能
      *
      * @throws JSONException
      */
@@ -64,7 +78,8 @@ public class SimpleBridge extends NativeBridge {
     }
 
     /**
-     * ワーカースレッドとキャンセル
+     * ワーカースレッドとキャンセルの例
+     * cancel() がコールされるまで、100 [msec] ごとに進捗を通知するサンプル
      *
      * @throws JSONException
      */
@@ -103,8 +118,9 @@ public class SimpleBridge extends NativeBridge {
 
     /**
      * Cordova 互換ハンドラ
-     * BridgeManager からコールされる。
-     * compatible オプションが有効な場合、このメソッドがコールされる。
+     * BridgeManager からコールされる
+     * compatible オプションが有効な場合、このメソッドがコールされる
+     * 拡張情報は cookie に格納される。
      * クライアントは本メソッドをオーバーライド可能
      *
      * @param action          The action to execute.
@@ -133,8 +149,9 @@ public class SimpleBridge extends NativeBridge {
 
     /**
      * cancel 呼び出し
-     * BridgeManager からコールされる。
-     * クライアントは本メソッドをオーバーライド可能
+     * BridgeManager からコールされる
+     * クライアントは本メソッドをオーバーライドして、taskId を特定し処理を実装する
+     * 全キャンセル時は taskId に null が格納されている
      *
      * @param cookie [in] The execute cookie. (NativeBridge extended argument)
      */

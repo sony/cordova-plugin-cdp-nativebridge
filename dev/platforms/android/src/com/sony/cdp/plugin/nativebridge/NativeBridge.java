@@ -16,6 +16,7 @@ import android.util.Log;
 /**
  * @class NatvieBridge
  * @brief Base Bridge クラス
+ *         com.sony.cdp.plugin.nativebridge クライアントは本クラスから Bridge クラスを派生する
  */
 public class NativeBridge {
     private static final String TAG = "[com.sony.cdp.plugin.nativebridge][Native][NativeBridge] ";
@@ -53,8 +54,8 @@ public class NativeBridge {
 
     /**
      * Cordova 互換ハンドラ
-     * BridgeManager からコールされる。
-     * compatible オプションが有効な場合、このメソッドがコールされる。
+     * BridgeManager からコールされる
+     * compatible オプションが有効な場合、このメソッドがコールされる
      * クライアントは本メソッドをオーバーライド可能
      *
      * @param action          The action to execute.
@@ -262,7 +263,7 @@ public class NativeBridge {
     /**
      * 型の正規化
      * オブジェクトをプリミティブに変換する
-     * 数値型は、すべて double にする. (JavaScript との対象性より)
+     * 数値型は、すべて double にする (JavaScript との対象性より)
      *
      * @param src [in] 型情報
      * @return 正規化された型情報

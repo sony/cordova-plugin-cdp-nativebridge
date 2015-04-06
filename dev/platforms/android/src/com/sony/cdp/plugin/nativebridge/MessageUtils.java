@@ -11,7 +11,7 @@ import android.util.SparseArray;
 
 /**
  * @class MessageUtils
- * @brief cdp.plugin.nativebridge のメッセージを生成するユーティリティクラス
+ * @brief cdp.plugin.nativebridge の Cordova PluginResult メッセージを生成するユーティリティクラス
  */
 public class MessageUtils {
 
@@ -35,6 +35,12 @@ public class MessageUtils {
 
     /**
      * Result 情報を生成
+     *
+     * @param code    [in] Result Code を指定
+     * @param message [in] 文字列情報を指定 (任意)
+     * @param taskId  [in] task ID を指定
+     * @param params  [in] pamaeter 情報を可変引数で指定
+     * @return PluginResult に渡す JSONObject を返却
      */
     public static JSONObject makeMessage(int code, String message, String taskId, Object... params) {
         if (null == mErrorTbl) {
@@ -70,7 +76,12 @@ public class MessageUtils {
 
     /**
      * Result 情報を生成
-     * Helper 関数
+     * ヘルパー関数
+     *
+     * @param message [in] 文字列情報を指定 (任意)
+     * @param taskId  [in] task ID を指定
+     * @param params  [in] pamaeter 情報を可変引数で指定
+     * @return PluginResult に渡す JSONObject を返却
      */
     public static JSONObject makeMessage(String message, String taskId, Object... params) {
         return makeMessage(SUCCESS_OK, message, taskId, params);
@@ -78,7 +89,11 @@ public class MessageUtils {
 
     /**
      * Result 情報を生成
-     * Helper 関数
+     * ヘルパー関数
+     *
+     * @param taskId  [in] task ID を指定
+     * @param params  [in] pamaeter 情報を可変引数で指定
+     * @return PluginResult に渡す JSONObject を返却
      */
     public static JSONObject makeMessage(String taskId, Object... params) {
         return makeMessage(SUCCESS_OK, null, taskId, params);
@@ -86,6 +101,10 @@ public class MessageUtils {
 
     /**
      * Success 情報を送信
+     * ヘルパー関数
+     *
+     * @param callbackContext [in] CallbackContext を指定
+     * @param taskId          [in] task ID を指定
      */
     public static void sendSuccessResult(CallbackContext callbackContext, String taskId) {
         sendSuccessResult(callbackContext, makeMessage(taskId));
@@ -93,6 +112,9 @@ public class MessageUtils {
 
     /**
      * Success 情報を送信
+     *
+     * @param callbackContext [in] CallbackContext を指定
+     * @param result          [in] makeMessage() で生成した JSONObject を指定
      */
     public static void sendSuccessResult(CallbackContext callbackContext, JSONObject result) {
         try {
@@ -109,6 +131,12 @@ public class MessageUtils {
 
     /**
      * Error 情報を送信
+     * ヘルパー関数
+     *
+     * @param callbackContext [in] CallbackContext を指定
+     * @param taskId          [in] task ID を指定
+     * @param code            [in] Result Code を指定
+     * @param message         [in] 文字列情報を指定 (任意)
      */
     public static void sendErrorResult(CallbackContext callbackContext, String taskId, int code, String message) {
         sendErrorResult(callbackContext, makeMessage(code, message, taskId));
@@ -116,6 +144,9 @@ public class MessageUtils {
 
     /**
      * Error 情報を送信
+     *
+     * @param callbackContext [in] CallbackContext を指定
+     * @param result          [in] makeMessage() で生成した JSONObject を指定
      */
     public static void sendErrorResult(CallbackContext callbackContext, JSONObject result) {
         try {

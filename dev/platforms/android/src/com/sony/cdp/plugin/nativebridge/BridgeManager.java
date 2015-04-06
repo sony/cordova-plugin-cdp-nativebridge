@@ -14,8 +14,9 @@ import android.util.Log;
 /**
  * @class BridgeManager
  * @brief cdp.plugin.nativebridge のエントリクラス
+ *         クライアントは本クラスを意識する必要は無い
  */
-public class BridgeManager extends CordovaPlugin {
+public final class BridgeManager extends CordovaPlugin {
 
     private static final String TAG = "[com.sony.cdp.plugin.nativebridge][Native][BridgeManager] ";
     private Map<String, NativeBridge> mBrdiges = new HashMap<String, NativeBridge>();
@@ -23,7 +24,14 @@ public class BridgeManager extends CordovaPlugin {
     ///////////////////////////////////////////////////////////////////////
     // Override: CordovaPlugin
 
-    //! execute のエントリ
+    /**
+     * CordovaPlugin のエントリ関数
+     *
+     * @param action          The action to execute.
+     * @param args            The exec() arguments.
+     * @param callbackContext The callback context used when calling back into JavaScript.
+     * @return                Whether the action was valid.
+     */
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("execTask")) {
@@ -39,7 +47,13 @@ public class BridgeManager extends CordovaPlugin {
     ///////////////////////////////////////////////////////////////////////
     // private methods
 
-    //! "execTask" のエントリ
+    /**
+     * "execTask" のエントリ
+     *
+     * @param execInfo        [in] 実行情報を格納
+     * @param argsInfo        [in] 引数情報を格納
+     * @param callbackContext [in] Callback Context
+     */
     private void execTask(JSONObject execInfo, JSONArray argsInfo, CallbackContext callbackContext) {
         Log.v(TAG, "execTask");
 
@@ -67,7 +81,12 @@ public class BridgeManager extends CordovaPlugin {
         }
     }
 
-    //! "cancelTask" のエントリ
+    /**
+     * "cancelTask" のエントリ
+     *
+     * @param execInfo        [in] 実行情報を格納
+     * @param callbackContext [in] Callback Context
+     */
     private void cancelTask(JSONObject execInfo, CallbackContext callbackContext) {
         Log.v(TAG, "cancelTask");
 
@@ -91,6 +110,10 @@ public class BridgeManager extends CordovaPlugin {
 
     /**
      * NativeBridge クラスのインスタンスを取得
+     *
+     * @param objectId  [in] Object ID
+     * @param className [in] クラス名
+     * @return NativeBridge インスタンス
      */
     private NativeBridge getBridgeClass(String objectId, String className) {
         NativeBridge ret = mBrdiges.get(objectId);
@@ -104,7 +127,10 @@ public class BridgeManager extends CordovaPlugin {
     }
 
     /**
-     * NativeBridge クラスのインスタンスを生成
+     * NativeBridge クラスのインスタンスをリフレクションにより生成
+     *
+     * @param className [in] クラス名
+     * @return NativeBridge インスタンス
      */
     private NativeBridge createBridgeClass(String className) {
         NativeBridge ret = null;
