@@ -6,7 +6,10 @@
 module.exports = function (grunt) {
 
     var fs = require('fs'),
-        path = require('path');
+        path = require('path')
+        jsdom = require('jsdom'),
+        window = jsdom.jsdom().parentWindow,
+        $ = require('jquery')(window);
 
     grunt.extendConfig({
 
@@ -29,6 +32,8 @@ module.exports = function (grunt) {
         app_plugins_tmpdir: '<%= app_plugins_tmpdir_org %>/_<%= tmpdir %>',
         app_plugins_pkgdir_org: '<%= app_plugins_pkgdir %>',
         pkgcomp_remove_src_comment_targets_org: ['<%= pkgcomp_work_appdir %>/<%= libraries %>/<%= scripts %>/*.js'],
+
+        app_plugins_native_src: {},
 
         // clean for plugin directory
         clean: {
@@ -246,6 +251,82 @@ module.exports = function (grunt) {
         grunt.config.set('pkgcomp_remove_src_comment_targets', grunt.config.get('pkgcomp_remove_src_comment_targets_org'));
     });
 
+    // custom task: set native source information
+    grunt.registerTask('app_plugins_set_native_src', function () {
+        doPluginTask(this, function (plugin) {
+            var nativeSrc = grunt.config.get('app_plugins_native_src');
+
+            var domConfigXml = jsdom.jsdom(fs.readFileSync('config.xml').toString());
+            var appDirName = $(domConfigXml).find('name').text();
+
+            var pluginXml = path.join(grunt.config.get('orgsrc'), grunt.config.get('plugins'), plugin.id, 'plugin.xml');
+            var domPluginXml = jsdom.jsdom(fs.readFileSync(pluginXml).toString());
+
+            nativeSrc[plugin.id] = [];
+
+            // for android
+            (function () {
+                var $android = $(domPluginXml).find('platform[name=android]').find('source-file');
+                $android.each(function (index, src) {
+                    var pluginSrc = $(src).attr('src');
+                    var pluginDst = $(src).attr('target-dir');
+                    var pluginFile = path.basename(pluginSrc);
+                    nativeSrc[plugin.id].push({
+                        packageSrc: path.join('platforms/android', pluginDst, pluginFile),
+                        packageDst: path.join(plugin.id, pluginSrc),
+                    });
+                });
+            })();
+
+            // for ios
+            (function () {
+                var $ios = $(domPluginXml).find('platform[name=ios]').find('source-file');
+                $ios.each(function (index, src) {
+                    var pluginSrc = $(src).attr('src');
+                    var pluginDst = $(src).attr('target-dir');
+                    var pluginFile = path.basename(pluginSrc);
+                    nativeSrc[plugin.id].push({
+                        packageSrc: path.join('platforms/ios', appDirName, 'Plugins', pluginDst, pluginFile),
+                        packageDst: path.join(plugin.id, pluginSrc),
+                    });
+                });
+            })();
+
+            grunt.config.set('app_plugins_native_src', nativeSrc);
+        });
+    });
+
+    // custom task: copy native sources for package plugins.
+    grunt.registerTask('app_plugins_copy_native_src', function () {
+        var nativeSrc = grunt.config.get('app_plugins_native_src');
+        var packageDir = grunt.config.get('app_plugins_pkgdir');
+
+        var safeCopy = function (src, dst) {
+            var mkdir = function (dirPath, root) {
+                var dirs = dirPath.split(/[\/\\]/),
+                    dir = dirs.shift(),
+                    root = (root || '') + dir + '/';
+                if (!fs.existsSync(root)) {
+                    fs.mkdirSync(root);
+                }
+                return !dirs.length || mkdir(dirs.join('/'), root);
+            }
+
+            if (fs.existsSync(src)) {
+                mkdir(path.dirname(dst));
+                fs.writeFileSync(dst, fs.readFileSync(src));
+            }
+        };
+
+        for (key in nativeSrc) {
+            if (nativeSrc.hasOwnProperty(key)) {
+                nativeSrc[key].forEach(function (file) {
+                    safeCopy(file.packageSrc, path.join(packageDir, file.packageDst));
+                });
+            }
+        }
+    });
+
 
     //__________________________________________________________________________________________________________________________________________________________________________________________//
 
@@ -306,15 +387,27 @@ module.exports = function (grunt) {
     grunt.registerTask('app_plugins_cordova_prepare_release',   ['app_prepare_release', 'app_plugins_release', 'clean:tmpdir']);
     grunt.registerTask('app_plugins_cordova_prepare_debug',     [                       'app_plugins_debug'                  ]);
 
-    // for plugin package entry
-    grunt.registerTask('plugin', [
-        'clean:tmpdir',
-        'app_plugins_set_env',
+    // for package task js package
+    grunt.registerTask('app_plugins_package_js', [
         'app_prepare_release', 'app_plugins_prepare_release', 'app_plugins_set_work_plugins', 'app_plugins_build_plugins',
         'pkgcomp_remove_src_path_comments',
         'uglify:app_plugins_min',
         'copy:app_plugins_plugin_package',
         'clean:tmpdir',
+    ]);
+
+    // for package task native source package
+    grunt.registerTask('app_plugins_package_native', [
+        'app_plugins_set_work_plugins', 'app_plugins_set_native_src',
+        'app_plugins_copy_native_src'
+    ]);
+
+    // for plugin package entry
+    grunt.registerTask('plugin', [
+        'clean:tmpdir',
+        'app_plugins_set_env',
+        'app_plugins_package_js',
+        'app_plugins_package_native',
         'app_plugins_restore_env',
     ]);
 };
