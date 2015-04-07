@@ -1,4 +1,4 @@
-/// <reference path="../../../modules/include/jasmine.d.ts" />
+ï»¿/// <reference path="../../../modules/include/jasmine.d.ts" />
 /// <reference path="../../../modules/include/cordova.d.ts" />
 /// <reference path="../../../plugins/com.sony.cdp.plugin.nativebridge/www/cdp.plugin.nativebridge.d.ts" />
 
@@ -136,7 +136,7 @@ exports.defineAutoTests = function () {
 			expect(value.taskId).toBe(taskId);
 			expect(value.params).toBeDefined();
 			expect(value.params.length).toBe(1);
-			expect(value.params[0]).toBe("arg1: 1, arg2: false, arg3: test, “ú–{Œê‚ÅOK: true");
+			expect(value.params[0]).toBe("arg1: 1, arg2: false, arg3: test, æ—¥æœ¬èªã§OK: true");
 		});
 	});
 
@@ -279,7 +279,7 @@ exports.defineAutoTests = function () {
 			expect(value[2].taskId).toBe(taskId);
 			expect(value[2].params).toBeDefined();
 			expect(value[2].params.length).toBe(1);
-			expect(value[2].params[0]).toBe("arg1: 1, arg2: false, arg3: test, “ú–{Œê‚ÅOK: true");
+			expect(value[2].params[0]).toBe("arg1: 1, arg2: false, arg3: test, æ—¥æœ¬èªã§OK: true");
 		});
 	});
 

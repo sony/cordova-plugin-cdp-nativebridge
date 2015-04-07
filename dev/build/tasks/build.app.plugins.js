@@ -57,6 +57,16 @@ module.exports = function (grunt) {
                     },
                 ],
             },
+            app_plugins_tests: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= app_plugins_root_dir %>',
+                        src: ['<%= app_plugins_work_id %>/<%= plugins_www %>/tests.js'],
+                        dest: '<%= app_plugins_pkgdir %>',
+                    },
+                ],
+            },
             app_plugins_package: {
                 files: [
                     {
@@ -100,6 +110,16 @@ module.exports = function (grunt) {
                 files: [
                     {
                         '<%= app_plugins_pkgdir %>/<%= app_plugins_work_id %>/<%= plugins_www %>/<%= app_plugins_work_script_name %>.js': '<%= app_plugins_root_dir %>/<%= app_plugins_work_id %>/<%= plugins_www %>/<%= app_plugins_work_script_name %>.ts',
+                    },
+                ],
+            },
+            app_plugins_tests: {
+                options: {
+                    sourceMap: false,
+                },
+                files: [
+                    {
+                        '': '<%= app_plugins_root_dir %>/<%= app_plugins_work_id %>/<%= plugins_www %>/tests.ts',
                     },
                 ],
             },
@@ -213,6 +233,12 @@ module.exports = function (grunt) {
     grunt.registerTask('app_plugins_build_scripts', function () {
         var scripts = grunt.config.get('app_plugins_work_scripts_info');
         var script;
+
+        // special case: the system assumes auto-test script when script is "tests.ts" and plugin's id is finished ".tests".
+        var isTests = function (scripts) {
+            return ('tests' === script && grunt.config.get('app_plugins_work_id').match(/\.tests$/i));
+        };
+
         if (!!scripts && 0 < scripts.length) {
             script = scripts.shift();
             // update variable.
@@ -220,7 +246,10 @@ module.exports = function (grunt) {
             grunt.config.set('app_plugins_work_script_name', script);
 
             // schedule next tasks.
-            if (grunt.config.get('app_plugins_mode_release')) {
+            if (isTests(script)) {
+                grunt.task.run('typescript:app_plugins_tests');
+                grunt.task.run('copy:app_plugins_tests');
+            } else if (grunt.config.get('app_plugins_mode_release')) {
                 grunt.task.run('typescript:app_plugins_release');
             } else {
                 grunt.task.run('typescript:app_plugins_debug');
@@ -348,7 +377,7 @@ module.exports = function (grunt) {
     function queryTargetScripts(targetDir) {
         var scripts = [];
         fs.readdirSync(targetDir).forEach(function (file) {
-            if (!path.basename(file).toLowerCase().match(/.d.ts/g) && path.basename(file).toLowerCase().match(/.ts/g)) {
+            if (!path.basename(file).toLowerCase().match(/.d.ts/g) && path.basename(file).toLowerCase().match(/\.ts$/i)) {
                 scripts.push(path.basename(file, path.extname(file)));
             }
         });
