@@ -5,27 +5,17 @@ module CDP {
 	export module NativeBridge {
 
 		/**
-		 * @class Base
+		 * @class Gate
 		 * @brief Native Bridge の基底クラス
 		 *        このクラスから任意の Bridge クラスを派生して実装可能
 		 */
-		export class Base {
+		export class Gate {
 			/**
 			 * constructor
 			 *
 			 */
 			constructor() {
-				// TODO: test
-				var hoge = new CDP.Plugin.NativeBridge({
-					name: "Hoge",
-					android: {
-						packageInfo: "com.sony.cdp.hoge.Hoge",
-					},
-					ios: {
-						packageInfo: "NBPHoge",
-					}
-				});
-				var a: CDP.Plugin.NativeBridge.ExecInfo;
+				// TODO:
 			}
 		}
 	}
