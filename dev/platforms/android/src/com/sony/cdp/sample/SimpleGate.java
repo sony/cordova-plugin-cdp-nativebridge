@@ -10,16 +10,16 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
+import com.sony.cdp.plugin.nativebridge.Gate;
 import com.sony.cdp.plugin.nativebridge.MessageUtils;
-import com.sony.cdp.plugin.nativebridge.NativeBridge;
 
 
 /**
- * @class SimpleBridge
- * @brief サンプル Bridge クラス
+ * @class SimpleGate
+ * @brief サンプル Gate クラス
  */
-public class SimpleBridge extends NativeBridge {
-    private static final String TAG = "[com.sony.cdp.sample][Native][SimpleBridge] ";
+public class SimpleGate extends Gate {
+    private static final String TAG = "[com.sony.cdp.sample][Native][SimpleGate] ";
 
     private Set<String> mCancelableTask = new HashSet<String>();
 
@@ -49,8 +49,8 @@ public class SimpleBridge extends NativeBridge {
      * getCookie() より、cordova plugin が扱う変数にアクセスが可能
      *
      * スレッド内では
-     *  - sendParams()
-     *  - doneParams()
+     *  - notifyParams()
+     *  - resolveParams()
      *  - rejectParams()
      * がそれぞれ使用可能
      *
@@ -63,11 +63,11 @@ public class SimpleBridge extends NativeBridge {
             public void run() {
                 String errorMsg;
                 try {
-                    sendParams(cookie, (int)arg1, arg2);
-                    sendParams(cookie, arg3, arg4);
+                    notifyParams(cookie, (int)arg1, arg2);
+                    notifyParams(cookie, arg3, arg4);
                     String msg = "arg1: " + String.valueOf((int)arg1) + ", arg2: " + String.valueOf(arg2) + ", arg3: " + arg3;
                     msg += (", 日本語でOK: " + String.valueOf(arg4.getBoolean("ok")));
-                    doneParams(cookie, msg);
+                    resolveParams(cookie, msg);
                 } catch (JSONException e) {
                     errorMsg = "Invalid JSON object";
                     Log.e(TAG, errorMsg, e);
@@ -100,7 +100,7 @@ public class SimpleBridge extends NativeBridge {
                             rejectParams(MessageUtils.ERROR_CANCEL, TAG + "progressMethod() canceled.", cookie);
                             break;
                         }
-                        sendParams(cookie, progress);
+                        notifyParams(cookie, progress);
                         progress++;
                         Thread.sleep(100);
                     }
