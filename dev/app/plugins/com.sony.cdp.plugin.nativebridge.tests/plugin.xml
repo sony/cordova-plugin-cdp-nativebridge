@@ -26,6 +26,6 @@
     <name>NativeBridge Tests</name>
     <license>Apache 2.0</license>
 
-    <js-module src="tests.js" name="tests">
+    <js-module src="www/tests.js" name="tests">
     </js-module>
 </plugin>

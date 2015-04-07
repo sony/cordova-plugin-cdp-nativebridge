@@ -1,7 +1,7 @@
 cordova.define('cordova/plugin_list', function(require, exports, module) {
 module.exports = [
     {
-        "file": "plugins/com.sony.cdp.plugin.nativebridge.tests/tests.js",
+        "file": "plugins/com.sony.cdp.plugin.nativebridge.tests/www/tests.js",
         "id": "com.sony.cdp.plugin.nativebridge.tests.tests"
     },
     {
