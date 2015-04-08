@@ -21,8 +21,29 @@
 
 'use strict';
 
+// [CDP modified]: detect global object
+function getGlobal() {
+    if (null != window.parent) {
+        return document.getElementsByTagName('iframe')[0].contentWindow;
+    } else {
+        return window;
+    }
+}
+
+// [CDP modified]: detect document object
+function getDocument() {
+    if (null != window.parent) {
+        return document.getElementsByTagName('iframe')[0].contentWindow.document;
+    } else {
+        return document;
+    }
+}
+
 exports.setUpJasmine = function() {
     // Set up jasmine
+    // [CDP modified]: detect jasmineRequire object
+    var jasmineRequire = getGlobal().jasmineRequire;
+
     var jasmine = jasmineRequire.core(jasmineRequire);
     jasmineRequire.html(jasmine);
     var jasmineEnv = jasmine.currentEnv_ = new jasmine.Env();
@@ -58,9 +79,9 @@ function addJasmineReporters(jasmineInterface, jasmineEnv) {
         env: jasmineEnv,
         queryString: function() { return null; },
         onRaiseExceptionsClick: function() { },
-        getContainer: function() { return document.getElementById('content'); },
-        createElement: function() { return document.createElement.apply(document, arguments); },
-        createTextNode: function() { return document.createTextNode.apply(document, arguments); },
+        getContainer: function() { return getDocument().getElementById('content'); },
+        createElement: function () { return getDocument().createElement.apply(getDocument(), arguments); },
+        createTextNode: function () { return getDocument().createTextNode.apply(getDocument(), arguments); },
         timer: new jasmineInterface.jasmine.Timer()
     });
     jasmineInterface.htmlReporter.initialize();

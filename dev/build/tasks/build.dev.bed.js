@@ -51,9 +51,9 @@ module.exports = function (grunt) {
 
     //__________________________________________________________________________________________________________________________________________________________________________________________//
 
-    grunt.cdp = grunt.createCustomTaskEntry(grunt.cdp, 'app_after_package');
-    grunt.cdp.custom_tasks['app_after_package'].release.push('copy:dev_bed');
-    grunt.cdp.custom_tasks['app_after_package'].debug.push('copy:dev_bed');
+    //grunt.cdp = grunt.createCustomTaskEntry(grunt.cdp, 'app_after_package');
+    //grunt.cdp.custom_tasks['app_after_package'].release.push('copy:dev_bed');
+    //grunt.cdp.custom_tasks['app_after_package'].debug.push('copy:dev_bed');
 
     //__________________________________________________________________________________________________________________________________________________________________________________________//
 

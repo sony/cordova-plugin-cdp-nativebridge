@@ -21,6 +21,23 @@
 
 'use strict';
 
+// [CDP modified]: uses parent window's "cordova" object
+/*
 document.addEventListener("deviceready", function() {
-  cordova.require('org.apache.cordova.test-framework.main').init();
+    cordova.require('org.apache.cordova.test-framework.main').init();
 });
+*/
+
+(function (root, parent) {
+    if (null != parent) {
+        root.cordova = parent.cordova;
+        setTimeout(function () {
+            root.cordova.require('org.apache.cordova.test-framework.main').init();
+        }, 100);
+    } else {
+        document.addEventListener("deviceready", function () {
+            cordova.require('org.apache.cordova.test-framework.main').init();
+        });
+    }
+})(this, window.parent);
+

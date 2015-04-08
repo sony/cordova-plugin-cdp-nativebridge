@@ -21,6 +21,15 @@
 
 'use strict';
 
+// [CDP modified]: detect document object
+function getDocument() {
+    if (null != window.parent) {
+        return document.getElementsByTagName('iframe')[0].contentWindow.document;
+    } else {
+        return document;
+    }
+}
+
 /******************************************************************************/
 
 function getMode(callback) {
@@ -49,11 +58,11 @@ function setMode(mode) {
 /******************************************************************************/
 
 function clearContent() {
-  var content = document.getElementById('content');
+  var content = getDocument().getElementById('content');
   content.innerHTML = '';
-  var log = document.getElementById('log--content');
+  var log = getDocument().getElementById('log--content');
   log.innerHTML = '';
-  var buttons = document.getElementById('buttons');
+  var buttons = getDocument().getElementById('buttons');
   buttons.innerHTML = '';
 
   setLogVisibility(false);
@@ -62,7 +71,7 @@ function clearContent() {
 /******************************************************************************/
 
 function setTitle(title) {
-  var el = document.getElementById('title');
+  var el = getDocument().getElementById('title');
   el.textContent = title;
 }
 
@@ -70,14 +79,14 @@ function setTitle(title) {
 
 function setLogVisibility(visible) {
   if (visible) {
-    document.getElementById('log').classList.add('expanded');
+    getDocument().getElementById('log').classList.add('expanded');
   } else {
-    document.getElementById('log').classList.remove('expanded');
+    getDocument().getElementById('log').classList.remove('expanded');
   }
 }
 
 function toggleLogVisibility() {
-  var log = document.getElementById('log');
+  var log = getDocument().getElementById('log');
   if (log.classList.contains('expanded')) {
     log.classList.remove('expanded');
   } else {
@@ -88,7 +97,7 @@ function toggleLogVisibility() {
 /******************************************************************************/
 
 function attachEvents() {
-  document.getElementById('log--title').addEventListener('click', toggleLogVisibility);
+  getDocument().getElementById('log--title').addEventListener('click', toggleLogVisibility);
 }
 
 /******************************************************************************/
@@ -97,8 +106,8 @@ var origConsole = window.console;
 
 exports.wrapConsole = function() {
   function appendToOnscreenLog(type, args) {
-    var el = document.getElementById('log--content');
-    var div = document.createElement('div');
+    var el = getDocument().getElementById('log--content');
+    var div = getDocument().createElement('div');
     div.classList.add('log--content--line');
     div.classList.add('log--content--line--' + type);
     div.textContent = Array.prototype.slice.apply(args).map(function(arg) {
@@ -135,9 +144,9 @@ exports.unwrapConsole = function() {
 
 function createActionButton(title, callback, appendTo) {
   appendTo = appendTo ? appendTo : 'buttons';
-  var buttons = document.getElementById(appendTo);
-  var div = document.createElement('div');
-  var button = document.createElement('a');
+  var buttons = getDocument().getElementById(appendTo);
+  var div = getDocument().createElement('div');
+  var button = getDocument().createElement('a');
   button.textContent = title;
   button.onclick = function(e) {
     e.preventDefault();
@@ -169,34 +178,34 @@ function setupAutoTestsEnablers(cdvtests) {
 /******************************************************************************/
 
 function createEnablerList() {
-  var buttons = document.getElementById('buttons');
+  var buttons = getDocument().getElementById('buttons');
 
-  var enablerContainer = document.createElement('div');
+  var enablerContainer = getDocument().createElement('div');
   enablerContainer.id = 'test-enablers-container';
 
   // Create header to show count of enabled/total tests
-  var header = document.createElement('h3');
+  var header = getDocument().createElement('h3');
   header.id = 'tests-enabled';
 
   // Create widget to show/hide list
-  var expander = document.createElement('span');
+  var expander = getDocument().createElement('span');
   expander.id = 'test-expander';
   expander.innerText = 'Show/hide tests to be run';
   expander.onclick = toggleEnablerVisibility;
 
   // Create list to contain checkboxes for each test
-  var enablerList = document.createElement('div');
+  var enablerList = getDocument().createElement('div');
   enablerList.id = "test-list";
 
   // Create select/deselect all buttons (in button bar)
-  var checkButtonBar = document.createElement('ul');
+  var checkButtonBar = getDocument().createElement('ul');
   checkButtonBar.classList.add('topcoat-button-bar');
 
   function createSelectToggleButton(title, selected) {
-    var barItem = document.createElement('li');
+    var barItem = getDocument().createElement('li');
     barItem.classList.add('topcoat-button-bar__item');
 
-    var link = document.createElement('a');
+    var link = getDocument().createElement('a');
     link.classList.add('topcoat-button-bar__button');
     link.innerText = title;
     link.href = null;
@@ -225,7 +234,7 @@ function createEnablerList() {
 /******************************************************************************/
 
 function updateEnabledTestCount() {
-  var enabledLabel = document.getElementById('tests-enabled');
+  var enabledLabel = getDocument().getElementById('tests-enabled');
 
   // Determine how many tests are currently enabled
   var cdvtests = cordova.require('org.apache.cordova.test-framework.cdvtests');
@@ -248,7 +257,7 @@ function updateEnabledTestCount() {
 /******************************************************************************/
 
 function toggleSelected(containerId, newCheckedValue) {
-  [].forEach.call(document.getElementById(containerId).getElementsByTagName('input'), function(input) {
+  [].forEach.call(getDocument().getElementById(containerId).getElementsByTagName('input'), function(input) {
     if (input.type !== 'checkbox') return;
     input.checked = newCheckedValue;
     toggleTestEnabled(input);
@@ -259,7 +268,7 @@ function toggleSelected(containerId, newCheckedValue) {
 /******************************************************************************/
 
 function toggleEnablerVisibility() {
-  var enablerList = document.getElementById('test-list');
+  var enablerList = getDocument().getElementById('test-list');
   if (enablerList.classList.contains('expanded')) {
     enablerList.classList.remove('expanded');
   } else {
@@ -270,12 +279,12 @@ function toggleEnablerVisibility() {
 /******************************************************************************/
 
 function createEnablerCheckbox(api, title, isEnabled, appendTo, callback) {
-  var container = document.getElementById(appendTo);
+  var container = getDocument().getElementById(appendTo);
 
-  var label = document.createElement('label');
+  var label = getDocument().createElement('label');
   label.classList.add('topcoat-checkbox');
 
-  var checkbox = document.createElement('input');
+  var checkbox = getDocument().createElement('input');
   checkbox.type = "checkbox";
   checkbox.value = api;
   checkbox.checked = isEnabled;
@@ -286,10 +295,10 @@ function createEnablerCheckbox(api, title, isEnabled, appendTo, callback) {
     callback(e);
   };
 
-  var div = document.createElement('div');
+  var div = getDocument().createElement('div');
   div.classList.add('topcoat-checkbox__checkmark');
 
-  var text = document.createElement('span');
+  var text = getDocument().createElement('span');
   text.innerText = title;
 
   label.appendChild(checkbox);
@@ -356,7 +365,7 @@ function runManualTests() {
   createActionButton('Reset App', location.reload.bind(location));
   createActionButton('Back', setMode.bind(null, 'main'));
 
-  var contentEl = document.getElementById('content');
+  var contentEl = getDocument().getElementById('content');
   var beforeEach = function(title) {
     clearContent();
     setTitle(title || 'Manual Tests');
