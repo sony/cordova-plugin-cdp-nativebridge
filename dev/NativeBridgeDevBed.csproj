@@ -413,7 +413,13 @@
     <Content Include="app\scripts\init.js">
       <DependentUpon>init.ts</DependentUpon>
     </Content>
-    <Content Include="app\stylesheets\app.css" />
+    <Content Include="app\scripts\View\Main.js">
+      <DependentUpon>Main.ts</DependentUpon>
+    </Content>
+    <Content Include="app\scripts\View\_module.scripts.html" />
+    <Content Include="app\stylesheets\app.css">
+      <DependentUpon>app.scss</DependentUpon>
+    </Content>
     <Content Include="app\templates\main.html" />
     <Content Include="config.xml" />
     <Content Include="Gruntfile.js" />
@@ -505,6 +511,7 @@
     <Content Include="plugins\org.apache.cordova.test-framework\www\tests.js" />
     <Content Include="test-runner.js" />
     <Content Include="web.config" />
+    <TypeScriptCompile Include="app\scripts\View\Main.ts" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -627,6 +634,10 @@
     <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge.tests\www\tests.js.map">
       <DependentUpon>tests.ts</DependentUpon>
     </Content>
+    <Content Include="app\scripts\View\Main.js.map">
+      <DependentUpon>Main.ts</DependentUpon>
+    </Content>
+    <Content Include="app\stylesheets\_main.scss" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

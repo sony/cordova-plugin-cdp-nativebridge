@@ -27,8 +27,6 @@ module Config {
 			"hogan": "modules/hogan/scripts/hogan",
 			"modernizr.custom": "modules/sony/cdp/scripts/modernizr.custom",
 			"sylvester": "modules/sylvester/scripts/sylvester",
-			"iscroll": "modules/iscroll/scripts/iscroll-probe",
-			"flipsnap": "modules/flipsnap/scripts/flipsnap",
 
 			// cdp modules
 			"cdp.core": "modules/sony/cdp/scripts/cdp.core",
@@ -40,13 +38,8 @@ module Config {
 			// cdp optional modules
 			"cdp.tools": "modules/sony/cdp/scripts/cdp.tools",
 			"cdp.tools.proxy": "modules/sony/cdp/scripts/cdp.tools.proxy",
-			"cdp.tools.container": "modules/sony/cdp/scripts/cdp.tools.container",
 			"cdp.ui.listview": "modules/sony/cdp/scripts/cdp.ui.listview",
 			"cdp.ui.jqm": "modules/sony/cdp/scripts/cdp.ui.jqm",
-			"cdp.ui.fs": "modules/sony/cdp/scripts/cdp.ui.fs",
-
-			// cdp functinal modules
-			"cdp.slideshow": "modules/sony/cdp/scripts/cdp.slideshow",
 
 			// internal lib modules
 			"cdp.nativebridge": "lib/scripts/cdp.nativebridge",

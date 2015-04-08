@@ -1,28 +1,42 @@
-/* variables */
-
-/* custom mixins */
-
-/* page common styles */
-
-body {
+﻿body {
     height: 100%;
     font-family:Arial,Helvetica,sans-serif;
     overflow: auto;
     -webkit-text-size-adjust: 100%;
+       -moz-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
     -webkit-touch-callout: none;
-    -moz-user-select: none;
     -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 
     article {
         .ui-btn, .ui-slider {
             z-index: 2;
         }
+        section {
+            &.normal-screen {
+                padding: 0;
+            }
+            &.fullscreen {
+                position: absolute;
+                padding: 0;
+                margin: 0;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+            &.fixed-screen {
+                position: absolute;
+                padding: 0;
+                top: 45px;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+        }
     }
-}
-
-#navbar {
-    width: 80%;
-    height: 23px;
 }

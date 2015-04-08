@@ -4,6 +4,8 @@
 module CDP {
 	export module NativeBridge {
 
+		var TAG: string = "[CDP.NativeBridge.Gate] ";
+
 		/**
 		 * @class Gate
 		 * @brief Native Bridge の基底クラス

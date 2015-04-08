@@ -16,7 +16,7 @@ module NativeBridgeDevBed {
 	};
 
 	setup(() => {
-		require(["cdp.framework.jqm"], () => {
+		require(["cdp.ui.jqm"], () => {
 			CDP.Framework.initialize().done(() => {
 				// lazy load for application scripts.
 				CDP.lazyLoad("lazy");
