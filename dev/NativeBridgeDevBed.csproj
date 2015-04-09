@@ -74,6 +74,9 @@
     <TypeScriptCompile Include="app\lib\scripts\cdp.nativebridge.d.ts" />
     <TypeScriptCompile Include="app\lib\scripts\cdp.nativebridge.ts" />
     <TypeScriptCompile Include="app\lib\scripts\CDP\NativeBridge\Gate.ts" />
+    <TypeScriptCompile Include="app\lib\scripts\CDP\NativeBridge\Interfaces.ts" />
+    <TypeScriptCompile Include="app\lib\scripts\CDP\NativeBridge\Patch.ts" />
+    <TypeScriptCompile Include="app\lib\scripts\CDP\NativeBridge\Utils.ts" />
     <TypeScriptCompile Include="app\modules\include\cdp.slideshow.d.ts" />
     <TypeScriptCompile Include="app\modules\include\cdp.tools.container.d.ts" />
     <TypeScriptCompile Include="app\modules\include\cdp.tools.d.ts" />
@@ -121,6 +124,15 @@
     </Content>
     <Content Include="app\lib\scripts\CDP\NativeBridge\Gate.js">
       <DependentUpon>Gate.ts</DependentUpon>
+    </Content>
+    <Content Include="app\lib\scripts\CDP\NativeBridge\Interfaces.js">
+      <DependentUpon>Interfaces.ts</DependentUpon>
+    </Content>
+    <Content Include="app\lib\scripts\CDP\NativeBridge\Patch.js">
+      <DependentUpon>Patch.ts</DependentUpon>
+    </Content>
+    <Content Include="app\lib\scripts\CDP\NativeBridge\Utils.js">
+      <DependentUpon>Utils.ts</DependentUpon>
     </Content>
     <Content Include="app\lib\scripts\CDP\NativeBridge\_module.scripts.html" />
     <Content Include="app\modules\backbone\scripts\backbone-1.1.2.js" />
@@ -538,6 +550,15 @@
     <Content Include="app\cdvtests\topcoat-0.7.5\font\SourceSansPro-Semibold.otf" />
     <Content Include="app\scripts\View\Menu.js.map">
       <DependentUpon>Menu.ts</DependentUpon>
+    </Content>
+    <Content Include="app\lib\scripts\CDP\NativeBridge\Utils.js.map">
+      <DependentUpon>Utils.ts</DependentUpon>
+    </Content>
+    <Content Include="app\lib\scripts\CDP\NativeBridge\Interfaces.js.map">
+      <DependentUpon>Interfaces.ts</DependentUpon>
+    </Content>
+    <Content Include="app\lib\scripts\CDP\NativeBridge\Patch.js.map">
+      <DependentUpon>Patch.ts</DependentUpon>
     </Content>
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

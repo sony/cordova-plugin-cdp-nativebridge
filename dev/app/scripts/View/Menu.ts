@@ -1,4 +1,5 @@
 ﻿/// <reference path="../../modules/include/frameworks.d.ts" />
+/// <reference path="../../lib/scripts/cdp.nativebridge.d.ts" />
 
 module NativeBridgeDevBed {
 	export module View {
@@ -27,6 +28,12 @@ module NativeBridgeDevBed {
 			//! jQM event: "pagebeforeshow" に対応
 			onInitialize(event: JQueryEventObject): void {
 				super.onInitialize(event);
+
+				// test
+				debugger;
+				var test = CDP.NativeBridge.ERROR_INVALID_OPERATION;
+				CDP.NativeBridge.ERROR_INVALID_OPERATION = 99;
+				var test2 = CDP.NativeBridge.ERROR_INVALID_OPERATION;
 			}
 		}
 

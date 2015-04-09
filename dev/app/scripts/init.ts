@@ -17,10 +17,12 @@ module NativeBridgeDevBed {
 
 	setup(() => {
 		require(["cdp.ui.jqm"], () => {
-			CDP.Framework.initialize().done(() => {
-				// lazy load for application scripts.
-				CDP.lazyLoad("lazy");
-				NativeBridgeDevBed.onStart();
+			require(["cdp.nativebridge"],() => {
+				CDP.Framework.initialize().done(() => {
+					// lazy load for application scripts.
+					CDP.lazyLoad("lazy");
+					NativeBridgeDevBed.onStart();
+				});
 			});
 		});
 	});

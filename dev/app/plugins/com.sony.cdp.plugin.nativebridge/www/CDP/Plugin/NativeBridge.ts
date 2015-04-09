@@ -115,7 +115,7 @@ module CDP {
 			 * @param success {Function}     [in] success call back
 			 * @param fail    {Function}     [in] fail call back
 			 * @param method  {String}       [in] Native Class のメソッド名を指定
-			 * @param args    {ArgsInfo}     [in] makeArgsInfo() の戻り値を指定
+			 * @param args    {Object[]}     [in] makeArgsInfo() の戻り値を指定
 			 * @param options {ExecOptions?} [in] 実行オプションを指定
 			 * @return task ID {String} 
 			 */
