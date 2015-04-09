@@ -64,6 +64,12 @@
     <TypeScriptSourceMap>True</TypeScriptSourceMap>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="app\cdvtests\index.html" />
+    <Content Include="app\cdvtests\jasmine-medic.js" />
+    <Content Include="app\cdvtests\main-bootstrap.js" />
+    <Content Include="app\cdvtests\main.css" />
+    <Content Include="app\cdvtests\topcoat-0.7.5\css\topcoat-mobile-light.min.css" />
+    <Content Include="app\cdvtests\topcoat-0.7.5\font\LICENSE.txt" />
     <Content Include="app\index.html" />
     <TypeScriptCompile Include="app\lib\scripts\cdp.nativebridge.d.ts" />
     <TypeScriptCompile Include="app\lib\scripts\cdp.nativebridge.ts" />
@@ -337,11 +343,15 @@
     <Content Include="app\scripts\View\Main.js">
       <DependentUpon>Main.ts</DependentUpon>
     </Content>
+    <Content Include="app\scripts\View\Menu.js">
+      <DependentUpon>Menu.ts</DependentUpon>
+    </Content>
     <Content Include="app\scripts\View\_module.scripts.html" />
     <Content Include="app\stylesheets\app.css">
       <DependentUpon>app.scss</DependentUpon>
     </Content>
     <Content Include="app\templates\main.html" />
+    <Content Include="app\templates\menu.html" />
     <Content Include="config.xml" />
     <Content Include="Gruntfile.js" />
     <Content Include="hooks\before_prepare\kick_grunt.js" />
@@ -433,6 +443,7 @@
     <Content Include="test-runner.js" />
     <Content Include="web.config" />
     <TypeScriptCompile Include="app\scripts\View\Main.ts" />
+    <TypeScriptCompile Include="app\scripts\View\Menu.ts" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -522,6 +533,12 @@
       <DependentUpon>Main.ts</DependentUpon>
     </Content>
     <Content Include="app\stylesheets\_main.scss" />
+    <Content Include="app\stylesheets\_splash.scss" />
+    <Content Include="app\cdvtests\topcoat-0.7.5\font\SourceSansPro-Light.otf" />
+    <Content Include="app\cdvtests\topcoat-0.7.5\font\SourceSansPro-Semibold.otf" />
+    <Content Include="app\scripts\View\Menu.js.map">
+      <DependentUpon>Menu.ts</DependentUpon>
+    </Content>
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
