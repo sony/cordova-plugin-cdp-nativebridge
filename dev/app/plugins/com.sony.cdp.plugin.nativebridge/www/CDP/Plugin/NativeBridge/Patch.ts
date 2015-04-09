@@ -23,7 +23,6 @@ module CDP {
 								Patch.s_fireDocumentEventOrg = (<any>cordova).fireDocumentEvent;
 							}
 							(<any>cordova).fireDocumentEvent = (eventType: string, data?: any, bNoDetach?: boolean): void => {
-								console.error("check eventType: " + eventType);
 								if ("backbutton" === eventType) {
 									Patch.s_fireDocumentEventOrg(eventType, data, true);
 								} else {

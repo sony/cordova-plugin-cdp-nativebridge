@@ -253,14 +253,15 @@ module CDP {
 
 			// Result code
 			public static get SUCCESS_OK(): number				{ return 0x0000; }
-			public static get ERROR_FAIL(): number				{ return 0x0001; }
-			public static get ERROR_CANCEL(): number			{ return 0x0002; }
-			public static get ERROR_INVALID_ARG(): number		{ return 0x0003; }
-			public static get ERROR_NOT_IMPLEMENT(): number		{ return 0x0004; }
-			public static get ERROR_NOT_SUPPORT(): number		{ return 0x0005; }
-			public static get ERROR_INVALID_OPERATION(): number { return 0x0006; }
-			public static get ERROR_CLASS_NOT_FOUND(): number	{ return 0x0007; }
-			public static get ERROR_METHOD_NOT_FOUND(): number	{ return 0x0008; }
+			public static get SUCCESS_PROGRESS(): number		{ return 0x0001; }
+			public static get ERROR_FAIL(): number				{ return 0x0002; }
+			public static get ERROR_CANCEL(): number			{ return 0x0003; }
+			public static get ERROR_INVALID_ARG(): number		{ return 0x0004; }
+			public static get ERROR_NOT_IMPLEMENT(): number		{ return 0x0005; }
+			public static get ERROR_NOT_SUPPORT(): number		{ return 0x0006; }
+			public static get ERROR_INVALID_OPERATION(): number { return 0x0007; }
+			public static get ERROR_CLASS_NOT_FOUND(): number	{ return 0x0008; }
+			public static get ERROR_METHOD_NOT_FOUND(): number	{ return 0x0009; }
 
 			///////////////////////////////////////////////////////////////////////
 			// private methods

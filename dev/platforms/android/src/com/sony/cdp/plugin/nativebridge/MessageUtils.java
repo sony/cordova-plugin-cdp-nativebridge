@@ -19,14 +19,15 @@ public class MessageUtils {
 
     // Result Code
     public static final int SUCCESS_OK                 = 0x0000;
-    public static final int ERROR_FAIL                 = 0x0001;
-    public static final int ERROR_CANCEL               = 0x0002;
-    public static final int ERROR_INVALID_ARG          = 0x0003;
-    public static final int ERROR_NOT_IMPLEMENT        = 0x0004;
-    public static final int ERROR_NOT_SUPPORT          = 0x0005;
-    public static final int ERROR_INVALID_OPERATION    = 0x0006;
-    public static final int ERROR_CLASS_NOT_FOUND      = 0x0007;
-    public static final int ERROR_METHOD_NOT_FOUND     = 0x0008;
+    public static final int SUCCESS_PROGRESS           = 0x0001;
+    public static final int ERROR_FAIL                 = 0x0002;
+    public static final int ERROR_CANCEL               = 0x0003;
+    public static final int ERROR_INVALID_ARG          = 0x0004;
+    public static final int ERROR_NOT_IMPLEMENT        = 0x0005;
+    public static final int ERROR_NOT_SUPPORT          = 0x0006;
+    public static final int ERROR_INVALID_OPERATION    = 0x0007;
+    public static final int ERROR_CLASS_NOT_FOUND      = 0x0008;
+    public static final int ERROR_METHOD_NOT_FOUND     = 0x0009;
 
     private static SparseArray<String> mErrorTbl = null;
 
@@ -170,6 +171,7 @@ public class MessageUtils {
         if (null == mErrorTbl) {
             mErrorTbl = new SparseArray<String>();
             mErrorTbl.put(SUCCESS_OK,               "SUCCESS_OK");
+            mErrorTbl.put(SUCCESS_PROGRESS,         "SUCCESS_PROGRESS");
             mErrorTbl.put(ERROR_FAIL,               "ERROR_FAIL");
             mErrorTbl.put(ERROR_CANCEL,             "ERROR_CANCEL");
             mErrorTbl.put(ERROR_INVALID_ARG,        "ERROR_INVALID_ARG");

@@ -206,7 +206,8 @@ public class Gate {
             Log.e(TAG, "Invalid cookie object.");
             return;
         }
-        PluginResult result = new PluginResult(PluginResult.Status.OK, MessageUtils.makeMessage(cookie.taskId, params));
+        int resultCode = keepCallback ? MessageUtils.SUCCESS_PROGRESS : MessageUtils.SUCCESS_OK;
+        PluginResult result = new PluginResult(PluginResult.Status.OK, MessageUtils.makeMessage(resultCode, null, cookie.taskId, params));
         result.setKeepCallback(keepCallback);
         cookie.callbackContext.sendPluginResult(result);
     }

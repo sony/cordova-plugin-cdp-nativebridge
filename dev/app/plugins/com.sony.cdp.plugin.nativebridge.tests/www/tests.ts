@@ -17,7 +17,7 @@ exports.defineAutoTests = function () {
 	});
 
 	describe("NativeBridge instance check", () => {
-		it("can new NativeBridge", function () {
+		it("can new NativeBridge", () => {
 			var instance = new NativeBridge({
 				name: "Hoge",
 				android: { packageInfo: "com.sony.cdp.nativebridge.cordova.Hoge" },
@@ -26,7 +26,7 @@ exports.defineAutoTests = function () {
 			expect(instance).not.toBeNull();
 		});
 
-		it("support miss new", function () {
+		it("support miss new", () => {
 			var instance = (<any>NativeBridge)({
 				name: "Hoge",
 				android: { packageInfo: "com.sony.cdp.nativebridge.cordova.Hoge" },
@@ -36,7 +36,7 @@ exports.defineAutoTests = function () {
 			expect(instance instanceof NativeBridge).toBe(true);
 		});
 
-		it("different instance", function () {
+		it("different instance", () => {
 			var inst1: any = new NativeBridge({
 				name: "Hoge",
 				android: { packageInfo: "com.sony.cdp.nativebridge.cordova.Hoge" },
@@ -265,17 +265,18 @@ exports.defineAutoTests = function () {
 		it("check return value",() => {
 			expect(value).toBeDefined();
 			expect(value.length).toBe(3);
-			expect(value[0].code).toBe(NativeBridge.SUCCESS_OK);
+			expect(value[0].code).toBe(NativeBridge.SUCCESS_PROGRESS);
 			expect(value[0].params).toBeDefined();
 			expect(value[0].params.length).toBe(2);
 			expect(value[0].params[0]).toBe(1);
 			expect(value[0].params[1]).toBe(false);
-			expect(value[1].code).toBe(NativeBridge.SUCCESS_OK);
+			expect(value[1].code).toBe(NativeBridge.SUCCESS_PROGRESS);
 			expect(value[1].params).toBeDefined();
 			expect(value[1].params.length).toBe(2);
 			expect(value[1].params[0]).toBe("test");
 			expect(value[1].params[1].ok).toBeDefined();
 			expect(value[1].params[1].ok).toBe(true);
+			expect(value[2].code).toBe(NativeBridge.SUCCESS_OK);
 			expect(value[2].taskId).toBe(taskId);
 			expect(value[2].params).toBeDefined();
 			expect(value[2].params.length).toBe(1);
