@@ -20,8 +20,8 @@ public class ScrollBar extends Gate {
      * Vertical ScrollBar の 表示
      */
     public void showVertical() {
-        final Cookie cookie = getCookie(true);
-        cookie.webView.setVerticalScrollBarEnabled(true);
+        final Context context = getContext(true);
+        context.webView.setVerticalScrollBarEnabled(true);
         Log.d(TAG, "showVertical() called.");
     }
 
@@ -29,8 +29,8 @@ public class ScrollBar extends Gate {
      * Vertical ScrollBar の 表示
      */
     public void hideVertical() {
-        final Cookie cookie = getCookie(true);
-        cookie.webView.setVerticalScrollBarEnabled(false);
+        final Context context = getContext(true);
+        context.webView.setVerticalScrollBarEnabled(false);
         Log.d(TAG, "hideVertical() called.");
     }
 }

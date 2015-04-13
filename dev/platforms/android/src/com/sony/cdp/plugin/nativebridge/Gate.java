@@ -25,10 +25,10 @@ public class Gate {
     private static final String TAG = "[com.sony.cdp.plugin.nativebridge][Native][Gate] ";
 
     /**
-     * @class Cookie
-     * @brief Cookie 情報を格納
+     * @class Context
+     * @brief Native Bridge Context 情報を格納
      */
-    public class Cookie {
+    protected final class Context {
         public final CordovaInterface   cordova;
         public final CordovaWebView     webView;
         public final CordovaPreferences preferences;
@@ -40,7 +40,7 @@ public class Gate {
         public final boolean           compatible;
         public final String             threadId = Thread.currentThread().getName();
         public        boolean           needSendResult = true;
-        Cookie(CordovaPlugin plugin, CordovaPreferences preferences, CallbackContext ctx, JSONObject execInfo) throws JSONException {
+        Context(CordovaPlugin plugin, CordovaPreferences preferences, CallbackContext ctx, JSONObject execInfo) throws JSONException {
             this.cordova            = plugin.cordova;
             this.webView            = plugin.webView;
             this.preferences        = preferences;
@@ -54,38 +54,38 @@ public class Gate {
         }
     }
 
-    private Cookie mCurrentCookie = null;
+    private Context mCurrentContext = null;
 
     ///////////////////////////////////////////////////////////////////////
     // public methods
 
     /**
      * Cordova 互換ハンドラ
-     * BridgeManager からコールされる
+     * NativeBridge からコールされる
      * compatible オプションが有効な場合、このメソッドがコールされる
      * クライアントは本メソッドをオーバーライド可能
      *
      * @param action          The action to execute.
      * @param args            The exec() arguments.
      * @param callbackContext The callback context used when calling back into JavaScript.
-     * @param cookie          The execute cookie. (NativeBridge extended argument)
+     * @param context         The execute context. (NativeBridge extended argument)
      * @return                Whether the action was valid.
      */
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext, Cookie cookie) throws JSONException {
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext, Context context) throws JSONException {
         Log.w(TAG, "execute() method should be override from sub class.");
         return false;
     }
 
     /**
      * メソッド呼び出し
-     * BridgeManager からコールされる
+     * NativeBridge からコールされる
      *
      * @param mehtodName    [in] 呼び出し対象のメソッド名
      * @param args          [in] exec() の引数リスト
-     * @param cookie        [in] Callback Context
+     * @param context        [in] Callback Context
      * @return ハンドリング時に true を返却
      */
-    public boolean invoke(String methodName, JSONArray args, Cookie cookie) {
+    public boolean invoke(String methodName, JSONArray args, Context context) {
         synchronized (this) {
             try {
                 Class<?> cls = this.getClass();
@@ -99,10 +99,10 @@ public class Gate {
                 }
                 Method method = cls.getMethod(methodName, argTypes);
 
-                mCurrentCookie = cookie;
+                mCurrentContext = context;
                 method.invoke(this, argValues);
-                if (mCurrentCookie.needSendResult) {
-                    MessageUtils.sendSuccessResult(cookie.callbackContext, cookie.taskId);
+                if (mCurrentContext.needSendResult) {
+                    MessageUtils.sendSuccessResult(context.callbackContext, context.taskId);
                 }
                 return true;
 
@@ -117,7 +117,7 @@ public class Gate {
             } catch (InvocationTargetException e) {
                 Log.e(TAG, "Invocation Target Exception", e);
             } finally {
-                mCurrentCookie = null;
+                mCurrentContext = null;
             }
         }
         return false;
@@ -125,12 +125,12 @@ public class Gate {
 
     /**
      * cancel 呼び出し
-     * BridgeManager からコールされる。
+     * NativeBridge からコールされる。
      * クライアントは本メソッドをオーバーライド可能
      *
-     * @param cookie [in] The execute cookie. (NativeBridge extended argument)
+     * @param context [in] The execute context. (NativeBridge extended argument)
      */
-    public void cancel(Cookie cookie) {
+    public void cancel(Context context) {
         return;
     }
 
@@ -138,8 +138,8 @@ public class Gate {
     // public static methods
 
     /**
-     * Cookie の生成
-     * BridgeManager からコールされる
+     * Native Bridge が使用する Gate.Context の生成
+     * NativeBridge からコールされる
      *
      * @param plugin          [in] cordova plugin
      * @param preferences     [in] cordova preferences
@@ -147,38 +147,38 @@ public class Gate {
      * @param execInfo        [in] JavaSript 情報
      * @throws JSONException
      */
-    public static Cookie newCookie(CordovaPlugin plugin, CordovaPreferences preferences, CallbackContext callbackContext, JSONObject execInfo) throws JSONException {
-        return new Gate().new Cookie(plugin, preferences, callbackContext, execInfo);
+    public static Context newContext(CordovaPlugin plugin, CordovaPreferences preferences, CallbackContext callbackContext, JSONObject execInfo) throws JSONException {
+        return new Gate().new Context(plugin, preferences, callbackContext, execInfo);
     }
 
     ///////////////////////////////////////////////////////////////////////
     // protected methods
 
     /**
-     * Cookie の取得
-     * getCookie() のヘルパー関数。 既定で sendResult を false に設定する。
+     * Context の取得
+     * getContext() のヘルパー関数。 既定で autoSendResult を false に設定する。
      *
-     * @return Cooke オブジェクト
+     * @return Context オブジェクト
      */
-    protected Cookie getCookie() {
-        return getCookie(false);
+    protected Context getContext() {
+        return getContext(false);
     }
 
     /**
-     * Cookie の取得
-     * method 呼び出されたスレッドからのみ Cookie 取得が可能
+     * Context の取得
+     * method 呼び出されたスレッドからのみ Context 取得が可能
      * compatible オプションを伴って呼ばれた場合は無効になる。
      *
-     * @param  sendResult [in] Framework 内で暗黙的に sendResult() する場合には true を指定
-     * @return Cooke オブジェクト
+     * @param  autoSendResult [in] Framework 内で暗黙的に sendResult() する場合には true を指定
+     * @return Context オブジェクト
      */
-    protected Cookie getCookie(boolean sendResult) {
+    protected Context getContext(boolean autoSendResult) {
         synchronized (this) {
-            if (null != mCurrentCookie && Thread.currentThread().getName().equals(mCurrentCookie.threadId)) {
-                mCurrentCookie.needSendResult = sendResult;
-                return mCurrentCookie;
+            if (null != mCurrentContext && Thread.currentThread().getName().equals(mCurrentContext.threadId)) {
+                mCurrentContext.needSendResult = autoSendResult;
+                return mCurrentContext;
             } else {
-                Log.e(TAG, "Calling getCookie() is permitted only from method entry thread.");
+                Log.e(TAG, "Calling getContext() is permitted only from method entry thread.");
                 return null;
             }
         }
@@ -193,9 +193,9 @@ public class Gate {
      * @param param [in] Native から JavaScript へ返す値を指定
      */
     protected void returnParames(Object param) {
-        if (null != mCurrentCookie && Thread.currentThread().getName().equals(mCurrentCookie.threadId)) {
-            mCurrentCookie.needSendResult = false;
-            MessageUtils.sendSuccessResult(mCurrentCookie.callbackContext, MessageUtils.makeMessage(mCurrentCookie.taskId, param));
+        if (null != mCurrentContext && Thread.currentThread().getName().equals(mCurrentContext.threadId)) {
+            mCurrentContext.needSendResult = false;
+            MessageUtils.sendSuccessResult(mCurrentContext.callbackContext, MessageUtils.makeMessage(mCurrentContext.taskId, param));
         } else {
             Log.e(TAG, "Calling returnMessage() is permitted only from method entry thread.");
         }
@@ -205,11 +205,11 @@ public class Gate {
      * 値を JavaScript へ通知
      * sendPluginResult() のヘルパー関数。 既定で keepCallback を有効にする。
      *
-     * @param cookie [in] cookie オブジェクトを指定
-     * @param params [in] パラメータを可変引数で指定
+     * @param context [in] context オブジェクトを指定
+     * @param params  [in] パラメータを可変引数で指定
      */
-    protected void notifyParams(Cookie cookie, Object... params) {
-        notifyParams(true, cookie, params);
+    protected void notifyParams(Context context, Object... params) {
+        notifyParams(true, context, params);
     }
 
     /**
@@ -217,18 +217,18 @@ public class Gate {
      * sendPluginResult() のヘルパー関数
      *
      * @param keepCallback [in] keepCallback 値
-     * @param cookie       [in] cookie オブジェクトを指定
+     * @param context      [in] context オブジェクトを指定
      * @param params       [in] パラメータを可変引数で指定
      */
-    protected void notifyParams(boolean keepCallback, Cookie cookie, Object... params) {
-        if (null == cookie || null == cookie.callbackContext) {
-            Log.e(TAG, "Invalid cookie object.");
+    protected void notifyParams(boolean keepCallback, Context context, Object... params) {
+        if (null == context || null == context.callbackContext) {
+            Log.e(TAG, "Invalid context object.");
             return;
         }
         int resultCode = keepCallback ? MessageUtils.SUCCESS_PROGRESS : MessageUtils.SUCCESS_OK;
-        PluginResult result = new PluginResult(PluginResult.Status.OK, MessageUtils.makeMessage(resultCode, null, cookie.taskId, params));
+        PluginResult result = new PluginResult(PluginResult.Status.OK, MessageUtils.makeMessage(resultCode, null, context.taskId, params));
         result.setKeepCallback(keepCallback);
-        cookie.callbackContext.sendPluginResult(result);
+        context.callbackContext.sendPluginResult(result);
     }
 
     /**
@@ -236,15 +236,15 @@ public class Gate {
      * ワーカースレッドから使用可能
      * keepCallback は false が指定される
      *
-     * @param cookie [in] cookie オブジェクトを指定
-     * @param params [in] パラメータを可変引数で指定
+     * @param context [in] context オブジェクトを指定
+     * @param params  [in] パラメータを可変引数で指定
      */
-    protected void resolveParams(Cookie cookie, Object... params) {
-        if (null == cookie || null == cookie.callbackContext) {
-            Log.e(TAG, "Invalid cookie object.");
+    protected void resolveParams(Context context, Object... params) {
+        if (null == context || null == context.callbackContext) {
+            Log.e(TAG, "Invalid context object.");
             return;
         }
-        MessageUtils.sendSuccessResult(cookie.callbackContext, MessageUtils.makeMessage(cookie.taskId, params));
+        MessageUtils.sendSuccessResult(context.callbackContext, MessageUtils.makeMessage(context.taskId, params));
     }
 
     /**
@@ -252,11 +252,11 @@ public class Gate {
      * ヘルパー関数
      * keepCallback は false が指定される
      *
-     * @param cookie [in] cookie オブジェクトを指定
-     * @param params [in] パラメータを可変引数で指定
+     * @param context [in] context オブジェクトを指定
+     * @param params  [in] パラメータを可変引数で指定
      */
-    protected void rejectParams(Cookie cookie, Object... params) {
-        rejectParams(MessageUtils.ERROR_FAIL, null, cookie, params);
+    protected void rejectParams(Context context, Object... params) {
+        rejectParams(MessageUtils.ERROR_FAIL, null, context, params);
     }
 
     /**
@@ -266,15 +266,15 @@ public class Gate {
      *
      * @param code    [in] エラーコード
      * @param message [in] エラーメッセージ
-     * @param cookie  [in] cookie オブジェクトを指定
+     * @param context [in] context オブジェクトを指定
      * @param params  [in] パラメータを可変引数で指定
      */
-    protected void rejectParams(int code, String message, Cookie cookie, Object... params) {
-        if (null == cookie || null == cookie.callbackContext) {
-            Log.e(TAG, "Invalid cookie object.");
+    protected void rejectParams(int code, String message, Context context, Object... params) {
+        if (null == context || null == context.callbackContext) {
+            Log.e(TAG, "Invalid context object.");
             return;
         }
-        MessageUtils.sendErrorResult(cookie.callbackContext, MessageUtils.makeMessage(code, message, cookie.taskId, params));
+        MessageUtils.sendErrorResult(context.callbackContext, MessageUtils.makeMessage(code, message, context.taskId, params));
     }
 
     ///////////////////////////////////////////////////////////////////////

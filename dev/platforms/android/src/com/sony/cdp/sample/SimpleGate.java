@@ -55,7 +55,7 @@ public class SimpleGate extends Gate {
     /**
      * サンプルメソッド (スレッドを扱う例)
      * 引数に "final" を指定しても、リフレクションコール可能
-     * getCookie() より、cordova plugin が扱う変数にアクセスが可能
+     * getContext() より、cordova plugin が扱う変数にアクセスが可能
      *
      * スレッド内では
      *  - notifyParams()
@@ -66,21 +66,21 @@ public class SimpleGate extends Gate {
      * @throws JSONException
      */
     public void threadMethod(final double arg1, final boolean arg2, final String arg3, final JSONObject arg4) throws JSONException {
-        final Cookie cookie = getCookie();
+        final Context context = getContext();
 
-        cookie.cordova.getThreadPool().execute(new Runnable() {
+        context.cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 String errorMsg;
                 try {
-                    notifyParams(cookie, (int)arg1, arg2);
-                    notifyParams(cookie, arg3, arg4);
+                    notifyParams(context, (int)arg1, arg2);
+                    notifyParams(context, arg3, arg4);
                     String msg = "arg1: " + String.valueOf((int)arg1) + ", arg2: " + String.valueOf(arg2) + ", arg3: " + arg3;
                     msg += (", 日本語でOK: " + String.valueOf(arg4.getBoolean("ok")));
-                    resolveParams(cookie, msg);
+                    resolveParams(context, msg);
                 } catch (JSONException e) {
                     errorMsg = "Invalid JSON object";
                     Log.e(TAG, errorMsg, e);
-                    rejectParams(MessageUtils.ERROR_FAIL, errorMsg, cookie);
+                    rejectParams(MessageUtils.ERROR_FAIL, errorMsg, context);
                 }
             }
         });
@@ -93,30 +93,30 @@ public class SimpleGate extends Gate {
      * @throws JSONException
      */
     public void progressMethod() throws JSONException {
-        final Cookie cookie = getCookie();
+        final Context context = getContext();
 
         synchronized (this) {
-            mCancelableTask.add(cookie.taskId);
+            mCancelableTask.add(context.taskId);
         }
 
-        cookie.cordova.getThreadPool().execute(new Runnable() {
+        context.cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 String errorMsg;
                 int progress = 0;
                 try {
                     while (true) {
-                        if (isCanceled(cookie.taskId)) {
-                            rejectParams(MessageUtils.ERROR_CANCEL, TAG + "progressMethod() canceled.", cookie);
+                        if (isCanceled(context.taskId)) {
+                            rejectParams(MessageUtils.ERROR_CANCEL, TAG + "progressMethod() canceled.", context);
                             break;
                         }
-                        notifyParams(cookie, progress);
+                        notifyParams(context, progress);
                         progress++;
                         Thread.sleep(100);
                     }
                 } catch (InterruptedException e) {
                     errorMsg = "InterruptedException occur.";
                     Log.e(TAG, errorMsg, e);
-                    rejectParams(MessageUtils.ERROR_FAIL, errorMsg, cookie);
+                    rejectParams(MessageUtils.ERROR_FAIL, errorMsg, context);
                 }
             }
         });
@@ -127,24 +127,24 @@ public class SimpleGate extends Gate {
 
     /**
      * Cordova 互換ハンドラ
-     * BridgeManager からコールされる
+     * NativeBridge からコールされる
      * compatible オプションが有効な場合、このメソッドがコールされる
-     * 拡張情報は cookie に格納される。
+     * 拡張情報は context に格納される。
      * クライアントは本メソッドをオーバーライド可能
      *
      * @param action          The action to execute.
      * @param args            The exec() arguments.
      * @param callbackContext The callback context used when calling back into JavaScript.
-     * @param cookie          The execute cookie. (NativeBridge extended argument)
+     * @param context         The execute context. (NativeBridge extended argument)
      * @return                Whether the action was valid.
      */
 	@Override
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext, Cookie cookie) throws JSONException {
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext, Context context) throws JSONException {
 	    if (action.equals("compatibleCheck")) {
 	        JSONArray message = new JSONArray();
-	        message.put(cookie.taskId);
+	        message.put(context.taskId);
 	        JSONObject argsInfo = new JSONObject();
-	        argsInfo.put("taskId", cookie.taskId);
+	        argsInfo.put("taskId", context.taskId);
 	        argsInfo.put("arg1", args.getInt(0));
 	        argsInfo.put("arg2", args.getBoolean(1));
 	        argsInfo.put("arg3", args.getString(2));
@@ -158,17 +158,17 @@ public class SimpleGate extends Gate {
 
     /**
      * cancel 呼び出し
-     * BridgeManager からコールされる
+     * NativeBridge からコールされる
      * クライアントは本メソッドをオーバーライドして、taskId を特定し処理を実装する
      * 全キャンセル時は taskId に null が格納されている
      *
-     * @param cookie [in] The execute cookie. (NativeBridge extended argument)
+     * @param context [in] The execute context. (NativeBridge extended argument)
      */
 	@Override
-    public void cancel(Cookie cookie) {
+    public void cancel(Context context) {
 	    synchronized (this) {
-	        if (null != cookie.taskId) {
-	            mCancelableTask.remove(cookie.taskId);
+	        if (null != context.taskId) {
+	            mCancelableTask.remove(context.taskId);
 	        } else {
 	            mCancelableTask.clear();
 	        }

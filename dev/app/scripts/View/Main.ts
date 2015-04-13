@@ -21,6 +21,7 @@ module NativeBridgeDevBed {
 			 */
 			constructor() {
 				super("/templates/main.html", "page-devbed-main", { route: "main" });
+				Framework.Router.register("menu", "/templates/menu.html");
 			}
 
 			///////////////////////////////////////////////////////////////////////
@@ -29,9 +30,8 @@ module NativeBridgeDevBed {
 			//! jQM event: "pagebeforeshow" に対応
 			onInitialize(event: JQueryEventObject): void {
 				super.onInitialize(event);
-				// TODO: test
 				this._$autoTestFrame = $("#auto-tests");
-				this._$autoTestFrame.attr("src", Framework.toUrl("cdvtests/index.html"))
+				this._$autoTestFrame.attr("src", Framework.toUrl("cdvtests/index.html"));
 			}
 		}
 

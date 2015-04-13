@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +33,7 @@ public final class NativeBridge extends CordovaPlugin {
      * @return                Whether the action was valid.
      */
     @Override
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+    public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("execTask")) {
             execTask(args.getJSONObject(0), args.getJSONArray(1), callbackContext);
             return true;
@@ -58,21 +59,21 @@ public final class NativeBridge extends CordovaPlugin {
      */
     private void execTask(JSONObject execInfo, JSONArray argsInfo, CallbackContext callbackContext) {
         try {
-            Gate.Cookie cookie = Gate.newCookie(this, this.preferences, callbackContext, execInfo);
+            Gate.Context context = Gate.newContext(this, this.preferences, callbackContext, execInfo);
 
             {
-                Gate gate = getGateClass(cookie.objectId, cookie.className);
+                Gate gate = getGateClass(context.objectId, context.className);
                 if (null == gate) {
-                    MessageUtils.sendErrorResult(callbackContext, cookie.taskId, MessageUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + cookie.className));
+                    MessageUtils.sendErrorResult(callbackContext, context.taskId, MessageUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + context.className));
                     return;
                 }
 
-                if (cookie.compatible) {
-                    if (!gate.execute(cookie.methodName, argsInfo, callbackContext, cookie)) {
-                        MessageUtils.sendErrorResult(callbackContext, cookie.taskId, MessageUtils.ERROR_NOT_IMPLEMENT, (TAG + "execute() is not implemented. class: " + cookie.className));
+                if (context.compatible) {
+                    if (!gate.execute(context.methodName, argsInfo, callbackContext, context)) {
+                        MessageUtils.sendErrorResult(callbackContext, context.taskId, MessageUtils.ERROR_NOT_IMPLEMENT, (TAG + "execute() is not implemented. class: " + context.className));
                     }
-                } else if (!gate.invoke(cookie.methodName, argsInfo, cookie)) {
-                    MessageUtils.sendErrorResult(callbackContext, cookie.taskId, MessageUtils.ERROR_METHOD_NOT_FOUND, (TAG + "method not found. method: " + cookie.className + "#" + cookie.methodName));
+                } else if (!gate.invoke(context.methodName, argsInfo, context)) {
+                    MessageUtils.sendErrorResult(callbackContext, context.taskId, MessageUtils.ERROR_METHOD_NOT_FOUND, (TAG + "method not found. method: " + context.className + "#" + context.methodName));
                 }
             }
 
@@ -94,18 +95,18 @@ public final class NativeBridge extends CordovaPlugin {
         String objectId = null;
 
         try {
-            Gate.Cookie cookie = Gate.newCookie(this, this.preferences, callbackContext, execInfo);
+            Gate.Context context = Gate.newContext(this, this.preferences, callbackContext, execInfo);
 
             {
-                Gate gate = getGateClass(cookie.objectId, cookie.className);
+                Gate gate = getGateClass(context.objectId, context.className);
                 if (null == gate) {
-                    MessageUtils.sendErrorResult(callbackContext, cookie.taskId, MessageUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + cookie.className));
+                    MessageUtils.sendErrorResult(callbackContext, context.taskId, MessageUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + context.className));
                     return null;
                 }
 
-                gate.cancel(cookie);
+                gate.cancel(context);
                 MessageUtils.sendSuccessResult(callbackContext, MessageUtils.makeMessage(null));
-                objectId = cookie.objectId;
+                objectId = context.objectId;
             }
 
         } catch (JSONException e) {

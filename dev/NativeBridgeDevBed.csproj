@@ -359,9 +359,6 @@
     <Content Include="app\scripts\View\Main.js">
       <DependentUpon>Main.ts</DependentUpon>
     </Content>
-    <Content Include="app\scripts\View\Menu.js">
-      <DependentUpon>Menu.ts</DependentUpon>
-    </Content>
     <Content Include="app\scripts\View\NativeScrollBar.js">
       <DependentUpon>NativeScrollBar.ts</DependentUpon>
     </Content>
@@ -464,7 +461,6 @@
     <Content Include="web.config" />
     <TypeScriptCompile Include="app\scripts\NativeBridge\ScrollBar.ts" />
     <TypeScriptCompile Include="app\scripts\View\Main.ts" />
-    <TypeScriptCompile Include="app\scripts\View\Menu.ts" />
     <TypeScriptCompile Include="app\scripts\View\NativeScrollBar.ts" />
   </ItemGroup>
   <ItemGroup />
@@ -558,9 +554,6 @@
     <Content Include="app\stylesheets\_splash.scss" />
     <Content Include="app\cdvtests\topcoat-0.7.5\font\SourceSansPro-Light.otf" />
     <Content Include="app\cdvtests\topcoat-0.7.5\font\SourceSansPro-Semibold.otf" />
-    <Content Include="app\scripts\View\Menu.js.map">
-      <DependentUpon>Menu.ts</DependentUpon>
-    </Content>
     <Content Include="app\lib\scripts\CDP\NativeBridge\Utils.js.map">
       <DependentUpon>Utils.ts</DependentUpon>
     </Content>
@@ -576,6 +569,7 @@
     <Content Include="app\scripts\View\NativeScrollBar.js.map">
       <DependentUpon>NativeScrollBar.ts</DependentUpon>
     </Content>
+    <Content Include="app\stylesheets\_native-scrollbar.scss" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

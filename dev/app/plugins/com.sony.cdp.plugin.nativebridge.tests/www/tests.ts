@@ -140,7 +140,7 @@ exports.defineAutoTests = function () {
 		});
 	});
 
-	describe("void method call check",() => {
+	describe("Void method call check",() => {
 		var value: NativeBridge.IResult;
 		var taskId: string;
 		var callbacks;
