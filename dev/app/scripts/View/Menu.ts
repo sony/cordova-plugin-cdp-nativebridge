@@ -12,6 +12,7 @@ module NativeBridgeDevBed {
 		/**
 		 * @class Menu
 		 * @brief Menu View クラス
+		 *        TODO: このファイルは削除
 		 */
 		class Menu extends UI.PageView<Backbone.Model> {
 

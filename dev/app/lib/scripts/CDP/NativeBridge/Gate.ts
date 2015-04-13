@@ -78,7 +78,7 @@ module CDP {
 								df.reject(error);
 							},
 							method, args, options
-							);
+						);
 
 						// set internal properties.
 						(<any>promise)._bridge = this._bridge;

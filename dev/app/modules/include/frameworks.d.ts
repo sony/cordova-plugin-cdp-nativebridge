@@ -12,3 +12,5 @@
 /// <reference path="cdp.ui.jqm.d.ts" />
 /// <reference path="cdp.ui.fs.d.ts" />
 /// <reference path="cdp.slideshow.d.ts" />
+
+/// <reference path="../../lib/scripts/cdp.nativebridge.d.ts" />
