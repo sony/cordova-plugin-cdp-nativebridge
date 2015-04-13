@@ -19,8 +19,10 @@
 
 package com.sony.cdp.plugin.nativebridge.testbed;
 
+import org.apache.cordova.CordovaActivity;
+
 import android.os.Bundle;
-import org.apache.cordova.*;
+import android.webkit.WebView;
 
 public class CordovaApp extends CordovaActivity
 {
@@ -29,7 +31,11 @@ public class CordovaApp extends CordovaActivity
     {
         super.onCreate(savedInstanceState);
         super.init();
-        // Set by <content src="index.html" /> in config.xml
         loadUrl(launchUrl);
+
+        // default scroll bar setting.
+        appView.setHorizontalScrollBarEnabled(false);
+        appView.setVerticalScrollBarEnabled(false);
+        appView.setScrollBarStyle(WebView.SCROLLBARS_INSIDE_OVERLAY);
     }
 }

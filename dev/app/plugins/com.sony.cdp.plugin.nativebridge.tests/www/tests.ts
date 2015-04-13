@@ -140,6 +140,48 @@ exports.defineAutoTests = function () {
 		});
 	});
 
+	describe("void method call check",() => {
+		var value: NativeBridge.IResult;
+		var taskId: string;
+		var callbacks;
+
+		beforeEach((done) => {
+			callbacks = {
+				win: (arg) => {
+					value = arg;
+					done();
+				},
+				fail: (err) => {
+					done();
+				}
+			};
+
+			spyOn(callbacks, "win").and.callThrough();
+			spyOn(callbacks, "fail").and.callThrough();
+
+			var instance = new CDP.Plugin.NativeBridge({
+				name: "SimpleGate",
+				android: { packageInfo: "com.sony.cdp.sample.SimpleGate" },
+				ios: { packageInfo: "CDVNBSimpleGate" }
+			});
+
+			taskId = instance.exec(callbacks.win, callbacks.fail, "voidMethod");
+		});
+
+		it("to have been called",() => {
+			expect(callbacks.win).toHaveBeenCalled();
+			expect(callbacks.fail).not.toHaveBeenCalled();
+		});
+
+		it("check return value",() => {
+			expect(value).toBeDefined();
+			expect(value.code).toBe(NativeBridge.SUCCESS_OK);
+			expect(value.message).not.toBeDefined();
+			expect(value.taskId).toBe(taskId);
+			expect(value.params).not.toBeDefined();
+		});
+	});
+
 	describe("Cordova compatible method call check",() => {
 		var value;
 		var taskId: string;

@@ -1,4 +1,5 @@
 ﻿/// <reference path="../../modules/include/frameworks.d.ts" />
+/// <reference path="../NativeBridge/ScrollBar.ts" />
 
 module NativeBridgeDevBed {
 	export module View {
@@ -14,6 +15,8 @@ module NativeBridgeDevBed {
 		 */
 		class NativeScrollBar extends UI.PageView<Backbone.Model> {
 
+			private _scrollBar: NativeBridge.ScrollBar;
+
 			/**
 			 * constructor
 			 */
@@ -25,15 +28,21 @@ module NativeBridgeDevBed {
 			// Override: UI.PageView
 
 			//! jQM event: "pagebeforeshow" に対応
-			onPageBeforeShow(event: JQueryEventObject, data?: Framework.ShowEventData): void {
-				super.onPageBeforeShow(event, data);
+			onInitialize(event: JQueryEventObject): void {
+				super.onInitialize(event);
+				this._scrollBar = new NativeBridge.ScrollBar();
 			}
 
-			//! jQM event: "pagebeforehide" に対応
-			onPageBeforeHide(event: JQueryEventObject, data?: Framework.HideEventData): void {
-				super.onPageBeforeHide(event, data);
+			//! jQM event: "pageshow" に対応
+			onPageShow(event: JQueryEventObject, data?: Framework.ShowEventData): void {
+				super.onPageShow(event, data);
+				this._scrollBar.showVertical();
 			}
 
+			//! Router "before route change" ハンドラ
+			onBeforeRouteChange(): JQueryPromise<any> {
+				return this._scrollBar.hideVertical();
+			}
 		}
 
 		var nativeScrollBarView = new NativeScrollBar();

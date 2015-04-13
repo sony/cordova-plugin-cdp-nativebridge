@@ -44,6 +44,15 @@ public class SimpleGate extends Gate {
 	}
 
     /**
+     * サンプルメソッド
+     * void 版
+     *
+     */
+    public void voidMethod() {
+        Log.d(TAG, "void voidMethod(void), called.");
+    }
+
+    /**
      * サンプルメソッド (スレッドを扱う例)
      * 引数に "final" を指定しても、リフレクションコール可能
      * getCookie() より、cordova plugin が扱う変数にアクセスが可能

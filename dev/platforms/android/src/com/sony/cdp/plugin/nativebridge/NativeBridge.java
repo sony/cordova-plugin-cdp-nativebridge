@@ -58,7 +58,7 @@ public final class NativeBridge extends CordovaPlugin {
      */
     private void execTask(JSONObject execInfo, JSONArray argsInfo, CallbackContext callbackContext) {
         try {
-            Gate.Cookie cookie = Gate.newCookie(cordova, callbackContext, execInfo);
+            Gate.Cookie cookie = Gate.newCookie(this, this.preferences, callbackContext, execInfo);
 
             {
                 Gate gate = getGateClass(cookie.objectId, cookie.className);
@@ -94,7 +94,7 @@ public final class NativeBridge extends CordovaPlugin {
         String objectId = null;
 
         try {
-            Gate.Cookie cookie = Gate.newCookie(cordova, callbackContext, execInfo);
+            Gate.Cookie cookie = Gate.newCookie(this, this.preferences, callbackContext, execInfo);
 
             {
                 Gate gate = getGateClass(cookie.objectId, cookie.className);

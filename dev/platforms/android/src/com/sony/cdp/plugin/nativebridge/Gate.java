@@ -5,6 +5,9 @@ import java.lang.reflect.Method;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaPreferences;
+import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +30,8 @@ public class Gate {
      */
     public class Cookie {
         public final CordovaInterface   cordova;
+        public final CordovaWebView     webView;
+        public final CordovaPreferences preferences;
         public final CallbackContext    callbackContext;
         public final String             className;
         public final String             methodName;
@@ -35,8 +40,10 @@ public class Gate {
         public final boolean           compatible;
         public final String             threadId = Thread.currentThread().getName();
         public        boolean           needSendResult = true;
-        Cookie(CordovaInterface cordova, CallbackContext ctx, JSONObject execInfo) throws JSONException {
-            this.cordova            = cordova;
+        Cookie(CordovaPlugin plugin, CordovaPreferences preferences, CallbackContext ctx, JSONObject execInfo) throws JSONException {
+            this.cordova            = plugin.cordova;
+            this.webView            = plugin.webView;
+            this.preferences        = preferences;
             this.callbackContext    = ctx;
             JSONObject feature = execInfo.getJSONObject("feature");
             this.className  = feature.getJSONObject("android").getString("packageInfo");
@@ -134,13 +141,14 @@ public class Gate {
      * Cookie の生成
      * BridgeManager からコールされる
      *
-     * @param cordova         [in] cordova interface
+     * @param plugin          [in] cordova plugin
+     * @param preferences     [in] cordova preferences
      * @param callbackContext [in] callback context
      * @param execInfo        [in] JavaSript 情報
      * @throws JSONException
      */
-    public static Cookie newCookie(CordovaInterface cordova, CallbackContext callbackContext, JSONObject execInfo) throws JSONException {
-        return new Gate().new Cookie(cordova, callbackContext, execInfo);
+    public static Cookie newCookie(CordovaPlugin plugin, CordovaPreferences preferences, CallbackContext callbackContext, JSONObject execInfo) throws JSONException {
+        return new Gate().new Cookie(plugin, preferences, callbackContext, execInfo);
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -148,15 +156,26 @@ public class Gate {
 
     /**
      * Cookie の取得
-     * method 呼び出されたスレッドからのみ Cookie 取得が可能
-     * compatible オプションを伴って呼ばれた場合は無効になる。
+     * getCookie() のヘルパー関数。 既定で sendResult を false に設定する。
      *
      * @return Cooke オブジェクト
      */
     protected Cookie getCookie() {
+        return getCookie(false);
+    }
+
+    /**
+     * Cookie の取得
+     * method 呼び出されたスレッドからのみ Cookie 取得が可能
+     * compatible オプションを伴って呼ばれた場合は無効になる。
+     *
+     * @param  sendResult [in] Framework 内で暗黙的に sendResult() する場合には true を指定
+     * @return Cooke オブジェクト
+     */
+    protected Cookie getCookie(boolean sendResult) {
         synchronized (this) {
             if (null != mCurrentCookie && Thread.currentThread().getName().equals(mCurrentCookie.threadId)) {
-                mCurrentCookie.needSendResult = false;
+                mCurrentCookie.needSendResult = sendResult;
                 return mCurrentCookie;
             } else {
                 Log.e(TAG, "Calling getCookie() is permitted only from method entry thread.");

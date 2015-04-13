@@ -56,7 +56,7 @@ module CDP {
 			 * 指定した method 名に対応する Native Class の method を呼び出す。
 			 *
 			 * @param method  {String}       [in] Native Class のメソッド名を指定
-			 * @param args    {ArgsInfo}     [in] makeArgsInfo() の戻り値を指定
+			 * @param args    {Object[]}     [in] 引数を配列で指定
 			 * @param options {ExecOptions?} [in] 実行オプションを指定
 			 * @return {Promise} NativeBridge.Promise オブジェクト
 			 */

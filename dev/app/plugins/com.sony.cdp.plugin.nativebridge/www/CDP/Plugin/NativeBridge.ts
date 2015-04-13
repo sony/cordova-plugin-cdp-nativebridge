@@ -115,7 +115,7 @@ module CDP {
 			 * @param success {Function}     [in] success call back
 			 * @param fail    {Function}     [in] fail call back
 			 * @param method  {String}       [in] Native Class のメソッド名を指定
-			 * @param args    {Object[]}     [in] makeArgsInfo() の戻り値を指定
+			 * @param args    {Object[]}     [in] 引数を配列で指定
 			 * @param options {ExecOptions?} [in] 実行オプションを指定
 			 * @return task ID {String} 
 			 */
@@ -134,7 +134,7 @@ module CDP {
 					taskId: taskId,
 					method: method,
 					compatible: opt.compatible,
-					args: args || [],
+					args: (null != args && args instanceof Array) ? args : ((null == args) ? [] : [].slice.apply(args)),
 				};
 
 				var _fireCallback = (taskId: string, func: (result?: IResult) => void, result: IResult, post: boolean): void => {
