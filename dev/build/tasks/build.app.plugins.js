@@ -62,7 +62,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: '<%= app_plugins_root_dir %>',
-                        src: ['<%= app_plugins_work_id %>/<%= plugins_www %>/tests.js'],
+                        src: ['<%= app_plugins_work_id %>/<%= plugins_www %>/<%= app_plugins_work_script_name %>.js'],
                         dest: '<%= app_plugins_pkgdir %>',
                     },
                 ],
@@ -119,7 +119,7 @@ module.exports = function (grunt) {
                 },
                 files: [
                     {
-                        '': '<%= app_plugins_root_dir %>/<%= app_plugins_work_id %>/<%= plugins_www %>/tests.ts',
+                        '': '<%= app_plugins_root_dir %>/<%= app_plugins_work_id %>/<%= plugins_www %>/<%= app_plugins_work_script_name %>.ts',
                     },
                 ],
             },
@@ -234,9 +234,9 @@ module.exports = function (grunt) {
         var scripts = grunt.config.get('app_plugins_work_scripts_info');
         var script;
 
-        // special case: the system assumes auto-test script when script is "tests.ts" and plugin's id is finished ".tests".
+        // special case: the system assumes auto-test script when plugin's id is finished ".tests".
         var isTests = function (scripts) {
-            return ('tests' === script && grunt.config.get('app_plugins_work_id').match(/\.tests$/i));
+            return !!grunt.config.get('app_plugins_work_id').match(/\.tests$/i);
         };
 
         if (!!scripts && 0 < scripts.length) {
@@ -309,7 +309,7 @@ module.exports = function (grunt) {
 
             // for ios
             (function () {
-                var $ios = $(domPluginXml).find('platform[name=ios]').find('source-file');
+                var $ios = $(domPluginXml).find('platform[name=ios]').find('source-file, header-file');
                 $ios.each(function (index, src) {
                     var pluginSrc = $(src).attr('src');
                     var pluginDst = $(src).attr('target-dir');
