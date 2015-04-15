@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,9 +32,9 @@ public final class NativeBridge extends CordovaPlugin {
      * @return                Whether the action was valid.
      */
     @Override
-    public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("execTask")) {
-            execTask(args.getJSONObject(0), args.getJSONArray(1), callbackContext);
+            execTask(args.getJSONObject(0), getMethodArgs(args), callbackContext);
             return true;
         } else if (action.equals("cancelTask")) {
             cancelTask(args.getJSONObject(0), callbackContext);
@@ -49,6 +48,21 @@ public final class NativeBridge extends CordovaPlugin {
 
     ///////////////////////////////////////////////////////////////////////
     // private methods
+
+    /**
+     * 生引数をメソッド引数に変換
+     *
+     * @param rawArgs [in] cordova.exec() に指定された引数
+     * @return JSONArray (index == 1 からの引数リスト)
+     * @throws JSONException
+     */
+    private JSONArray getMethodArgs(JSONArray rawArgs) throws JSONException {
+        JSONArray methodArgs = new JSONArray();
+        for (int i = 1; i < rawArgs.length(); i++) {
+            methodArgs.put(rawArgs.get(i));
+        }
+        return methodArgs;
+    }
 
     /**
      * "execTask" のエントリ
@@ -69,7 +83,7 @@ public final class NativeBridge extends CordovaPlugin {
                 }
 
                 if (context.compatible) {
-                    if (!gate.execute(context.methodName, argsInfo, callbackContext, context)) {
+                    if (!gate.execute(context.methodName, argsInfo, context)) {
                         MessageUtils.sendErrorResult(callbackContext, context.taskId, MessageUtils.ERROR_NOT_IMPLEMENT, (TAG + "execute() is not implemented. class: " + context.className));
                     }
                 } else if (!gate.invoke(context.methodName, argsInfo, context)) {

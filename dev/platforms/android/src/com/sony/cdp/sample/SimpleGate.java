@@ -3,7 +3,6 @@ package com.sony.cdp.sample;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -132,14 +131,13 @@ public class SimpleGate extends Gate {
      * 拡張情報は context に格納される。
      * クライアントは本メソッドをオーバーライド可能
      *
-     * @param action          The action to execute.
-     * @param args            The exec() arguments.
-     * @param callbackContext The callback context used when calling back into JavaScript.
-     * @param context         The execute context. (NativeBridge extended argument)
-     * @return                Whether the action was valid.
+     * @param action  [in] アクション名.
+     * @param args    [in] exec() 引数.
+     * @param context [in] Gate.Context を格納. CallbackContext へは context.callbackContextでアクセス可
+     * @return  action の成否 true:成功 / false: 失敗
      */
     @Override
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext, Context context) throws JSONException {
+    public boolean execute(String action, JSONArray args, Context context) throws JSONException {
         if (action.equals("compatibleCheck")) {
             JSONArray message = new JSONArray();
             message.put(context.taskId);
@@ -150,7 +148,7 @@ public class SimpleGate extends Gate {
             argsInfo.put("arg3", args.getString(2));
             argsInfo.put("arg4", args.getJSONObject(3));
             message.put(argsInfo);
-            callbackContext.success(message);
+            context.callbackContext.success(message);
             return true;
         }
         return false;

@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaPreferences;
@@ -60,18 +61,32 @@ public class Gate {
     // public methods
 
     /**
-     * Cordova 互換ハンドラ
+     * Cordova 互換ハンドラ (JSONArray 版)
      * NativeBridge からコールされる
      * compatible オプションが有効な場合、このメソッドがコールされる
      * クライアントは本メソッドをオーバーライド可能
      *
-     * @param action          The action to execute.
-     * @param args            The exec() arguments.
-     * @param callbackContext The callback context used when calling back into JavaScript.
-     * @param context         The execute context. (NativeBridge extended argument)
-     * @return                Whether the action was valid.
+     * @param action  [in] アクション名.
+     * @param args    [in] exec() 引数.
+     * @param context [in] Gate.Context を格納. CallbackContext へは context.callbackContextでアクセス可
+     * @return  action の成否 true:成功 / false: 失敗
      */
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext, Context context) throws JSONException {
+    public boolean execute(String action, JSONArray args, Context context) throws JSONException {
+        return execute(action, new CordovaArgs(args), context);
+    }
+
+    /**
+     * Cordova 互換ハンドラ (CordovaArgs 版)
+     * NativeBridge からコールされる
+     * compatible オプションが有効な場合、このメソッドがコールされる
+     * クライアントは本メソッドをオーバーライド可能
+     *
+     * @param action  [in] アクション名.
+     * @param args    [in] exec() 引数.
+     * @param context [in] Gate.Context を格納. CallbackContext へは context.callbackContextでアクセス可
+     * @return  action の成否 true:成功 / false: 失敗
+     */
+    public boolean execute(String action, CordovaArgs args, Context context) throws JSONException {
         Log.w(TAG, "execute() method should be override from sub class.");
         return false;
     }

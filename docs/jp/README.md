@@ -438,26 +438,25 @@ public class SimpleGate extends Gate {
 
 ```java
     /**
-     * Cordova 互換ハンドラ
+     * Cordova 互換ハンドラ (CordovaArgs 版)
      * NativeBridge からコールされる
      * compatible オプションが有効な場合、このメソッドがコールされる
-     * 拡張情報は context に格納される。
      * クライアントは本メソッドをオーバーライド可能
      *
-     * @param action          The action to execute.
-     * @param args            The exec() arguments.
-     * @param callbackContext The callback context used when calling back into JavaScript.
-     * @param context         The execute context. (NativeBridge extended argument)
-     * @return                Whether the action was valid.
+     * @param action  [in] アクション名.
+     * @param args    [in] exec() 引数.
+     * @param context [in] Gate.Context を格納. CallbackContext へは context.callbackContextでアクセス可
+     * @return  action の成否 true:成功 / false: 失敗
      */
     @Override
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext, Context context) throws JSONException {
+    public boolean execute(String action, CordovaArgs args, Context context) throws JSONException {
         if (action.equals("compatibleMethod")) {
-            // 第4引数は context がわたるため、CordovaPlugin 同等の処理は可能
+            // 第3引数には Gate.Context がわたるため、CordovaPlugin 同等の処理は可能
 
             // 任意の処理
             :
-            callbackContext.success(message);
+            // CallbackContext へアクセス
+            context.callbackContext.success(message);
             return true;
         }
         return false;
@@ -469,15 +468,15 @@ public class SimpleGate extends Gate {
 - com.sony.cdp.plugin.nativebridge.Gate クラスが提供するメソッドは以下です。
  ※より自由にコールバックを操作するためには、com.sony.cdp.plugin.nativebridge.MessageUtils の javadoc コメントを参照してください。
 
-| method                                                                                                                  | description                                                                                                                                                                                                                                  |
-|:------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `boolean execute(String action, JSONArray args, CallbackContext callbackContext, Context context) throws JSONException` | Cordova 互換ハンドラです。{ compatible: true } を指定したときに有効になります。                                                                                                                                                              |
-| `void cancel(Context context)`                                                                                          | タスクがキャンセルされたときに呼び出されます。タスクを特定するためには `context.taskId` が利用できます。`null` である場合、all cancel が指定されたことになります。非同期タスクの場合、キャンセル処理はクライアントが実装する必要があります。 |
-| `Context getContext(boolean autoSendResult)`                                                                            | メソッドの開始スレッドのみアクセスできます。非同期処理を行う場合、callback に必要な情報としてキャッシュする必要があります。引数なし版は、`autoSendResult` は `false` に設定されます。                                                        |
-| `void returnParames(Object param)`                                                                                      | 結果を JavaScript へ返却します。`return` ステートメントと同等のセマンティクスを持ち、開始スレッドからのみ呼び出すことができます。                                                                                                            |
-| `void notifyParams(boolean keepCallback, Context context, Object... params)`                                            | 値を JavaScript へ通知します。`jQuery.Deferred.notify` メソッドと同等のセマンティクスを持ちます。`keepCallback` 無し版は、既定で `true` が設定されます。`ResultCode` は `SUCCESS_PROGRESS` が設定されます。                                  |
-| `void resolveParams(Context context, Object... params)`                                                                 | 値を JavaScript へ返却します。`jQuery.Deferred.resolve` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、`ResultCode` は `SUCCESS_OK`が設定されます。                                                                         |
-| `void rejectParams(int code, String message, Context context, Object... params)`                                        | エラーを JavaScript へ返却します。`jQuery.Deferred.reject` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、簡易版では `ResultCode` は `ERROR_FAIL`が設定されます。                                                           |
+| method                                                                                   | description                                                                                                                                                                                                                                  |
+|:-----------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `boolean execute(String action, CordovaArgs args, Context context) throws JSONException` | Cordova 互換ハンドラです。{ compatible: true } を指定したときに有効になります。 CordovaArgs 版と JSONArray 版のオーバーライドが可能です。                                                                                                    |
+| `void cancel(Context context)`                                                           | タスクがキャンセルされたときに呼び出されます。タスクを特定するためには `context.taskId` が利用できます。`null` である場合、all cancel が指定されたことになります。非同期タスクの場合、キャンセル処理はクライアントが実装する必要があります。 |
+| `Context getContext(boolean autoSendResult)`                                             | メソッドの開始スレッドのみアクセスできます。非同期処理を行う場合、callback に必要な情報としてキャッシュする必要があります。引数なし版は、`autoSendResult` は `false` に設定されます。                                                        |
+| `void returnParames(Object param)`                                                       | 結果を JavaScript へ返却します。`return` ステートメントと同等のセマンティクスを持ち、開始スレッドからのみ呼び出すことができます。                                                                                                            |
+| `void notifyParams(boolean keepCallback, Context context, Object... params)`             | 値を JavaScript へ通知します。`jQuery.Deferred.notify` メソッドと同等のセマンティクスを持ちます。`keepCallback` 無し版は、既定で `true` が設定されます。`ResultCode` は `SUCCESS_PROGRESS` が設定されます。                                  |
+| `void resolveParams(Context context, Object... params)`                                  | 値を JavaScript へ返却します。`jQuery.Deferred.resolve` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、`ResultCode` は `SUCCESS_OK`が設定されます。                                                                         |
+| `void rejectParams(int code, String message, Context context, Object... params)`         | エラーを JavaScript へ返却します。`jQuery.Deferred.reject` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、簡易版では `ResultCode` は `ERROR_FAIL`が設定されます。                                                           |
 
 
 - com.sony.cdp.plugin.nativebridge.Gate.Context クラスが提供するプロパティは以下です。

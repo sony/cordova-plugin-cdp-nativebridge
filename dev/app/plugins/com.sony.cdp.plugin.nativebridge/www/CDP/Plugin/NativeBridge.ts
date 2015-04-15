@@ -62,7 +62,6 @@ module CDP {
 				taskId: string;				//!< タスクID
 				method: string;				//!< 対象クラスのメソッド名
 				compatible: boolean;		//!< cordova 標準と同じ引数で Native をコール
-				args: any[];				//!< 引数情報を格納
 			}
 		}
 
@@ -134,7 +133,6 @@ module CDP {
 					taskId: taskId,
 					method: method,
 					compatible: opt.compatible,
-					args: (null != args && args instanceof Array) ? args : ((null == args) ? [] : [].slice.apply(args)),
 				};
 
 				var _fireCallback = (taskId: string, func: (result?: IResult) => void, result: IResult, post: boolean): void => {
@@ -154,6 +152,9 @@ module CDP {
 				};
 
 				var errorMsg: string;
+
+				var rawArgs: any[] = (null != args && args instanceof Array) ? args : ((null == args) ? [] : [].slice.apply(args));
+				rawArgs.unshift(execInfo);
 
 				// すでに dispose されていた場合はエラー
 				if (null == this._objectId) {
@@ -189,7 +190,7 @@ module CDP {
 					},
 					(result: IResult): void => {
 						_fireCallback(taskId, fail, result, opt.post);
-					}, "NativeBridge", opt.pluginAction, [execInfo, execInfo.args]
+					}, "NativeBridge", opt.pluginAction, rawArgs
 				);
 
 				return taskId;
