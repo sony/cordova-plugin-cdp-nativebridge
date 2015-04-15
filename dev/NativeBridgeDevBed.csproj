@@ -41,7 +41,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>60454</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
@@ -372,7 +372,12 @@
     <Content Include="config.xml" />
     <Content Include="Gruntfile.js" />
     <Content Include="hooks\before_prepare\kick_grunt.js" />
+    <Content Include="platforms\android\src\com\sony\cdp\plugin\nativebridge\Gate.java" />
+    <Content Include="platforms\android\src\com\sony\cdp\plugin\nativebridge\MessageUtils.java" />
     <Content Include="platforms\android\src\com\sony\cdp\plugin\nativebridge\NativeBridge.java" />
+    <Content Include="platforms\android\src\com\sony\cdp\plugin\nativebridge\testbed\CordovaApp.java" />
+    <Content Include="platforms\android\src\com\sony\cdp\sample\ScrollBar.java" />
+    <Content Include="platforms\android\src\com\sony\cdp\sample\SimpleGate.java" />
     <Content Include="plugins\org.apache.cordova.test-framework\plugin.xml" />
     <Content Include="plugins\org.apache.cordova.test-framework\www\assets\index.html" />
     <Content Include="plugins\org.apache.cordova.test-framework\www\assets\jasmine-2.2.0\boot.js" />
