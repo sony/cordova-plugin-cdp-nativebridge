@@ -346,7 +346,7 @@ public class SimpleGate extends Gate {
             })
             .fail((error: CDP.NativeBridge.IResult) => {
                 // 失敗
-                console.log(result.code === CDP.NativeBridge.ERROR_CANCEL);   // true
+                console.log(error.code === CDP.NativeBridge.ERROR_CANCEL);   // true
                 console.error(error.message);
             });
     }
