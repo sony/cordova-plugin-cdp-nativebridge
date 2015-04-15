@@ -76,7 +76,7 @@ module CDP {
 		import ExecInfo = NativeBridge.ExecInfo;
 
 		var TAG = "[CDP.Plugin.NativeBridge] ";
-		var _uitls = cordova.require("cordova/utils");
+		var _utils = cordova.require("cordova/utils");
 
 		/**
 		 * @class NativeBridge
@@ -100,7 +100,7 @@ module CDP {
 					return new NativeBridge(feature, options);
 				}
 				this._feature = feature;
-				this._objectId = "object:" + _uitls.createUUID();
+				this._objectId = "object:" + _utils.createUUID();
 				this._execTaskHistory = {};
 			}
 
@@ -125,7 +125,7 @@ module CDP {
 					pluginAction: "execTask",
 				}, options);
 
-				var taskId = ("execTask" !== opt.pluginAction) ? opt.taskId : (this._objectId + "-task:" + _uitls.createUUID());
+				var taskId = ("execTask" !== opt.pluginAction) ? opt.taskId : (this._objectId + "-task:" + _utils.createUUID());
 
 				var execInfo: ExecInfo = {
 					feature: this._feature,
