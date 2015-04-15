@@ -13,7 +13,7 @@ import android.util.SparseArray;
  * @class MessageUtils
  * @brief cdp.plugin.nativebridge の Cordova PluginResult メッセージを生成するユーティリティクラス
  */
-public class MessageUtils {
+public final class MessageUtils {
 
     private static final String TAG = "[com.sony.cdp.plugin.nativebridge][Native][MessageUtils] ";
 

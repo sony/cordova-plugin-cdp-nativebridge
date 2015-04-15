@@ -100,10 +100,10 @@ public class Gate {
      *
      * @param mehtodName    [in] 呼び出し対象のメソッド名
      * @param args          [in] exec() の引数リスト
-     * @param context        [in] Callback Context
+     * @param context       [in] Callback Context
      * @return エラー情報
      */
-    public JSONObject invoke(String methodName, JSONArray args, Context context) {
+    public final JSONObject invoke(String methodName, JSONArray args, Context context) {
         synchronized (this) {
             try {
                 Class<?> cls = this.getClass();
@@ -150,7 +150,7 @@ public class Gate {
      *
      * @param context [in] Gate.Context オブジェクト
      */
-    public void cancel(Context context) {
+    public final void cancel(final Context context) {
         setCancelState(context.taskId);
         onCancel(context.taskId);
         return;
@@ -169,7 +169,7 @@ public class Gate {
      * @param execInfo        [in] JavaSript 情報
      * @throws JSONException
      */
-    public static Context newContext(CordovaPlugin plugin, CordovaPreferences preferences, CallbackContext callbackContext, JSONObject execInfo) throws JSONException {
+    public final static Context newContext(CordovaPlugin plugin, CordovaPreferences preferences, CallbackContext callbackContext, JSONObject execInfo) throws JSONException {
         return new Gate().new Context(plugin, preferences, callbackContext, execInfo);
     }
 
@@ -182,7 +182,7 @@ public class Gate {
      *
      * @return Context オブジェクト
      */
-    protected Context getContext() {
+    protected final Context getContext() {
         return getContext(false);
     }
 
@@ -194,7 +194,7 @@ public class Gate {
      * @param  autoSendResult [in] Framework 内で暗黙的に sendResult() する場合には true を指定
      * @return Context オブジェクト
      */
-    protected Context getContext(boolean autoSendResult) {
+    protected final Context getContext(boolean autoSendResult) {
         synchronized (this) {
             if (null != mCurrentContext && Thread.currentThread().getName().equals(mCurrentContext.threadId)) {
                 mCurrentContext.needSendResult = autoSendResult;
@@ -214,7 +214,7 @@ public class Gate {
      *
      * @param param [in] Native から JavaScript へ返す値を指定
      */
-    protected void returnParames(Object param) {
+    protected final void returnParames(Object param) {
         if (null != mCurrentContext && Thread.currentThread().getName().equals(mCurrentContext.threadId)) {
             mCurrentContext.needSendResult = false;
             MessageUtils.sendSuccessResult(mCurrentContext.callbackContext, MessageUtils.makeMessage(mCurrentContext.taskId, param));
@@ -230,7 +230,7 @@ public class Gate {
      * @param context [in] context オブジェクトを指定
      * @param params  [in] パラメータを可変引数で指定
      */
-    protected void notifyParams(Context context, Object... params) {
+    protected final void notifyParams(final Context context, Object... params) {
         notifyParams(true, context, params);
     }
 
@@ -242,7 +242,7 @@ public class Gate {
      * @param context      [in] context オブジェクトを指定
      * @param params       [in] パラメータを可変引数で指定
      */
-    protected void notifyParams(boolean keepCallback, Context context, Object... params) {
+    protected final void notifyParams(boolean keepCallback, final Context context, Object... params) {
         if (null == context || null == context.callbackContext) {
             Log.e(TAG, "Invalid context object.");
             return;
@@ -261,7 +261,7 @@ public class Gate {
      * @param context [in] context オブジェクトを指定
      * @param params  [in] パラメータを可変引数で指定
      */
-    protected void resolveParams(Context context, Object... params) {
+    protected final void resolveParams(final Context context, Object... params) {
         if (null == context || null == context.callbackContext) {
             Log.e(TAG, "Invalid context object.");
             return;
@@ -277,7 +277,7 @@ public class Gate {
      * @param context [in] context オブジェクトを指定
      * @param params  [in] パラメータを可変引数で指定
      */
-    protected void rejectParams(Context context, Object... params) {
+    protected final void rejectParams(final Context context, Object... params) {
         rejectParams(MessageUtils.ERROR_FAIL, null, context, params);
     }
 
@@ -291,7 +291,7 @@ public class Gate {
      * @param context [in] context オブジェクトを指定
      * @param params  [in] パラメータを可変引数で指定
      */
-    protected void rejectParams(int code, String message, Context context, Object... params) {
+    protected final void rejectParams(int code, String message, final Context context, Object... params) {
         if (null == context || null == context.callbackContext) {
             Log.e(TAG, "Invalid context object.");
             return;
@@ -304,7 +304,7 @@ public class Gate {
      *
      * @param context [in] context オブジェクトを指定
      */
-    protected void setCancelable(final Context context) {
+    protected final void setCancelable(final Context context) {
         synchronized (this) {
             mCancelableTask.put(context.taskId, false);
         }
@@ -315,7 +315,7 @@ public class Gate {
      *
      * @param context [in] context オブジェクトを指定
      */
-    protected void removeCancelable(final Context context) {
+    protected final void removeCancelable(final Context context) {
         synchronized (this) {
             mCancelableTask.remove(context.taskId);
         }
@@ -326,7 +326,7 @@ public class Gate {
      *
      * @param context [in] context オブジェクトを指定
      */
-    protected boolean isCanceled(final Context context) {
+    protected final boolean isCanceled(final Context context) {
         synchronized (this) {
             return mCancelableTask.get(context.taskId);
         }
