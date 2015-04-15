@@ -143,13 +143,22 @@ module SampleApp {
              * super.exec() 呼び出し
              * 第1引数は メソッド名を文字列で指定
              * 第2引数は arguments を使用可能. (<any>キャストは必要)
+             *
+             * !! 注意点 !!
+             * 引数に null/undefined が渡るような場合、このレイヤで default 引数などを用いて実体を入れる必要があり。
              */
             return super.exec("coolMethod", <any>arguments);
         }
     }
 }
-
 ```
+メソッド要件の注意点として以下があります。
+
+- `cordova` を呼び出すため必ず非同期メソッドとなります。
+    - 戻り値の型は既定で `CDP.NativeBridge.Promise` です。
+- 引数に `null`, `undefined` が渡ると、`CDP.NativeBridge.ERROR_INVALID_ARG` が発生します。
+    - 渡る可能性がある場合は、default 引数などを用いてメソッド定義内で実体に置換してください。
+
 
 上記のクラスは以下のように使用できます。
 
@@ -363,18 +372,18 @@ public class SimpleGate extends Gate {
     public void progressMethod() throws JSONException {
         final Context context = getContext();
 
-        synchronized (this) {
-            // context から taskId をキャッシュしておく
-            mCancelableTask.add(context.taskId);
-        }
-
         context.cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 String errorMsg;
                 int progress = 0;
                 try {
+                    // キャンセル対象処理として登録
+                    setCancelable(context);
+
+                    // 任意の処理
                     while (true) {
-                        if (isCanceled(context.taskId)) {
+                        // キャンセルされたかチェック
+                        if (isCanceled(context)) {
                             rejectParams(MessageUtils.ERROR_CANCEL, TAG + "progressMethod() canceled.", context);
                             break;
                         }
@@ -382,32 +391,24 @@ public class SimpleGate extends Gate {
                         progress++;
                         Thread.sleep(100);
                     }
+
                 } catch (InterruptedException e) {
                     errorMsg = "InterruptedException occur.";
                     Log.e(TAG, errorMsg, e);
                     rejectParams(MessageUtils.ERROR_FAIL, errorMsg, context);
+                } finally {
+                    // キャンセル対象から登録解除
+                    removeCancelable(context);
                 }
             }
-        });
     }
 
-    /**
-     * cancel 呼び出し
-     * NativeBridge からコールされる
-     * クライアントは本メソッドをオーバーライドして、taskId を特定し処理を実装する
-     * 全キャンセル時は taskId に null が格納されている
-     *
-     * @param context [in] The execute context. (NativeBridge extended argument)
-     */
+    //! キャンセルイベントハンドラ
     @Override
-    public void cancel(Context context) {
-        synchronized (this) {
-            if (null != context.taskId) {                   // taskId を特定
-                mCancelableTask.remove(context.taskId);
-            } else {                                        // taskId が null のときは all cancel
-                mCancelableTask.clear();
-            }
-        }
+    protected void onCancel(String taskId) {
+        // キャンセルが発生した場合、onCancel() が発火
+        // 引数からタスクを特定し、独自の処理をオーバーライドすることも可能
+        Log.d(TAG, "cancel task: " + taskId);
     }
 ```
 
@@ -468,15 +469,18 @@ public class SimpleGate extends Gate {
 - com.sony.cdp.plugin.nativebridge.Gate クラスが提供するメソッドは以下です。
  ※より自由にコールバックを操作するためには、com.sony.cdp.plugin.nativebridge.MessageUtils の javadoc コメントを参照してください。
 
-| method                                                                                   | description                                                                                                                                                                                                                                  |
-|:-----------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `boolean execute(String action, CordovaArgs args, Context context) throws JSONException` | Cordova 互換ハンドラです。{ compatible: true } を指定したときに有効になります。 CordovaArgs 版と JSONArray 版のオーバーライドが可能です。                                                                                                    |
-| `void cancel(Context context)`                                                           | タスクがキャンセルされたときに呼び出されます。タスクを特定するためには `context.taskId` が利用できます。`null` である場合、all cancel が指定されたことになります。非同期タスクの場合、キャンセル処理はクライアントが実装する必要があります。 |
-| `Context getContext(boolean autoSendResult)`                                             | メソッドの開始スレッドのみアクセスできます。非同期処理を行う場合、callback に必要な情報としてキャッシュする必要があります。引数なし版は、`autoSendResult` は `false` に設定されます。                                                        |
-| `void returnParames(Object param)`                                                       | 結果を JavaScript へ返却します。`return` ステートメントと同等のセマンティクスを持ち、開始スレッドからのみ呼び出すことができます。                                                                                                            |
-| `void notifyParams(boolean keepCallback, Context context, Object... params)`             | 値を JavaScript へ通知します。`jQuery.Deferred.notify` メソッドと同等のセマンティクスを持ちます。`keepCallback` 無し版は、既定で `true` が設定されます。`ResultCode` は `SUCCESS_PROGRESS` が設定されます。                                  |
-| `void resolveParams(Context context, Object... params)`                                  | 値を JavaScript へ返却します。`jQuery.Deferred.resolve` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、`ResultCode` は `SUCCESS_OK`が設定されます。                                                                         |
-| `void rejectParams(int code, String message, Context context, Object... params)`         | エラーを JavaScript へ返却します。`jQuery.Deferred.reject` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、簡易版では `ResultCode` は `ERROR_FAIL`が設定されます。                                                           |
+| method                                                                                   | description                                                                                                                                                                                                 |
+|:-----------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `boolean execute(String action, CordovaArgs args, Context context) throws JSONException` | Cordova 互換ハンドラです。{ compatible: true } を指定したときに有効になります。 CordovaArgs 版と JSONArray 版のオーバーライドが可能です。                                                                   |
+| `Context getContext(boolean autoSendResult)`                                             | メソッドの開始スレッドのみアクセスできます。非同期処理を行う場合、callback に必要な情報としてキャッシュする必要があります。引数なし版は、`autoSendResult` は `false` に設定されます。                       |
+| `void returnParames(Object param)`                                                       | 結果を JavaScript へ返却します。`return` ステートメントと同等のセマンティクスを持ち、開始スレッドからのみ呼び出すことができます。                                                                           |
+| `void notifyParams(boolean keepCallback, final Context context, Object... params)`       | 値を JavaScript へ通知します。`jQuery.Deferred.notify` メソッドと同等のセマンティクスを持ちます。`keepCallback` 無し版は、既定で `true` が設定されます。`ResultCode` は `SUCCESS_PROGRESS` が設定されます。 |
+| `void resolveParams(Context context, Object... params)`                                  | 値を JavaScript へ返却します。`jQuery.Deferred.resolve` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、`ResultCode` は `SUCCESS_OK`が設定されます。                                        |
+| `void rejectParams(int code, String message, final Context context, Object... params)`   | エラーを JavaScript へ返却します。`jQuery.Deferred.reject` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、簡易版では `ResultCode` は `ERROR_FAIL`が設定されます。                          |
+| `void setCancelable(final Context context)`                                              | キャンセル可能タスクとして登録します。登録すると isCanceled(context) が有効になります。                                                                                                                     |
+| `void removeCancelable(final Context context)`                                           | キャンセル可能タスクを登録解除します。                                                                                                                                                                      |
+| `boolean isCanceled(final Context context)`                                              | タスクがキャンセルされたか確認します。setCancelable(context) を呼んだときに有効になります。実際のキャンセル処理はクライアントが実装する必要があります。                                                     |
+| `void onCancel(String taskId)`                                                           | キャンセルイベントハンドラです。cancel()がコールされたときに呼び出されます。より詳細なキャンセル制御をおこないたい場合は、オーバーライドします。                                                            |
 
 
 - com.sony.cdp.plugin.nativebridge.Gate.Context クラスが提供するプロパティは以下です。
