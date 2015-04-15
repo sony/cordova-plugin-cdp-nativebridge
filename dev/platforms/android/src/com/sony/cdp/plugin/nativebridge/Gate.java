@@ -101,9 +101,9 @@ public class Gate {
      * @param mehtodName    [in] 呼び出し対象のメソッド名
      * @param args          [in] exec() の引数リスト
      * @param context        [in] Callback Context
-     * @return ハンドリング時に true を返却
+     * @return エラー情報
      */
-    public boolean invoke(String methodName, JSONArray args, Context context) {
+    public JSONObject invoke(String methodName, JSONArray args, Context context) {
         synchronized (this) {
             try {
                 Class<?> cls = this.getClass();
@@ -122,23 +122,26 @@ public class Gate {
                 if (mCurrentContext.needSendResult) {
                     MessageUtils.sendSuccessResult(context.callbackContext, context.taskId);
                 }
-                return true;
-
             } catch (JSONException e) {
                 Log.e(TAG, "Invalid JSON object", e);
+                return MessageUtils.makeMessage(MessageUtils.ERROR_INVALID_ARG, (TAG + "JSONException occured."), context.taskId);
             } catch (NoSuchMethodException e) {
                 Log.d(TAG, "method not found", e);
+                return MessageUtils.makeMessage(MessageUtils.ERROR_METHOD_NOT_FOUND, (TAG + "method not found. method: " + context.className + "#" + context.methodName), context.taskId);
             } catch (IllegalAccessException e) {
                 Log.e(TAG, "Illegal Access", e);
+                return MessageUtils.makeMessage(MessageUtils.ERROR_INVALID_ARG, (TAG + "IllegalAccessException occured."), context.taskId);
             } catch (IllegalArgumentException e) {
                 Log.e(TAG, "Invalid Arg", e);
+                return MessageUtils.makeMessage(MessageUtils.ERROR_INVALID_ARG, (TAG + "IllegalArgumentException occured."), context.taskId);
             } catch (InvocationTargetException e) {
                 Log.e(TAG, "Invocation Target Exception", e);
+                return MessageUtils.makeMessage(MessageUtils.ERROR_INVALID_OPERATION, (TAG + "InvocationTargetException occured."), context.taskId);
             } finally {
                 mCurrentContext = null;
             }
         }
-        return false;
+        return null;
     }
 
     /**

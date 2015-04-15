@@ -81,13 +81,15 @@ public final class NativeBridge extends CordovaPlugin {
                     MessageUtils.sendErrorResult(callbackContext, context.taskId, MessageUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + context.className));
                     return;
                 }
-
                 if (context.compatible) {
                     if (!gate.execute(context.methodName, argsInfo, context)) {
                         MessageUtils.sendErrorResult(callbackContext, context.taskId, MessageUtils.ERROR_NOT_IMPLEMENT, (TAG + "execute() is not implemented. class: " + context.className));
                     }
-                } else if (!gate.invoke(context.methodName, argsInfo, context)) {
-                    MessageUtils.sendErrorResult(callbackContext, context.taskId, MessageUtils.ERROR_METHOD_NOT_FOUND, (TAG + "method not found. method: " + context.className + "#" + context.methodName));
+                } else {
+                    JSONObject errorResult = gate.invoke(context.methodName, argsInfo, context);
+                    if (null != errorResult) {
+                        MessageUtils.sendErrorResult(callbackContext, errorResult);
+                    }
                 }
             }
 

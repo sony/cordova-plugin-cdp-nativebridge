@@ -80,7 +80,7 @@ exports.defineAutoTests = function () {
 				ios: { packageInfo: "CDVNBHoge" }
 			});
 
-			taskId = instance.exec(callbacks.win, callbacks.fail, "foo", [1, null, "test"]);
+			taskId = instance.exec(callbacks.win, callbacks.fail, "foo", [1, false, "test"]);
 		});
 
 		it("to have been called", () => {
@@ -91,7 +91,7 @@ exports.defineAutoTests = function () {
 		it("check return value", () => {
 			expect(value).toBeDefined();
 			expect(value.code).toBe(NativeBridge.ERROR_CLASS_NOT_FOUND);
-			expect(value.message).toBe("[com.sony.cdp.plugin.nativebridge][Native][NativeBridge] class not found. class: com.sony.cdp.nativebridge.cordova.Hoge");
+			expect(value.message.match(/class not found./)).toBeDefined();
 			expect(value.taskId).toBe(taskId);
 		});
 	});
@@ -263,7 +263,47 @@ exports.defineAutoTests = function () {
 		it("check return value",() => {
 			expect(value).toBeDefined();
 			expect(value.code).toBe(NativeBridge.ERROR_METHOD_NOT_FOUND);
-			expect(value.message).toBe("[com.sony.cdp.plugin.nativebridge][Native][NativeBridge] method not found. method: com.sony.cdp.sample.SimpleGate#notFoundCheck");
+			expect(value.message.match(/method not found./)).toBeDefined();
+			expect(value.taskId).toBe(taskId);
+		});
+	});
+
+	describe("Invalid arg check",() => {
+		var value;
+		var taskId: string;
+		var callbacks;
+
+		beforeEach((done) => {
+			callbacks = {
+				win: (arg) => {
+					done();
+				},
+				fail: (err) => {
+					value = err;
+					done();
+				}
+			};
+
+			spyOn(callbacks, "win").and.callThrough();
+			spyOn(callbacks, "fail").and.callThrough();
+
+			var instance = new CDP.Plugin.NativeBridge({
+				name: "SimpleGate",
+				android: { packageInfo: "com.sony.cdp.sample.SimpleGate" },
+				ios: { packageInfo: "CDVNBSimpleGate" }
+			});
+
+			taskId = instance.exec(callbacks.win, callbacks.fail, "coolMethod", [null, false, "test", { ok: true }]);
+		});
+
+		it("to have been called",() => {
+			expect(callbacks.win).not.toHaveBeenCalled();
+			expect(callbacks.fail).toHaveBeenCalled();
+		});
+
+		it("check return value",() => {
+			expect(value).toBeDefined();
+			expect(value.code).toBe(NativeBridge.ERROR_INVALID_ARG);
 			expect(value.taskId).toBe(taskId);
 		});
 	});

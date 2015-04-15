@@ -162,10 +162,25 @@ module CDP {
 					_fireCallback(null, fail, {
 						code: NativeBridge.ERROR_INVALID_OPERATION,
 						message: errorMsg,
-						name: TAG + "ERROR_INVALID_OPERATION"
+						name: TAG + "ERROR_INVALID_OPERATION",
 					}, opt.post);
 					console.error(errorMsg);
 					return null;
+				}
+
+				// 引数に null/undefined がある場合はエラー
+				for (var i = 1, n = rawArgs.length; i < n; i++) {
+					if (null == rawArgs[i]) {
+						errorMsg = TAG + "invalid arg. (arg[" + (i - 1) + "] == null)";
+						_fireCallback(taskId, fail, {
+							code: NativeBridge.ERROR_INVALID_ARG,
+							message: errorMsg,
+							name: TAG + "ERROR_INVALID_ARG",
+							taskId: taskId,
+						}, opt.post);
+						console.error(errorMsg);
+						return taskId;
+					}
 				}
 
 				// history 管理に追加
@@ -181,7 +196,8 @@ module CDP {
 							_fireCallback(taskId, fail, {
 								code: NativeBridge.ERROR_CANCEL,
 								message: errorMsg,
-								name: TAG + "ERROR_CANCEL"
+								name: TAG + "ERROR_CANCEL",
+								taskId: taskId,
 							}, opt.post);
 							console.log(errorMsg);
 						} else {
