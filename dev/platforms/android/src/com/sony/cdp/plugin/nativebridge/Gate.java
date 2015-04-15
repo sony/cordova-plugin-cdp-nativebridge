@@ -2,6 +2,8 @@ package com.sony.cdp.plugin.nativebridge;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -56,6 +58,7 @@ public class Gate {
     }
 
     private Context mCurrentContext = null;
+    private Map<String, Boolean> mCancelableTask = new HashMap<String, Boolean>();
 
     ///////////////////////////////////////////////////////////////////////
     // public methods
@@ -141,11 +144,12 @@ public class Gate {
     /**
      * cancel 呼び出し
      * NativeBridge からコールされる。
-     * クライアントは本メソッドをオーバーライド可能
      *
-     * @param context [in] The execute context. (NativeBridge extended argument)
+     * @param context [in] Gate.Context オブジェクト
      */
     public void cancel(Context context) {
+        setCancelState(context.taskId);
+        onCancel(context.taskId);
         return;
     }
 
@@ -292,6 +296,49 @@ public class Gate {
         MessageUtils.sendErrorResult(context.callbackContext, MessageUtils.makeMessage(code, message, context.taskId, params));
     }
 
+    /**
+     * キャンセル可能タスクとして登録
+     *
+     * @param context [in] context オブジェクトを指定
+     */
+    protected void setCancelable(final Context context) {
+        synchronized (this) {
+            mCancelableTask.put(context.taskId, false);
+        }
+    }
+
+    /**
+     * キャンセル可能タスクとして登録解除
+     *
+     * @param context [in] context オブジェクトを指定
+     */
+    protected void removeCancelable(final Context context) {
+        synchronized (this) {
+            mCancelableTask.remove(context.taskId);
+        }
+    }
+
+    /**
+     * キャンセルされたか判定
+     *
+     * @param context [in] context オブジェクトを指定
+     */
+    protected boolean isCanceled(final Context context) {
+        synchronized (this) {
+            return mCancelableTask.get(context.taskId);
+        }
+    }
+
+    /**
+     * cancel イベントハンドラ
+     * キャンセル処理を実装したいクライアントは本メソッドをオーバーライド可能
+     *
+     * @param taskId [in] タスクID
+     */
+    protected void onCancel(String taskId) {
+        // override
+    }
+
     ///////////////////////////////////////////////////////////////////////
     // private methods
 
@@ -320,4 +367,20 @@ public class Gate {
         }
     }
 
+    /**
+     * キャンセル情報を更新
+     *
+     * @param taskId [in] タスク ID
+     */
+    private void setCancelState(String taskId) {
+        synchronized (this) {
+            if (null == taskId) {
+                for (String key: mCancelableTask.keySet()) {
+                    mCancelableTask.put(key, true);
+                }
+            } else if (null != mCancelableTask.get(taskId)) {
+                mCancelableTask.put(taskId, true);
+            }
+        }
+    }
 }

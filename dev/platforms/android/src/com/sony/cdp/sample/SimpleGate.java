@@ -1,8 +1,5 @@
 package com.sony.cdp.sample;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,8 +16,6 @@ import com.sony.cdp.plugin.nativebridge.MessageUtils;
  */
 public class SimpleGate extends Gate {
     private static final String TAG = "[com.sony.cdp.sample][Native][SimpleGate] ";
-
-    private Set<String> mCancelableTask = new HashSet<String>();
 
     ///////////////////////////////////////////////////////////////////////
     // public mehtods
@@ -94,17 +89,14 @@ public class SimpleGate extends Gate {
     public void progressMethod() throws JSONException {
         final Context context = getContext();
 
-        synchronized (this) {
-            mCancelableTask.add(context.taskId);
-        }
-
         context.cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 String errorMsg;
                 int progress = 0;
                 try {
+                    setCancelable(context);
                     while (true) {
-                        if (isCanceled(context.taskId)) {
+                        if (isCanceled(context)) {
                             rejectParams(MessageUtils.ERROR_CANCEL, TAG + "progressMethod() canceled.", context);
                             break;
                         }
@@ -116,9 +108,17 @@ public class SimpleGate extends Gate {
                     errorMsg = "InterruptedException occur.";
                     Log.e(TAG, errorMsg, e);
                     rejectParams(MessageUtils.ERROR_FAIL, errorMsg, context);
+                } finally {
+                    removeCancelable(context);
                 }
             }
         });
+    }
+
+    //! キャンセルイベントハンドラ
+    @Override
+    protected void onCancel(String taskId) {
+        Log.d(TAG, "cancel task: " + taskId);
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -152,35 +152,6 @@ public class SimpleGate extends Gate {
             return true;
         }
         return false;
-    }
-
-    /**
-     * cancel 呼び出し
-     * NativeBridge からコールされる
-     * クライアントは本メソッドをオーバーライドして、taskId を特定し処理を実装する
-     * 全キャンセル時は taskId に null が格納されている
-     *
-     * @param context [in] The execute context. (NativeBridge extended argument)
-     */
-    @Override
-    public void cancel(Context context) {
-        synchronized (this) {
-            if (null != context.taskId) {
-                mCancelableTask.remove(context.taskId);
-            } else {
-                mCancelableTask.clear();
-            }
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////
-    // private methods
-
-    //! キャンセル確認
-    private boolean isCanceled(String taskId) {
-        synchronized (this) {
-            return !mCancelableTask.contains(taskId);
-        }
     }
 }
 
