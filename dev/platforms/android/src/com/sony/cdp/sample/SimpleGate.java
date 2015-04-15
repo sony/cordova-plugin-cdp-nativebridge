@@ -27,21 +27,21 @@ public class SimpleGate extends Gate {
     // public mehtods
 
     /**
-	 * サンプルメソッド
-	 * JavaScript レイヤで指定したメソッドと引数を受けることができる
-	 * 数値は double 固定
-	 *
-	 * 値を戻すには
-	 *  - returnParams()
-	 * を使用する。
-	 *
-	 * @throws JSONException
-	 */
-	public void coolMethod(double arg1, boolean arg2, String arg3, JSONObject arg4) throws JSONException {
-	    String msg = "arg1: " + String.valueOf((int)arg1) + ", arg2: " + String.valueOf(arg2) + ", arg3: " + arg3;
-	    msg += (", 日本語でOK: " + String.valueOf(arg4.getBoolean("ok")));
-	    returnParames(msg);
-	}
+     * サンプルメソッド
+     * JavaScript レイヤで指定したメソッドと引数を受けることができる
+     * 数値は double 固定
+     *
+     * 値を戻すには
+     *  - returnParams()
+     * を使用する。
+     *
+     * @throws JSONException
+     */
+    public void coolMethod(double arg1, boolean arg2, String arg3, JSONObject arg4) throws JSONException {
+        String msg = "arg1: " + String.valueOf((int)arg1) + ", arg2: " + String.valueOf(arg2) + ", arg3: " + arg3;
+        msg += (", 日本語でOK: " + String.valueOf(arg4.getBoolean("ok")));
+        returnParames(msg);
+    }
 
     /**
      * サンプルメソッド
@@ -138,21 +138,21 @@ public class SimpleGate extends Gate {
      * @param context         The execute context. (NativeBridge extended argument)
      * @return                Whether the action was valid.
      */
-	@Override
+    @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext, Context context) throws JSONException {
-	    if (action.equals("compatibleCheck")) {
-	        JSONArray message = new JSONArray();
-	        message.put(context.taskId);
-	        JSONObject argsInfo = new JSONObject();
-	        argsInfo.put("taskId", context.taskId);
-	        argsInfo.put("arg1", args.getInt(0));
-	        argsInfo.put("arg2", args.getBoolean(1));
-	        argsInfo.put("arg3", args.getString(2));
-	        argsInfo.put("arg4", args.getJSONObject(3));
+        if (action.equals("compatibleCheck")) {
+            JSONArray message = new JSONArray();
+            message.put(context.taskId);
+            JSONObject argsInfo = new JSONObject();
+            argsInfo.put("taskId", context.taskId);
+            argsInfo.put("arg1", args.getInt(0));
+            argsInfo.put("arg2", args.getBoolean(1));
+            argsInfo.put("arg3", args.getString(2));
+            argsInfo.put("arg4", args.getJSONObject(3));
             message.put(argsInfo);
-	        callbackContext.success(message);
-	        return true;
-	    }
+            callbackContext.success(message);
+            return true;
+        }
         return false;
     }
 
@@ -164,15 +164,15 @@ public class SimpleGate extends Gate {
      *
      * @param context [in] The execute context. (NativeBridge extended argument)
      */
-	@Override
+    @Override
     public void cancel(Context context) {
-	    synchronized (this) {
-	        if (null != context.taskId) {
-	            mCancelableTask.remove(context.taskId);
-	        } else {
-	            mCancelableTask.clear();
-	        }
-	    }
+        synchronized (this) {
+            if (null != context.taskId) {
+                mCancelableTask.remove(context.taskId);
+            } else {
+                mCancelableTask.clear();
+            }
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////

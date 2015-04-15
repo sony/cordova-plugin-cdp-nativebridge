@@ -570,6 +570,7 @@
       <DependentUpon>NativeScrollBar.ts</DependentUpon>
     </Content>
     <Content Include="app\stylesheets\_native-scrollbar.scss" />
+    <Content Include="package.json" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

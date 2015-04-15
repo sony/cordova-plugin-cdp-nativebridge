@@ -59,4 +59,14 @@ module.exports = function (grunt) {
 
     grunt.registerTask('clean_dev', ['clean:dev_plugins']);
     grunt.registerTask('deploy', ['plugin', 'copy:deploy', 'clean:tmpdir']);
+
+    // custom task: restore environment for package plugins.
+    grunt.registerTask('test', function () {
+        var $ = require('jquery')(jsdom.jsdom().parentWindow);
+        var df = $.Deferred();
+        console.log("df: " + df);
+        console.log("$: " + $);
+        console.log("$.Deferred: " + $.Deferred);
+    });
+
 };
