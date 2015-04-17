@@ -136,7 +136,7 @@ module SampleApp {
          * クライアントメソッドの定義
          *
          * 引数は任意で OK. (void も可能)
-         * 戻り値は必ず Promise の形をとる
+         * 戻り値は既定で Promise の形をとる
          */
         public coolMethod(arg1: number, arg2: boolean, arg3: string, arg4: Object): Promise {
             /*
@@ -241,7 +241,7 @@ public class SimpleGate extends Gate {
         msg += (", 日本語でOK: " + String.valueOf(arg4.getBoolean("ok")));
 
         // returnParams() は Object を1つ返却できる。(return ステートメントと同じセマンティックス)
-        returnParames(msg);
+        returnParams(msg);
     }
 }
 
@@ -473,7 +473,7 @@ public class SimpleGate extends Gate {
 |:-----------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `boolean execute(String action, CordovaArgs args, Context context) throws JSONException` | Cordova 互換ハンドラです。{ compatible: true } を指定したときに有効になります。 CordovaArgs 版と JSONArray 版のオーバーライドが可能です。                                                                   |
 | `Context getContext(boolean autoSendResult)`                                             | メソッドの開始スレッドのみアクセスできます。非同期処理を行う場合、callback に必要な情報としてキャッシュする必要があります。引数なし版は、`autoSendResult` は `false` に設定されます。                       |
-| `void returnParames(Object param)`                                                       | 結果を JavaScript へ返却します。`return` ステートメントと同等のセマンティクスを持ち、開始スレッドからのみ呼び出すことができます。                                                                           |
+| `void returnParams(Object param)`                                                        | 結果を JavaScript へ返却します。`return` ステートメントと同等のセマンティクスを持ち、開始スレッドからのみ呼び出すことができます。                                                                           |
 | `void notifyParams(boolean keepCallback, final Context context, Object... params)`       | 値を JavaScript へ通知します。`jQuery.Deferred.notify` メソッドと同等のセマンティクスを持ちます。`keepCallback` 無し版は、既定で `true` が設定されます。`ResultCode` は `SUCCESS_PROGRESS` が設定されます。 |
 | `void resolveParams(Context context, Object... params)`                                  | 値を JavaScript へ返却します。`jQuery.Deferred.resolve` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、`ResultCode` は `SUCCESS_OK`が設定されます。                                        |
 | `void rejectParams(int code, String message, final Context context, Object... params)`   | エラーを JavaScript へ返却します。`jQuery.Deferred.reject` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、簡易版では `ResultCode` は `ERROR_FAIL`が設定されます。                          |
@@ -488,7 +488,7 @@ public class SimpleGate extends Gate {
 
 | property          | type                 | description                                                                        |
 |:------------------|:---------------------|:-----------------------------------------------------------------------------------|
-| `cordova`         | `CordovaInterface`   | thread pool へのアクセスに使用します。                                           |
+| `cordova`         | `CordovaInterface`   | thread pool へのアクセスに使用します。                                             |
 | `webView`         | `CordovaWebView`     | 現在 cordova が存在している WebView のインスタンスです。                           |
 | `preferences`     | `CordovaPreferences` | Preference にアクセスする場合使用します。                                          |
 | `callbackContext` | `CallbackContext`    | CallbackContext にアクセスする場合使用します。カスタム通知をする場合に使用します。 |

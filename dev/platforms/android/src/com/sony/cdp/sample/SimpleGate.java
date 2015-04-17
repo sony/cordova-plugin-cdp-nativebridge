@@ -34,7 +34,7 @@ public class SimpleGate extends Gate {
     public void coolMethod(double arg1, boolean arg2, String arg3, JSONObject arg4) throws JSONException {
         String msg = "arg1: " + String.valueOf((int)arg1) + ", arg2: " + String.valueOf(arg2) + ", arg3: " + arg3;
         msg += (", 日本語でOK: " + String.valueOf(arg4.getBoolean("ok")));
-        returnParames(msg);
+        returnParams(msg);
     }
 
     /**

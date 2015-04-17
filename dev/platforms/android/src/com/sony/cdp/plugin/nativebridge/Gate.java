@@ -214,7 +214,7 @@ public class Gate {
      *
      * @param param [in] Native から JavaScript へ返す値を指定
      */
-    protected final void returnParames(Object param) {
+    protected final void returnParams(Object param) {
         if (null != mCurrentContext && Thread.currentThread().getName().equals(mCurrentContext.threadId)) {
             mCurrentContext.needSendResult = false;
             MessageUtils.sendSuccessResult(mCurrentContext.callbackContext, MessageUtils.makeMessage(mCurrentContext.taskId, param));
