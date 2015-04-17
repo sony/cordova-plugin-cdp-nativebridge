@@ -8,7 +8,13 @@
     },
     "installed_plugins": {
         "org.apache.cordova.test-framework": {
-            "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
+            "PACKAGE_NAME": "jp.co.sony.cdp.nativebridge.testbed"
+        },
+        "com.sony.cdp.plugin.nativebridge": {
+            "PACKAGE_NAME": "jp.co.sony.cdp.nativebridge.testbed"
+        },
+        "com.sony.cdp.plugin.nativebridge.tests": {
+            "PACKAGE_NAME": "jp.co.sony.cdp.nativebridge.testbed"
         }
     },
     "dependent_plugins": {}
