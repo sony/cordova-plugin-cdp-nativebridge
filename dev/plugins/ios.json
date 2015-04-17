@@ -1,0 +1,15 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "org.apache.cordova.test-framework": {
+            "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
+        }
+    },
+    "dependent_plugins": {}
+}
