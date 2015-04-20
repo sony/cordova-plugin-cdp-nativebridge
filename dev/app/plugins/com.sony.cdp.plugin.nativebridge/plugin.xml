@@ -18,9 +18,12 @@
   <platform name="ios">
     <config-file parent="/*" target="config.xml">
       <feature name="NativeBridge">
-        <param name="ios-package" value="NativeBridge" />
+        <param name="ios-package" value="CNPNativeBridge" />
       </feature>
     </config-file>
-    <!--<source-file src="src/ios/CNPNativeBridge.m" target-dir="NativeBridge" />-->
+    <header-file src="src/ios/CNPNativeBridge.h" target-dir="CNPNativeBridge" />
+    <source-file src="src/ios/CNPNativeBridge.m" target-dir="CNPNativeBridge" />
+    <header-file src="src/ios/CNPGate.h" target-dir="CNPNativeBridge" />
+    <source-file src="src/ios/CNPGate.m" target-dir="CNPNativeBridge" />
   </platform>
 </plugin>

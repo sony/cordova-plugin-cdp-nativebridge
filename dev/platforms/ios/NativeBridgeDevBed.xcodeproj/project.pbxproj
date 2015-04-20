@@ -28,6 +28,9 @@
 		30B4F30219D5E07200D9F7D8 /* Default-Landscape-736h.png in Resources */ = {isa = PBXBuildFile; fileRef = 30B4F2FF19D5E07200D9F7D8 /* Default-Landscape-736h.png */; };
 		30C1856619D5FC0A00212699 /* icon-60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 30C1856519D5FC0A00212699 /* icon-60@3x.png */; };
 		30FC414916E50CA1004E6F35 /* icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 30FC414816E50CA1004E6F35 /* icon-72@2x.png */; };
+		4706C7541AE4D74A0069D8B4 /* CNPGate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4706C7511AE4D74A0069D8B4 /* CNPGate.m */; };
+		4706C7551AE4D74A0069D8B4 /* CNPNativeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 4706C7531AE4D74A0069D8B4 /* CNPNativeBridge.m */; };
+		4706C7A51AE4DDDF0069D8B4 /* SMPSimpleGate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4706C7A41AE4DDDF0069D8B4 /* SMPSimpleGate.m */; };
 		5B1594DD16A7569C00FEF299 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */; };
 		7E7966DE1810823500FA85AD /* icon-40.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966D41810823500FA85AD /* icon-40.png */; };
 		7E7966DF1810823500FA85AD /* icon-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966D51810823500FA85AD /* icon-40@2x.png */; };
@@ -86,6 +89,11 @@
 		30C1856519D5FC0A00212699 /* icon-60@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-60@3x.png"; sourceTree = "<group>"; };
 		30FC414816E50CA1004E6F35 /* icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-72@2x.png"; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* NativeBridgeDevBed-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NativeBridgeDevBed-Prefix.pch"; sourceTree = "<group>"; };
+		4706C7501AE4D74A0069D8B4 /* CNPGate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNPGate.h; sourceTree = "<group>"; };
+		4706C7511AE4D74A0069D8B4 /* CNPGate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNPGate.m; sourceTree = "<group>"; };
+		4706C7521AE4D74A0069D8B4 /* CNPNativeBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNPNativeBridge.h; sourceTree = "<group>"; };
+		4706C7531AE4D74A0069D8B4 /* CNPNativeBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNPNativeBridge.m; sourceTree = "<group>"; };
+		4706C7A41AE4DDDF0069D8B4 /* SMPSimpleGate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMPSimpleGate.m; sourceTree = "<group>"; };
 		5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		7E7966D41810823500FA85AD /* icon-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-40.png"; sourceTree = "<group>"; };
 		7E7966D51810823500FA85AD /* icon-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-40@2x.png"; sourceTree = "<group>"; };
@@ -150,6 +158,7 @@
 				EB87FDF11871DA420020F90C /* Staging */,
 				301BF52D109A57CC0062928A /* CordovaLib.xcodeproj */,
 				080E96DDFE201D6D7F000001 /* Classes */,
+				4706C7A31AE4DDDF0069D8B4 /* Samples */,
 				307C750510C5A3420062BCA9 /* Plugins */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -201,6 +210,7 @@
 		307C750510C5A3420062BCA9 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				4706C74F1AE4D74A0069D8B4 /* CNPNativeBridge */,
 			);
 			name = Plugins;
 			path = NativeBridgeDevBed/Plugins;
@@ -243,6 +253,26 @@
 				3088BBBC154F3926009F9C59 /* Default~iphone.png */,
 			);
 			path = splash;
+			sourceTree = "<group>";
+		};
+		4706C74F1AE4D74A0069D8B4 /* CNPNativeBridge */ = {
+			isa = PBXGroup;
+			children = (
+				4706C7501AE4D74A0069D8B4 /* CNPGate.h */,
+				4706C7511AE4D74A0069D8B4 /* CNPGate.m */,
+				4706C7521AE4D74A0069D8B4 /* CNPNativeBridge.h */,
+				4706C7531AE4D74A0069D8B4 /* CNPNativeBridge.m */,
+			);
+			path = CNPNativeBridge;
+			sourceTree = "<group>";
+		};
+		4706C7A31AE4DDDF0069D8B4 /* Samples */ = {
+			isa = PBXGroup;
+			children = (
+				4706C7A41AE4DDDF0069D8B4 /* SMPSimpleGate.m */,
+			);
+			name = Samples;
+			path = NativeBridgeDevBed/Samples;
 			sourceTree = "<group>";
 		};
 		EB87FDF11871DA420020F90C /* Staging */ = {
@@ -383,7 +413,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
+				4706C7551AE4D74A0069D8B4 /* CNPNativeBridge.m in Sources */,
+				4706C7A51AE4DDDF0069D8B4 /* SMPSimpleGate.m in Sources */,
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
+				4706C7541AE4D74A0069D8B4 /* CNPGate.m in Sources */,
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
