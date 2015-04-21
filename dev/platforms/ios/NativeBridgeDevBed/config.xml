@@ -20,7 +20,7 @@
         <param name="ios-package" value="CDVLocalStorage" />
     </feature>
     <feature name="NativeBridge">
-        <param name="ios-package" value="CNPNativeBridge" />
+        <param name="ios-package" value="CDPNativeBridge" />
     </feature>
     <preference name="DisallowOverscroll" value="true" />
     <name>NativeBridgeDevBed</name>

@@ -9,7 +9,7 @@
                 "parents": {
                     "/*": [
                         {
-                            "xml": "<feature name=\"NativeBridge\"><param name=\"ios-package\" value=\"CNPNativeBridge\" /></feature>",
+                            "xml": "<feature name=\"NativeBridge\"><param name=\"ios-package\" value=\"CDPNativeBridge\" /></feature>",
                             "count": 1
                         }
                     ]

@@ -1,11 +1,11 @@
-/*
- * @file CNPNativeBridge.h
+/**
+ * @file CDPNativeBridge.h
  * @brief Interface definition file for CDP NativeBridge class.
  */
 
 #import <Cordova/CDV.h>
 
-@interface CNPNativeBridge : CDVPlugin
+@interface CDPNativeBridge : CDVPlugin
 
 //////////////////////////////////////////////////////
 // Plugin I/F
