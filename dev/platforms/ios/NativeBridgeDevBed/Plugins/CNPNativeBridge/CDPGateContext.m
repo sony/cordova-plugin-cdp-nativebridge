@@ -16,9 +16,13 @@
     BOOL _needSendResult;
 }
 
-//////////////////////////////////////////////////////
-// Initialzier
-
+/**
+ * initializer
+ *
+ * @param plugin     [in] Plugin instance
+ * @param callbackId [in] callback ID
+ * @param execInfo   [in] execute information object
+ */
 - (id)initWithPlugin:(CDVPlugin*)plugin andCallbackId:(NSString*)callbackId andExecInfo:(NSDictionary*)execInfo;
 {
     self = [super init];
@@ -37,6 +41,5 @@
     }
     return self;
 }
-
 
 @end
