@@ -15,6 +15,75 @@
 // class methods
 
 /**
+ * make params info
+ *
+ * @param param [in] first param
+ * @param args  [in] va_list args.
+ * @return params array object
+ */
++ (NSArray*) makeParams:(NSObject*)param withList:(va_list)args
+{
+    NSMutableArray* params = nil;
+    if (param) {
+        params = [@[] mutableCopy];
+        [params addObject:param];
+        id arg;
+        while ((arg = va_arg(args, id))) {
+            [params addObject:arg];
+        }
+    }
+    
+    return params;
+}
+
+/**
+ * make return message object
+ *
+ * @param code       [in] result code
+ * @param message    [in] message string
+ * @param taskId     [in] task ID
+ * @param paramsInfo [in] return parameters
+ * @return message object
+ */
++ (NSDictionary*) makeMessaggeWithCode:(NSInteger)code
+                            andMessage:(NSString*)message
+                             andTaskId:(NSString*)taskId
+                         andParamsInfo:(NSArray*)params
+{
+    NSMutableDictionary* result = [@{} mutableCopy];
+    
+    NSString* name = [CDPMessageUtils resultCode2String:code]
+    ? [self resultCode2String:code] : [NSString stringWithFormat:@"ERROR_CUSTOM:0x%x", (int)code];
+    
+    result[@"code"] = [NSNumber numberWithInt:code];
+    result[@"name"] = name;
+    if (message) {
+        result[@"message"] = message;
+    }
+    if (params) {
+        result[@"params"] = params;
+    }
+    
+    return result;
+}
+
+/**
+ * make return message object
+ *
+ * @param code      [in] result code
+ * @param message   [in] message string
+ * @param taskId    [in] task ID
+ * @param params... [in] return parameters
+ * @return message object
+ */
++ (NSDictionary*) makeMessaggeWithCode:(NSInteger)code
+                            andMessage:(NSString*)message
+                             andTaskId:(NSString*)taskId
+{
+    return [self makeMessaggeWithCode:code andMessage:message andTaskId:taskId andParams:nil];
+}
+
+/**
  * make return message object
  *
  * @param code      [in] result code
@@ -28,9 +97,32 @@
                              andTaskId:(NSString*)taskId
                              andParams:(NSObject*)params,...
 {
-    return nil;
+    NSDictionary* result = nil;
+
+    {
+        va_list args;
+        va_start(args, params);
+        NSArray* paramsInfo = [self makeParams:params withList:args];
+        result = [self makeMessaggeWithCode:code andMessage:message andTaskId:taskId andParamsInfo:paramsInfo];
+        va_end(args);
+    }
+    
+    return result;
 }
 
+/**
+ * make return message object
+ * helper function
+ *
+ * @param message   [in] message string
+ * @param taskId    [in] task ID
+ * @return message object
+ */
++ (NSDictionary*) makeMessaggeWithMessage:(NSString*)message
+                                andTaskId:(NSString*)taskId
+{
+    return [self makeMessaggeWithMessage:message andTaskId:taskId andParams:nil];
+}
 
 /**
  * make return message object
@@ -45,7 +137,29 @@
                                 andTaskId:(NSString*)taskId
                                 andParams:(NSObject*)params,...
 {
-    return nil;
+    NSDictionary* result = nil;
+    
+    {
+        va_list args;
+        va_start(args, params);
+        NSArray* paramsInfo = [self makeParams:params withList:args];
+        result = [self makeMessaggeWithCode:RETURN_SUCCESS_OK andMessage:message andTaskId:taskId andParamsInfo:paramsInfo];
+        va_end(args);
+    }
+    
+    return result;
+}
+
+/**
+ * make return message object
+ * helper function
+ *
+ * @param taskId    [in] task ID
+ * @return message object
+ */
++ (NSDictionary*) makeMessaggeWithTaskId:(NSString*)taskId
+{
+    return [self makeMessaggeWithTaskId:taskId andParams:nil];
 }
 
 /**
@@ -59,7 +173,17 @@
 + (NSDictionary*) makeMessaggeWithTaskId:(NSString*)taskId
                                andParams:(NSObject*)params,...
 {
-    return nil;
+    NSDictionary* result = nil;
+    
+    {
+        va_list args;
+        va_start(args, params);
+        NSArray* paramsInfo = [self makeParams:params withList:args];
+        result = [self makeMessaggeWithCode:RETURN_SUCCESS_OK andMessage:nil andTaskId:taskId andParamsInfo:paramsInfo];
+        va_end(args);
+    }
+    
+    return result;
 }
 
 /**
@@ -70,7 +194,7 @@
  */
 + (void) sendSuccessResultWithContext:(CDPGateContext*)context andResult:(NSDictionary*)result
 {
-    
+    // TODO:
 }
 
 /**
@@ -82,7 +206,7 @@
  */
 + (void) sendSuccessResultWithContext:(CDPGateContext*)context andTaskId:(NSString*)taskId
 {
-    
+    [self sendSuccessResultWithContext:context andResult:[self makeMessaggeWithTaskId:taskId andParams:nil]];
 }
 
 /**
@@ -98,7 +222,18 @@
                             andCode:(NSInteger)code
                          andMessage:(NSString*)message
 {
-    
+    [self sendErrorResultWithContext:context andResult:[self makeMessaggeWithCode:code andMessage:message andTaskId:taskId]];
+}
+
+/**
+ * send error result
+ *
+ * @param context [in] Gate context object
+ * @param result  [in] result message object
+ */
++ (void) sendErrorResultWithContext:(CDPGateContext*)context andResult:(NSDictionary*)result
+{
+    // TODO:
 }
 
 //////////////////////////////////////////////////////

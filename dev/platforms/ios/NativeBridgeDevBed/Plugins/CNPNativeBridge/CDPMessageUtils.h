@@ -23,6 +23,41 @@ static const NSInteger RETURN_ERROR_METHOD_NOT_FOUND    = 0x0009;
 // class methods
 
 /**
+ * make params info
+ *
+ * @param param [in] first param
+ * @param args  [in] va_list args.
+ * @return params array object
+ */
++ (NSArray*) makeParams:(NSObject*)param withList:(va_list)args;
+
+/**
+ * make return message object
+ *
+ * @param code       [in] result code
+ * @param message    [in] message string
+ * @param taskId     [in] task ID
+ * @param paramsInfo [in] return parameters
+ * @return message object
+ */
++ (NSDictionary*) makeMessaggeWithCode:(NSInteger)code
+                            andMessage:(NSString*)message
+                             andTaskId:(NSString*)taskId
+                         andParamsInfo:(NSArray*)params;
+
+/**
+ * make return message object
+ *
+ * @param code      [in] result code
+ * @param message   [in] message string
+ * @param taskId    [in] task ID
+ * @return message object
+ */
++ (NSDictionary*) makeMessaggeWithCode:(NSInteger)code
+                            andMessage:(NSString*)message
+                             andTaskId:(NSString*)taskId;
+
+/**
  * make return message object
  *
  * @param code      [in] result code
@@ -43,12 +78,32 @@ static const NSInteger RETURN_ERROR_METHOD_NOT_FOUND    = 0x0009;
  *
  * @param message   [in] message string
  * @param taskId    [in] task ID
+ * @return message object
+ */
++ (NSDictionary*) makeMessaggeWithMessage:(NSString*)message
+                                andTaskId:(NSString*)taskId;
+
+/**
+ * make return message object
+ * helper function
+ *
+ * @param message   [in] message string
+ * @param taskId    [in] task ID
  * @param params... [in] return parameters
  * @return message object
  */
 + (NSDictionary*) makeMessaggeWithMessage:(NSString*)message
                              andTaskId:(NSString*)taskId
                              andParams:(NSObject*)params,...;
+
+/**
+ * make return message object
+ * helper function
+ *
+ * @param taskId    [in] task ID
+ * @return message object
+ */
++ (NSDictionary*) makeMessaggeWithTaskId:(NSString*)taskId;
 
 /**
  * make return message object
@@ -90,5 +145,13 @@ static const NSInteger RETURN_ERROR_METHOD_NOT_FOUND    = 0x0009;
                           andTaskId:(NSString*)taskId
                             andCode:(NSInteger)code
                          andMessage:(NSString*)message;
+
+/**
+ * send error result
+ *
+ * @param context [in] Gate context object
+ * @param result  [in] result message object
+ */
++ (void) sendErrorResultWithContext:(CDPGateContext*)context andResult:(NSDictionary*)result;
 
 @end
