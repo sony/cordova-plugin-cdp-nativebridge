@@ -4,6 +4,7 @@
  */
 
 #import "CDPNativeBridge.h"
+#import "CDPGateContext.h"
 
 @implementation CDPNativeBridge {
     NSMutableDictionary* _gates;
@@ -29,6 +30,9 @@
     NSDictionary* execInfo = command.arguments[0];
     NSArray* methodArgs = [self methodArguments:command.arguments];
     // TODO:
+    
+    CDPGateContext* context = [[CDPGateContext alloc] initWithPlugin:self andCallbackId:command.callbackId andExecInfo:execInfo];
+    
     NSLog(@"execTask called.");
 }
 
