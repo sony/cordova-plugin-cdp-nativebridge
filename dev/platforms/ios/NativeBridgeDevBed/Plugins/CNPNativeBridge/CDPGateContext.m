@@ -23,7 +23,7 @@
  * @param callbackId [in] callback ID
  * @param execInfo   [in] execute information object
  */
-- (id)initWithPlugin:(CDVPlugin*)plugin andCallbackId:(NSString*)callbackId andExecInfo:(NSDictionary*)execInfo;
+- (id) initWithPlugin:(CDVPlugin*)plugin andCallbackId:(NSString*)callbackId andExecInfo:(NSDictionary*)execInfo;
 {
     self = [super init];
     if (self) {

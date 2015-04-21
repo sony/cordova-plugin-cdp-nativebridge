@@ -5,10 +5,13 @@
 
 #import "CDPNativeBridge.h"
 #import "CDPGateContext.h"
+#import "CDPGate.h"
 
 @implementation CDPNativeBridge {
     NSMutableDictionary* _gates;
 }
+
+NSString* const TAG = @"[CDPNativeBridge][Native] ";
 
 //////////////////////////////////////////////////////
 // Initialzier
@@ -33,6 +36,10 @@
     
     CDPGateContext* context = [[CDPGateContext alloc] initWithPlugin:self andCallbackId:command.callbackId andExecInfo:execInfo];
     
+    CDPGate* gate = [self getGateClassFromObjectId:context.objectId andClassName:context.className];
+    if (!gate) {
+        // TODO:
+    }
     NSLog(@"execTask called.");
 }
 
@@ -49,6 +56,7 @@
 //////////////////////////////////////////////////////
 // private methods
 
+//! slice method arguments.
 - (NSArray*) methodArguments:(NSArray*)rawArgs
 {
     if (1 < [rawArgs count]) {
@@ -59,6 +67,30 @@
     } else {
         return @[];
     }
+}
+
+//! get CDPGate class from cache.
+- (CDPGate*) getGateClassFromObjectId:(NSString*)objectId andClassName:(NSString*)className
+{
+    CDPGate* gate = _gates[objectId];
+    if (!gate) {
+        gate = [self createGateClassFromClassName:className];
+        if (gate) {
+            _gates[objectId] = gate;
+        }
+    }
+    return gate;
+}
+
+//! create CDPGate class by class name.
+- (CDPGate*) createGateClassFromClassName:(NSString*)className
+{
+    id obj = [[NSClassFromString(className) alloc] init];
+    if (![obj isKindOfClass:[CDPGate class]]) {
+        obj = nil;
+        NSLog(@"%@%@ class is not CDPGate class.", TAG, className);
+    }
+    return nil;
 }
 
 @end
