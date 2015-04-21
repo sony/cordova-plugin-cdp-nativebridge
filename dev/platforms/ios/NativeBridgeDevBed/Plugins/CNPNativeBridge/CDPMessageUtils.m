@@ -5,6 +5,10 @@
 
 #import "CDPMessageUtils.h"
 
+#if !defined(_countof) && !defined(__cplusplus)
+#define _countof(a) (sizeof(a) / sizeof(a[0]))
+#endif
+
 @implementation CDPMessageUtils
 
 //////////////////////////////////////////////////////
@@ -95,6 +99,37 @@
                          andMessage:(NSString*)message
 {
     
+}
+
+//////////////////////////////////////////////////////
+// private class methods
+
++ (NSString*) resultCode2String:(NSInteger)code
+{
+    @synchronized (self) {
+        static struct {
+            int code;
+            const char* const msg;
+        } _tbl[] = {
+            { RETURN_SUCCESS_OK,                "RETURN_SUCCESS_OK"             },
+            { RETURN_SUCCESS_PROGRESS,          "RETURN_SUCCESS_PROGRESS"       },
+            { RETURN_ERROR_FAIL,                "RETURN_ERROR_FAIL"             },
+            { RETURN_ERROR_CANCEL,              "RETURN_ERROR_CANCEL"           },
+            { RETURN_ERROR_INVALID_ARG,         "RETURN_ERROR_INVALID_ARG"      },
+            { RETURN_ERROR_NOT_IMPLEMENT,       "RETURN_ERROR_NOT_IMPLEMENT"    },
+            { RETURN_ERROR_NOT_SUPPORT,         "RETURN_ERROR_NOT_SUPPORT"      },
+            { RETURN_ERROR_INVALID_OPERATION,   "RETURN_ERROR_INVALID_OPERATION"},
+            { RETURN_ERROR_CLASS_NOT_FOUND,     "RETURN_ERROR_CLASS_NOT_FOUND"  },
+            { RETURN_ERROR_METHOD_NOT_FOUND,    "RETURN_ERROR_METHOD_NOT_FOUND" },
+        };
+        
+        for (int i = 0; i < _countof(_tbl); i++) {
+            if ((int)code == _tbl[i].code) {
+                return [NSString stringWithCString:_tbl[i].msg encoding:NSUTF8StringEncoding];
+            }
+        }
+        return nil;
+    }
 }
 
 @end
