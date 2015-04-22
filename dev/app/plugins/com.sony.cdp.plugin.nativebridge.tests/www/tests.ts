@@ -95,7 +95,7 @@ exports.defineAutoTests = function () {
 			expect(value.taskId).toBe(taskId);
 		});
 	});
-
+/*
 	describe("Simple method call check",() => {
 		var value: NativeBridge.IResult;
 		var taskId: string;
@@ -139,7 +139,7 @@ exports.defineAutoTests = function () {
 			expect(value.params[0]).toBe("arg1: 1, arg2: false, arg3: test, 日本語でOK: true");
 		});
 	});
-/*
+
 	describe("Void method call check",() => {
 		var value: NativeBridge.IResult;
 		var taskId: string;

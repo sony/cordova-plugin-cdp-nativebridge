@@ -41,8 +41,9 @@ NSString* const TAG = @"[CDPNativeBridge][Native] ";
     {
         // TODO: test
         NSDictionary* test1 = [CDPMessageUtils makeMessaggeWithMessage:@"test! test1" andTaskId:context.taskId];
-        NSDictionary* test2 = [CDPMessageUtils makeMessaggeWithMessage:@"test! test2" andTaskId:context.taskId andParams:[NSNumber numberWithInt:1], nil];
-        NSDictionary* test3 = [CDPMessageUtils makeMessaggeWithMessage:@"test! test2" andTaskId:context.taskId andParams:[NSNumber numberWithInt:1], YES, @"test3"];
+        NSDictionary* test2 = [CDPMessageUtils makeMessaggeWithMessage:@"test! test2" andTaskId:context.taskId andParams:@[@1]];
+        NSDictionary* test3 = [CDPMessageUtils makeMessaggeWithMessage:@"test! test2" andTaskId:context.taskId andParams:@[@1, @YES, @"test3"]];
+        NSArray* arg1 = [CDPMessageUtils makeParams:@"test", @NO, @1.15, nil];
         NSLog(@"test finished.");
     }
 
