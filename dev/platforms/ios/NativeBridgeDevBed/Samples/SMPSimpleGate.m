@@ -1,11 +1,12 @@
-/*
- * SMPSimpleGate.m
- * Sample for CDP NativeBridge plugin client.
+/**
+ * @file SMPSimpleGate.m
+ * @brief Sample for CDP NativeBridge plugin client.
  */
 
 #import "../Plugins/CDPNativeBridge/CDPGate.h"
 
-@interface SMPSimpleGate : NSObject
+// this class is instantiated by refrection. need not the header file.
+@interface SMPSimpleGate : CDPGate
 @end
 
 @implementation SMPSimpleGate

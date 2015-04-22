@@ -17,9 +17,9 @@ NSString* const TAG = @"[CDPNativeBridge][Native] ";
 //////////////////////////////////////////////////////
 // Initialzier
 
-- (id)init
+- (CDVPlugin*)initWithWebView:(UIWebView *)theWebView
 {
-    self = [super init];
+    self = [super initWithWebView:theWebView];
     if (self) {
         _gates = [@{} mutableCopy];
     }
@@ -108,7 +108,7 @@ NSString* const TAG = @"[CDPNativeBridge][Native] ";
         obj = nil;
         NSLog(@"%@%@ class is not CDPGate class.", TAG, className);
     }
-    return nil;
+    return obj;
 }
 
 @end
