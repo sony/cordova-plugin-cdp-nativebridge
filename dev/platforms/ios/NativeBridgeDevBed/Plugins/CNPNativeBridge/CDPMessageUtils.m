@@ -142,6 +142,13 @@
     {
         va_list args;
         va_start(args, params);
+        
+        // test
+        if (params) {
+//            int count_ = [args count];
+            id arg = va_arg(args, id);
+        }
+        
         NSArray* paramsInfo = [self makeParams:params withList:args];
         result = [self makeMessaggeWithCode:RETURN_SUCCESS_OK andMessage:message andTaskId:taskId andParamsInfo:paramsInfo];
         va_end(args);
@@ -194,7 +201,8 @@
  */
 + (void) sendSuccessResultWithContext:(CDPGateContext*)context andResult:(NSDictionary*)result
 {
-    // TODO:
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
+    [context.commandDelegate sendPluginResult:pluginResult callbackId:context.callbackId];
 }
 
 /**
@@ -233,7 +241,8 @@
  */
 + (void) sendErrorResultWithContext:(CDPGateContext*)context andResult:(NSDictionary*)result
 {
-    // TODO:
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:result];
+    [context.commandDelegate sendPluginResult:pluginResult callbackId:context.callbackId];
 }
 
 //////////////////////////////////////////////////////

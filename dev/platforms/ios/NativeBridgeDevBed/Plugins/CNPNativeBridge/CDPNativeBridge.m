@@ -6,6 +6,7 @@
 #import "CDPNativeBridge.h"
 #import "CDPGateContext.h"
 #import "CDPGate.h"
+#import "CDPMessageUtils.h"
 
 @implementation CDPNativeBridge {
     NSMutableDictionary* _gates;
@@ -33,14 +34,26 @@ NSString* const TAG = @"[CDPNativeBridge][Native] ";
     NSDictionary* execInfo = command.arguments[0];
     NSArray* methodArgs = [self methodArguments:command.arguments];
     // TODO:
+    NSLog(@"execTask called.");
     
     CDPGateContext* context = [[CDPGateContext alloc] initWithPlugin:self andCallbackId:command.callbackId andExecInfo:execInfo];
     
-    CDPGate* gate = [self getGateClassFromObjectId:context.objectId andClassName:context.className];
-    if (!gate) {
-        // TODO:
+    {
+        // TODO: test
+        NSDictionary* test1 = [CDPMessageUtils makeMessaggeWithMessage:@"test! test1" andTaskId:context.taskId];
+        NSDictionary* test2 = [CDPMessageUtils makeMessaggeWithMessage:@"test! test2" andTaskId:context.taskId andParams:[NSNumber numberWithInt:1], nil];
+        NSDictionary* test3 = [CDPMessageUtils makeMessaggeWithMessage:@"test! test2" andTaskId:context.taskId andParams:[NSNumber numberWithInt:1], YES, @"test3"];
+        NSLog(@"test finished.");
     }
-    NSLog(@"execTask called.");
+
+    {
+        CDPGate* gate = [self getGateClassFromObjectId:context.objectId andClassName:context.className];
+        if (!gate) {
+            NSString* errorMsg = [NSString stringWithFormat:@"%@class not found. class: %@", TAG, context.class];
+            [CDPMessageUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:RETURN_ERROR_CLASS_NOT_FOUND andMessage:errorMsg];
+            return;
+        }
+    }
 }
 
 - (void) cancelTask:(CDVInvokedUrlCommand *)command
