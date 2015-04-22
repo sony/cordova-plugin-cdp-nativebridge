@@ -116,7 +116,7 @@
                                 andTaskId:(NSString*)taskId
                                 andParams:(NSArray*)params
 {
-    return [self makeMessaggeWithCode:RETURN_SUCCESS_OK andMessage:message andTaskId:taskId andParams:params];
+    return [self makeMessaggeWithCode:CDP_NATIVEBRIDGE_SUCCESS_OK andMessage:message andTaskId:taskId andParams:params];
 }
 
 /**
@@ -142,7 +142,7 @@
 + (NSDictionary*) makeMessaggeWithTaskId:(NSString*)taskId
                                andParams:(NSArray*)params
 {
-    return [self makeMessaggeWithCode:RETURN_SUCCESS_OK andMessage:nil andTaskId:taskId andParams:params];
+    return [self makeMessaggeWithCode:CDP_NATIVEBRIDGE_SUCCESS_OK andMessage:nil andTaskId:taskId andParams:params];
 }
 
 /**
@@ -207,16 +207,16 @@
             int code;
             const char* const msg;
         } _tbl[] = {
-            { RETURN_SUCCESS_OK,                "RETURN_SUCCESS_OK"             },
-            { RETURN_SUCCESS_PROGRESS,          "RETURN_SUCCESS_PROGRESS"       },
-            { RETURN_ERROR_FAIL,                "RETURN_ERROR_FAIL"             },
-            { RETURN_ERROR_CANCEL,              "RETURN_ERROR_CANCEL"           },
-            { RETURN_ERROR_INVALID_ARG,         "RETURN_ERROR_INVALID_ARG"      },
-            { RETURN_ERROR_NOT_IMPLEMENT,       "RETURN_ERROR_NOT_IMPLEMENT"    },
-            { RETURN_ERROR_NOT_SUPPORT,         "RETURN_ERROR_NOT_SUPPORT"      },
-            { RETURN_ERROR_INVALID_OPERATION,   "RETURN_ERROR_INVALID_OPERATION"},
-            { RETURN_ERROR_CLASS_NOT_FOUND,     "RETURN_ERROR_CLASS_NOT_FOUND"  },
-            { RETURN_ERROR_METHOD_NOT_FOUND,    "RETURN_ERROR_METHOD_NOT_FOUND" },
+            { CDP_NATIVEBRIDGE_SUCCESS_OK,                "SUCCESS_OK"              },
+            { CDP_NATIVEBRIDGE_SUCCESS_PROGRESS,          "SUCCESS_PROGRESS"        },
+            { CDP_NATIVEBRIDGE_ERROR_FAIL,                "ERROR_FAIL"              },
+            { CDP_NATIVEBRIDGE_ERROR_CANCEL,              "ERROR_CANCEL"            },
+            { CDP_NATIVEBRIDGE_ERROR_INVALID_ARG,         "ERROR_INVALID_ARG"       },
+            { CDP_NATIVEBRIDGE_ERROR_NOT_IMPLEMENT,       "ERROR_NOT_IMPLEMENT"     },
+            { CDP_NATIVEBRIDGE_ERROR_NOT_SUPPORT,         "ERROR_NOT_SUPPORT"       },
+            { CDP_NATIVEBRIDGE_ERROR_INVALID_OPERATION,   "ERROR_INVALID_OPERATION" },
+            { CDP_NATIVEBRIDGE_ERROR_CLASS_NOT_FOUND,     "ERROR_CLASS_NOT_FOUND"   },
+            { CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND,    "ERROR_METHOD_NOT_FOUND"  },
         };
         
         for (int i = 0; i < _countof(_tbl); i++) {

@@ -128,7 +128,7 @@ exports.defineAutoTests = function () {
 			expect(callbacks.win).toHaveBeenCalled();
 			expect(callbacks.fail).not.toHaveBeenCalled();
 		});
-
+/*
 		it("check return value",() => {
 			expect(value).toBeDefined();
 			expect(value.code).toBe(NativeBridge.SUCCESS_OK);
@@ -138,6 +138,7 @@ exports.defineAutoTests = function () {
 			expect(value.params.length).toBe(1);
 			expect(value.params[0]).toBe("arg1: 1, arg2: false, arg3: test, 日本語でOK: true");
 		});
+*/
 	});
 /*
 	describe("Void method call check",() => {

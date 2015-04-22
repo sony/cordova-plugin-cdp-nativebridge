@@ -6,16 +6,16 @@
 #import <Foundation/Foundation.h>
 #import "CDPGateContext.h"
 
-static const NSInteger RETURN_SUCCESS_OK                = 0x0000;
-static const NSInteger RETURN_SUCCESS_PROGRESS          = 0x0001;
-static const NSInteger RETURN_ERROR_FAIL                = 0x0002;
-static const NSInteger RETURN_ERROR_CANCEL              = 0x0003;
-static const NSInteger RETURN_ERROR_INVALID_ARG         = 0x0004;
-static const NSInteger RETURN_ERROR_NOT_IMPLEMENT       = 0x0005;
-static const NSInteger RETURN_ERROR_NOT_SUPPORT         = 0x0006;
-static const NSInteger RETURN_ERROR_INVALID_OPERATION   = 0x0007;
-static const NSInteger RETURN_ERROR_CLASS_NOT_FOUND     = 0x0008;
-static const NSInteger RETURN_ERROR_METHOD_NOT_FOUND    = 0x0009;
+static const NSInteger CDP_NATIVEBRIDGE_SUCCESS_OK                = 0x0000;
+static const NSInteger CDP_NATIVEBRIDGE_SUCCESS_PROGRESS          = 0x0001;
+static const NSInteger CDP_NATIVEBRIDGE_ERROR_FAIL                = 0x0002;
+static const NSInteger CDP_NATIVEBRIDGE_ERROR_CANCEL              = 0x0003;
+static const NSInteger CDP_NATIVEBRIDGE_ERROR_INVALID_ARG         = 0x0004;
+static const NSInteger CDP_NATIVEBRIDGE_ERROR_NOT_IMPLEMENT       = 0x0005;
+static const NSInteger CDP_NATIVEBRIDGE_ERROR_NOT_SUPPORT         = 0x0006;
+static const NSInteger CDP_NATIVEBRIDGE_ERROR_INVALID_OPERATION   = 0x0007;
+static const NSInteger CDP_NATIVEBRIDGE_ERROR_CLASS_NOT_FOUND     = 0x0008;
+static const NSInteger CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND    = 0x0009;
 
 @interface CDPMessageUtils : NSObject
 
