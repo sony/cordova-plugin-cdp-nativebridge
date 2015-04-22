@@ -32,7 +32,6 @@ NSString* const TAG = @"[CDPNativeBridge][Native] ";
 - (void) execTask:(CDVInvokedUrlCommand *)command
 {
     NSDictionary* execInfo = command.arguments[0];
-    NSArray* methodArgs = [self methodArguments:command.arguments];
     // TODO:
     NSLog(@"execTask called.");
     
@@ -48,11 +47,16 @@ NSString* const TAG = @"[CDPNativeBridge][Native] ";
     }
 
     {
+        NSArray* methodArgs = [self methodArguments:command.arguments];
         CDPGate* gate = [self getGateClassFromObjectId:context.objectId andClassName:context.className];
         if (!gate) {
             NSString* errorMsg = [NSString stringWithFormat:@"%@class not found. class: %@", TAG, context.class];
             [CDPMessageUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:RETURN_ERROR_CLASS_NOT_FOUND andMessage:errorMsg];
-            return;
+        } else {
+            NSDictionary* errorResult = [gate invokeWithMethod:context.methodName andArgs:methodArgs andContext:context];
+            if (errorResult) {
+                [CDPMessageUtils sendErrorResultWithContext:context andResult:errorResult];
+            }
         }
     }
 }
