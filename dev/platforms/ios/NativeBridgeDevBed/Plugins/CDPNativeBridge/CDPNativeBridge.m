@@ -32,8 +32,6 @@
 - (void) execTask:(CDVInvokedUrlCommand *)command
 {
     NSDictionary* execInfo = command.arguments[0];
-    // TODO:
-    NSLog(@"execTask called.");
     
     CDPMethodContext* context = [[CDPMethodContext alloc] initWithPlugin:self andCallbackId:command.callbackId andExecInfo:execInfo];
     

@@ -8,13 +8,19 @@
 
 @interface CDPGate : NSObject
 
+@property (nonatomic, weak) UIWebView* webView;
+@property (nonatomic, weak) UIViewController* viewController;
+@property (nonatomic, weak) id <CDVCommandDelegate> commandDelegate;
+
 //////////////////////////////////////////////////////
 // Initialzier
 
 /**
  * initializer
+ *
+ * @param plugin     [in] Plugin instance
  */
-- (id) init;
+- (id)initWithPlugin:(CDVPlugin*)plugin;
 
 //////////////////////////////////////////////////////
 // public methods

@@ -27,8 +27,6 @@
 {
     self = [super init];
     if (self) {
-        self.webView = plugin.webView;
-        self.viewController = plugin.viewController;
         self.commandDelegate = plugin.commandDelegate;
         _callbackId = callbackId;
         _className = execInfo[@"feature"][@"ios"][@"packageInfo"];

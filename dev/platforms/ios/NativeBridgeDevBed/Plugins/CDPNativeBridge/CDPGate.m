@@ -16,10 +16,18 @@
 //////////////////////////////////////////////////////
 // Initialzier
 
-- (id) init
+/**
+ * initializer
+ *
+ * @param plugin     [in] Plugin instance
+ */
+- (id)initWithPlugin:(CDVPlugin*)plugin
 {
     self = [super init];
     if (self) {
+        self.webView = plugin.webView;
+        self.viewController = plugin.viewController;
+        self.commandDelegate = plugin.commandDelegate;
         _currentContext = nil;
         _cancelableTask = [@{} mutableCopy];
     }

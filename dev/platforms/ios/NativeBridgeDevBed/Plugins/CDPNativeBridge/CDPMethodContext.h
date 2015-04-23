@@ -8,8 +8,6 @@
 
 @interface CDPMethodContext : NSObject
 
-@property (nonatomic, weak) UIWebView* webView;
-@property (nonatomic, weak) UIViewController* viewController;
 @property (nonatomic, weak) id <CDVCommandDelegate> commandDelegate;
 @property (nonatomic, readonly) NSString* callbackId;
 @property (nonatomic, readonly) NSString* className;
