@@ -58,7 +58,10 @@
 
 - (void) disposeTask:(CDVInvokedUrlCommand *)command
 {
-    NSLog(@"disposeTask called.");
+    NSString* objectId = [self cancelProc:command];
+    if (objectId) {
+        [_gates removeObjectForKey:objectId];
+    }
 }
 
 //////////////////////////////////////////////////////
@@ -94,14 +97,21 @@
     NSString* objectId = nil;
     
     CDPMethodContext* context = [[CDPMethodContext alloc] initWithPlugin:self andCommand:command];
-    CDPGate* gate = [self getGateClassFromObjectId:context.objectId andClassName:context.className];
-    if (!gate) {
-        NSString* errorMsg = [NSString stringWithFormat:@"%@ class not found. class: %@", TAG, context.class];
-        [CDPMessageUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_CLASS_NOT_FOUND andMessage:errorMsg];
-    } else {
-        [gate cancel:context];
-        [CDPMessageUtils sendSuccessResultWithContext:context andResult:[CDPMessageUtils makeMessaggeWithTaskId:nil]];
-        objectId = context.objectId;
+    
+    {
+        // TODO: NOT_IMPLE case handling.
+    }
+    
+    {
+        CDPGate* gate = [self getGateClassFromObjectId:context.objectId andClassName:context.className];
+        if (!gate) {
+            NSString* errorMsg = [NSString stringWithFormat:@"%@ class not found. class: %@", TAG, context.class];
+            [CDPMessageUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_CLASS_NOT_FOUND andMessage:errorMsg];
+        } else {
+            [gate cancel:context];
+            [CDPMessageUtils sendSuccessResultWithContext:context andResult:[CDPMessageUtils makeMessaggeWithTaskId:nil]];
+            objectId = context.objectId;
+        }
     }
 
     return objectId;

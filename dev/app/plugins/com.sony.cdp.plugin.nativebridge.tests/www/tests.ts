@@ -448,7 +448,7 @@ exports.defineAutoTests = function () {
 			expect(error.code).toBe(NativeBridge.ERROR_CANCEL);
 		});
 	});
-/*
+
 	describe("Dispose call check",() => {
 		var value: NativeBridge.IResult[] = [];
 		var taskId: string;
@@ -513,5 +513,4 @@ exports.defineAutoTests = function () {
 			expect(error.dispose.code).toBe(NativeBridge.ERROR_INVALID_OPERATION);
 		});
 	});
-*/
 };

@@ -35,7 +35,7 @@
 }
 
 //////////////////////////////////////////////////////
-// public methods
+// public methods: execTask
 
 /**
  * invoke instance method.
@@ -223,6 +223,9 @@
     [CDPMessageUtils sendErrorResultWithContext:context andResult:message];
 }
 
+//////////////////////////////////////////////////////
+// public methods: cancelTask
+
 /**
  * cancel
  * this method call from NativeBridge framework.
@@ -280,6 +283,20 @@
 - (void) onCancel:(NSString*)taskId
 {
     // override
+}
+
+//////////////////////////////////////////////////////
+// public methods: disposeTask
+
+/**
+ * dispose
+ * this method call from NativeBridge framework.
+ */
+- (void) dispose
+{
+    _webView = nil;
+    _viewController = nil;
+    _commandDelegate = nil;
 }
 
 //////////////////////////////////////////////////////

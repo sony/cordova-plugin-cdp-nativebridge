@@ -23,7 +23,7 @@
 - (id)initWithPlugin:(const CDVPlugin*)plugin;
 
 //////////////////////////////////////////////////////
-// public methods
+// public methods: execTask
 
 /**
  * invoke instance method.
@@ -134,6 +134,9 @@
               andCode:(NSInteger)errorCode
            andMessage:(NSString*)errorMsg;
 
+//////////////////////////////////////////////////////
+// public methods: cancelTask
+
 /**
  * cancel
  * this method call from NativeBridge framework.
@@ -170,5 +173,14 @@
  * @param taskId [in] task ID.
  */
 - (void) onCancel:(NSString*)taskId;
+
+//////////////////////////////////////////////////////
+// public methods: disposeTask
+
+/**
+ * dispose
+ * this method call from NativeBridge framework.
+ */
+- (void) dispose;
 
 @end
