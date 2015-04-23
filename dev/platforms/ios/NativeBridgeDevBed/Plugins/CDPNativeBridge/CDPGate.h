@@ -29,4 +29,13 @@
  */
 - (NSDictionary*) invokeWithMethod:(NSString*)method andArgs:(NSArray*)args andContext:(CDPGateContext*)context;
 
+/**
+ * return params.
+ * this method semantic is return statement.
+ * this method is accessible only from method entry thread.
+ *
+ * @param [in] returned parameter.
+ */
+- (void) returnParams:(NSObject*)params;
+
 @end

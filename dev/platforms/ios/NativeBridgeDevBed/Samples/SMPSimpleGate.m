@@ -16,23 +16,9 @@
  */
 - (void)coolMethod:(NSNumber*)arg1 :(BOOL)arg2 :(NSString*)arg3 :(NSDictionary*)arg4
 {
-    if (nil == arg1) {
-        NSLog(@"arg1 is nil.");
-    }
-    if (arg2) {
-        NSLog(@"arg2 is YES.");
-    }
-    if (nil == arg3) {
-        NSLog(@"arg3 is nil.");
-    }
-    if (nil == arg4) {
-        NSLog(@"arg4 is nil.");
-    }
-    NSLog(@"arg1: %@", arg1);
-    NSLog(@"arg2: %@", [NSNumber numberWithBool:arg2]);
-    NSLog(@"arg3: %@", arg3);
-    NSLog(@"arg4: %@", arg4);
-    // TODO:
+    NSString* msg = [NSString stringWithFormat:@"arg1: %@, arg2: %@, arg3: %@, 日本語でOK: %@"
+                     , arg1, (arg2 ? @"true" : @"false"), arg3, (arg4[@"ok"] ? @"true" : @"false")];
+    [self returnParams:msg];
 }
 
 @end

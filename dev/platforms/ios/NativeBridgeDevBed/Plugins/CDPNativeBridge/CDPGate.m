@@ -11,7 +11,7 @@
     NSMutableDictionary* _cancelableTask;
 }
 
-#define TAG @"[CDPGate][Native] "
+#define TAG @"[CDPGate][Native]"
 
 //////////////////////////////////////////////////////
 // Initialzier
@@ -46,6 +46,26 @@
     }
 }
 
+/**
+ * return params.
+ * this method semantic is return statement.
+ * this method is accessible only from method called thread.
+ *
+ * @param [in] returned parameter.
+ */
+- (void) returnParams:(NSObject*)params
+{
+    @synchronized (self) {
+        if (_currentContext && [[self getCurrentThreadId] isEqualToString:_currentContext.threadId]) {
+            _currentContext.needSendResult = NO;
+            [CDPMessageUtils sendSuccessResultWithContext:_currentContext
+                                                andResult:[CDPMessageUtils makeMessaggeWithTaskId:_currentContext.taskId andParams:@[params]]];
+        } else {
+            NSLog(@"%@ Calling returnParams is permitted only from method entry thread.", TAG);
+        }
+    }
+}
+
 //////////////////////////////////////////////////////
 // private methods
 
@@ -76,7 +96,7 @@
         return nil;
     } else {
         return [CDPMessageUtils makeMessaggeWithCode:CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND
-                                          andMessage:[NSString stringWithFormat:@"%@method not found. method: %@", TAG, method]
+                                          andMessage:[NSString stringWithFormat:@"%@ method not found. method: %@", TAG, method]
                                            andTaskId:context.taskId];
     }
 }
@@ -120,7 +140,7 @@
         return nil;
     } else {
         return [CDPMessageUtils makeMessaggeWithCode:CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND
-                                          andMessage:[NSString stringWithFormat:@"%@method not found. method: %@", TAG, method]
+                                          andMessage:[NSString stringWithFormat:@"%@ method not found. method: %@", TAG, method]
                                            andTaskId:context.taskId];
     }
 }
@@ -139,6 +159,14 @@
         selector = [selector stringByAppendingString:@":"];
     }
     return selector;
+}
+
+/**
+ * get current thread id string
+ */
+- (NSString*) getCurrentThreadId
+{
+    return [NSString stringWithFormat:@"%@", [NSThread currentThread]];
 }
 
 @end
