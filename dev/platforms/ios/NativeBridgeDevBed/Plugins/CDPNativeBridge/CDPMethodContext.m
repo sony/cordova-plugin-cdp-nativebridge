@@ -16,13 +16,17 @@
 /**
  * initializer
  *
- * @param plugin   [in] plugin instance
- * @param command  [in] command object
- * @param execInfo [in] execute information object
+ * @param plugin    [in] plugin instance
+ * @param command   [in] command object
+ * @param execInfo  [in] execute information object
+ * @param arguments [in] arguments array
  */
-- (id)initWithPlugin:(CDVPlugin*)plugin andCommand:(CDVInvokedUrlCommand*)command andExecInfo:(NSDictionary*)execInfo;
+- (id)initWithPlugin:(CDVPlugin*)plugin
+          andCommand:(CDVInvokedUrlCommand*)command
+         andExecInfo:(NSDictionary*)execInfo
+       andArguments:(NSArray*)arguments
 {
-    self = [super initWithArguments:command.arguments
+    self = [super initWithArguments:arguments
                          callbackId:command.callbackId
                           className:execInfo[@"feature"][@"ios"][@"packageInfo"]
                          methodName:execInfo[@"method"] ? execInfo[@"method"] : nil];

@@ -38,9 +38,12 @@
 /**
  * compatible check method:
  */
-- (void) compatibleCheck:(CDVInvokedUrlCommand*)command :(CDPMethodContext*)context
+- (void) compatibleCheck:(CDVInvokedUrlCommand*)command
 {
     NSLog(@"%@ compatibleCheck, called.", TAG);
+    
+    // command instance can down cast to context object.
+    CDPMethodContext* context = (CDPMethodContext*)command;
     
     NSDictionary* argsInfo = @{
                                @"taskId": context.taskId,
@@ -53,7 +56,7 @@
 
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:message];
     
-    [context.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 @end

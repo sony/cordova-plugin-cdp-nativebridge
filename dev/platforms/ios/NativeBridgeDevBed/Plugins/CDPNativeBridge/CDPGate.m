@@ -19,7 +19,7 @@
 /**
  * initializer
  *
- * @param plugin     [in] Plugin instance
+ * @param plugin [in] plugin instance
  */
 - (id)initWithPlugin:(CDVPlugin*)plugin
 {
@@ -38,19 +38,17 @@
 // public methods
 
 /**
- * invoke instance method entry.
+ * invoke instance method.
  *
- * @param method  [in] method name
- * @param args    [in] arguments
- * @param context [in] NativeBridge Gate context object
+ * @param context [in] method context object
  * @return message object
  */
-- (NSDictionary*) invokeWithMethod:(NSString*)method andArgs:(NSArray*)args andContext:(CDPMethodContext*)context
+- (NSDictionary*) invokeWithContext:(CDPMethodContext*)context;
 {
     if (context.compatible) {
-        return [self invokeAsCordovaCompatibleWithMethod:method andArgs:args andContext:context];
+        return [self invokeAsCordovaCompatibleWithContext:context];
     } else {
-        return [self invokeAsNativeBridgeWithMethod:method andArgs:args andContext:context];
+        return [self invokeAsNativeBridgeGateWithContext:context];
     }
 }
 
@@ -80,31 +78,24 @@
 /**
  * compatible invoke instance method.
  *
- * @param method  [in] method name
- * @param args    [in] arguments
- * @param context [in] NativeBridge Gate context object
+ * @param context [in] method context object
  * @return message object
  */
-- (NSDictionary*) invokeAsCordovaCompatibleWithMethod:(NSString*)method andArgs:(NSArray*)args andContext:(CDPMethodContext*)context
+- (NSDictionary*) invokeAsCordovaCompatibleWithContext:(CDPMethodContext*)context
 {
-    // 2 args. the context assigned second arg. (no-lable)
-    NSString* methodName = [NSString stringWithFormat:@"%@::", context.methodName];
+    NSString* methodName = [NSString stringWithFormat:@"%@:", context.methodName];
     SEL normalSelector = NSSelectorFromString(methodName);
     if ([self respondsToSelector:normalSelector]) {
-        CDVInvokedUrlCommand* command = [[CDVInvokedUrlCommand alloc] initWithArguments:args
-                                                                             callbackId:context.callbackId
-                                                                              className:context.className
-                                                                             methodName:method];
         // disable warning: (this is safe way.)
         // http://captainshadow.hatenablog.com/entry/20121114/1352834276
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [self performSelector:normalSelector withObject:command withObject:context];
+        [self performSelector:normalSelector withObject:context];
 #pragma clang diagnostic pop
         return nil;
     } else {
         return [CDPMessageUtils makeMessaggeWithCode:CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND
-                                          andMessage:[NSString stringWithFormat:@"%@ method not found. method: %@", TAG, method]
+                                          andMessage:[NSString stringWithFormat:@"%@ method not found. method: %@", TAG, context.methodName]
                                            andTaskId:context.taskId];
     }
 }
@@ -112,14 +103,13 @@
 /**
  * Native Bridge extended invoke instance method.
  *
- * @param method  [in] method name
- * @param args    [in] arguments
- * @param context [in] NativeBridge Gate context object
+ * @param context [in] method context object
  * @return message object
  */
-- (NSDictionary*) invokeAsNativeBridgeWithMethod:(NSString*)method andArgs:(NSArray*)args andContext:(CDPMethodContext*)context
+- (NSDictionary*) invokeAsNativeBridgeGateWithContext:(CDPMethodContext*)context
 {
-    SEL selector = NSSelectorFromString([self buildMethodSelectorStringFrom:method andArgs:args]);
+    NSArray* args = context.arguments;
+    SEL selector = NSSelectorFromString([self buildMethodSelectorStringFrom:context.methodName andArgs:args]);
     if ([self respondsToSelector:selector]) {
         NSMethodSignature* signature = [self methodSignatureForSelector:selector];
         NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:signature];
@@ -148,7 +138,7 @@
         return nil;
     } else {
         return [CDPMessageUtils makeMessaggeWithCode:CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND
-                                          andMessage:[NSString stringWithFormat:@"%@ method not found. method: %@", TAG, method]
+                                          andMessage:[NSString stringWithFormat:@"%@ method not found. method: %@", TAG, context.methodName]
                                            andTaskId:context.taskId];
     }
 }

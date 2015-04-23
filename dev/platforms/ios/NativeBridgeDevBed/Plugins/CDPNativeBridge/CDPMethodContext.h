@@ -19,10 +19,14 @@
 /**
  * initializer
  *
- * @param plugin   [in] plugin instance
- * @param command  [in] command object
- * @param execInfo [in] execute information object
+ * @param plugin    [in] plugin instance
+ * @param command   [in] command object
+ * @param execInfo  [in] execute information object
+ * @param arguments [in] arguments array
  */
-- (id)initWithPlugin:(CDVPlugin*)plugin andCommand:(CDVInvokedUrlCommand*)command andExecInfo:(NSDictionary*)execInfo;
+- (id)initWithPlugin:(CDVPlugin*)plugin
+          andCommand:(CDVInvokedUrlCommand*)command
+         andExecInfo:(NSDictionary*)execInfo
+        andArguments:(NSArray*)arguments;
 
 @end

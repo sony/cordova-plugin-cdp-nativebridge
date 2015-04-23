@@ -18,7 +18,7 @@
 /**
  * initializer
  *
- * @param plugin     [in] Plugin instance
+ * @param plugin [in] plugin instance
  */
 - (id)initWithPlugin:(CDVPlugin*)plugin;
 
@@ -28,12 +28,10 @@
 /**
  * invoke instance method.
  *
- * @param method  [in] method name
- * @param args    [in] arguments
- * @param context [in] NativeBridge Gate context object
+ * @param context [in] method context object
  * @return message object
  */
-- (NSDictionary*) invokeWithMethod:(NSString*)method andArgs:(NSArray*)args andContext:(CDPMethodContext*)context;
+- (NSDictionary*) invokeWithContext:(CDPMethodContext*)context;
 
 /**
  * return params.
