@@ -18,15 +18,13 @@
  *
  * @param plugin    [in] plugin instance
  * @param command   [in] command object
- * @param execInfo  [in] execute information object
- * @param arguments [in] arguments array
  */
-- (id)initWithPlugin:(const CDVPlugin*)plugin
-          andCommand:(const CDVInvokedUrlCommand*)command
-         andExecInfo:(const NSDictionary*)execInfo
-       andArguments:(NSArray*)arguments
+- (id)initWithPlugin:(const CDVPlugin*)plugin andCommand:(const CDVInvokedUrlCommand*)command
 {
-    self = [super initWithArguments:arguments
+    NSDictionary* execInfo = command.arguments[0];
+    NSArray* methodArgs = [self methodArguments:command.arguments];
+    
+    self = [super initWithArguments:methodArgs
                          callbackId:command.callbackId
                           className:execInfo[@"feature"][@"ios"][@"packageInfo"]
                          methodName:execInfo[@"method"] ? execInfo[@"method"] : nil];
@@ -39,6 +37,22 @@
         _needSendResult = YES;
     }
     return self;
+}
+
+//////////////////////////////////////////////////////
+// private methods
+
+//! slice method arguments.
+- (NSArray*) methodArguments:(NSArray*)rawArgs
+{
+    if (1 < [rawArgs count]) {
+        NSRange range;
+        range.location = 1;
+        range.length = [rawArgs count] - 1;
+        return [rawArgs subarrayWithRange:range];
+    } else {
+        return @[];
+    }
 }
 
 @end

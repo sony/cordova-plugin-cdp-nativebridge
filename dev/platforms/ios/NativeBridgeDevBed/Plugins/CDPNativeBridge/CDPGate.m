@@ -223,6 +223,65 @@
     [CDPMessageUtils sendErrorResultWithContext:context andResult:message];
 }
 
+/**
+ * cancel
+ * this method call from NativeBridge framework.
+ *
+ * @param context [in] method context.
+ */
+- (void) cancel:(const CDPMethodContext*)context
+{
+    [self setCancelState:context.taskId];
+    [self onCancel:context.taskId];
+}
+
+/**
+ * set as cancelable task by method context.
+ *
+ * @param context [in] method context object.
+ */
+- (void) setCancelable:(const CDPMethodContext*)context
+{
+    @synchronized (self) {
+        _cancelableTask[context.taskId] = @NO;
+    }
+}
+
+/**
+ * remove cancelable task by method context.
+ *
+ * @param context [in] method context object.
+ */
+- (void) removeCancelable:(const CDPMethodContext*)context
+{
+    @synchronized (self) {
+        [_cancelableTask removeObjectForKey:context.taskId];
+    }
+}
+
+/**
+ * check canceled task by method context.
+ *
+ * @param context [in] method context object.
+ */
+- (BOOL) isCanceled:(const CDPMethodContext*)context
+{
+    @synchronized (self) {
+        return [_cancelableTask[context.taskId] boolValue];
+    }
+}
+
+/**
+ * cancel event handler.
+ * override method.
+ *
+ * @param taskId [in] task ID.
+ */
+- (void) onCancel:(NSString*)taskId
+{
+    // override
+}
+
 //////////////////////////////////////////////////////
 // private methods
 
@@ -316,6 +375,22 @@
 - (NSString*) getCurrentThreadId
 {
     return [NSString stringWithFormat:@"%@", [NSThread currentThread]];
+}
+
+/**
+ * set cancel state for context
+ */
+- (void) setCancelState:(NSString*)taskId
+{
+    @synchronized (self) {
+        if (!taskId) {
+            for (id key in [_cancelableTask keyEnumerator]) {
+                _cancelableTask[taskId] = @YES;
+            }
+        } else {
+            _cancelableTask[taskId] = @YES;
+        }
+    }
 }
 
 @end

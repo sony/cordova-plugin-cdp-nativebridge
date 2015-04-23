@@ -134,5 +134,41 @@
               andCode:(NSInteger)errorCode
            andMessage:(NSString*)errorMsg;
 
+/**
+ * cancel
+ * this method call from NativeBridge framework.
+ *
+ * @param context [in] method context.
+ */
+- (void) cancel:(const CDPMethodContext*)context;
+
+/**
+ * set as cancelable task by method context.
+ *
+ * @param context [in] method context object.
+ */
+- (void) setCancelable:(const CDPMethodContext*)context;
+
+/**
+ * remove cancelable task by method context.
+ *
+ * @param context [in] method context object.
+ */
+- (void) removeCancelable:(const CDPMethodContext*)context;
+
+/**
+ * check canceled task by method context.
+ *
+ * @param context [in] method context object.
+ */
+- (BOOL) isCanceled:(const CDPMethodContext*)context;
+
+/**
+ * cancel event handler.
+ * override method.
+ *
+ * @param taskId [in] task ID.
+ */
+- (void) onCancel:(NSString*)taskId;
 
 @end

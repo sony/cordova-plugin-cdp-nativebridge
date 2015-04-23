@@ -366,7 +366,7 @@ exports.defineAutoTests = function () {
 			expect(value[2].params[0]).toBe("arg1: 1, arg2: false, arg3: test, 日本語でOK: true");
 		});
 	});
-/*
+
 	describe("Cancel call check",() => {
 		var value: NativeBridge.IResult[];
 		var taskId: string;
@@ -448,7 +448,7 @@ exports.defineAutoTests = function () {
 			expect(error.code).toBe(NativeBridge.ERROR_CANCEL);
 		});
 	});
-
+/*
 	describe("Dispose call check",() => {
 		var value: NativeBridge.IResult[] = [];
 		var taskId: string;

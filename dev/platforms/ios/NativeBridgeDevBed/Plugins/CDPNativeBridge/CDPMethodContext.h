@@ -21,12 +21,7 @@
  *
  * @param plugin    [in] plugin instance
  * @param command   [in] command object
- * @param execInfo  [in] execute information object
- * @param arguments [in] arguments array
  */
-- (id)initWithPlugin:(const CDVPlugin*)plugin
-          andCommand:(const CDVInvokedUrlCommand*)command
-         andExecInfo:(const NSDictionary*)execInfo
-        andArguments:(NSArray*)arguments;
+- (id)initWithPlugin:(const CDVPlugin*)plugin andCommand:(const CDVInvokedUrlCommand*)command;
 
 @end
