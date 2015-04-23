@@ -4,7 +4,7 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "CDPGateContext.h"
+#import "CDPMethodContext.h"
 
 static const NSInteger CDP_NATIVEBRIDGE_SUCCESS_OK                = 0x0000;
 static const NSInteger CDP_NATIVEBRIDGE_SUCCESS_PROGRESS          = 0x0001;
@@ -104,29 +104,29 @@ static const NSInteger CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND    = 0x0009;
 /**
  * send success result
  *
- * @param context [in] Gate context object
+ * @param context [in] method context object
  * @param result  [in] result message object
  */
-+ (void) sendSuccessResultWithContext:(CDPGateContext*)context andResult:(NSDictionary*)result;
++ (void) sendSuccessResultWithContext:(CDPMethodContext*)context andResult:(NSDictionary*)result;
 
 /**
  * send success result
  * helper function
  *
- * @param context [in] Gate context object
+ * @param context [in] method context object
  * @param taskId  [in] task ID
  */
-+ (void) sendSuccessResultWithContext:(CDPGateContext*)context andTaskId:(NSString*)taskId;
++ (void) sendSuccessResultWithContext:(CDPMethodContext*)context andTaskId:(NSString*)taskId;
 
 /**
  * send error result
  *
- * @param context [in] Gate context object
+ * @param context [in] method context object
  * @param taskId  [in] task ID
  * @param code    [in] result code
  * @param message [in] message string
  */
-+ (void) sendErrorResultWithContext:(CDPGateContext*)context
++ (void) sendErrorResultWithContext:(CDPMethodContext*)context
                           andTaskId:(NSString*)taskId
                             andCode:(NSInteger)code
                          andMessage:(NSString*)message;
@@ -134,9 +134,9 @@ static const NSInteger CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND    = 0x0009;
 /**
  * send error result
  *
- * @param context [in] Gate context object
+ * @param context [in] method context object
  * @param result  [in] result message object
  */
-+ (void) sendErrorResultWithContext:(CDPGateContext*)context andResult:(NSDictionary*)result;
++ (void) sendErrorResultWithContext:(CDPMethodContext*)context andResult:(NSDictionary*)result;
 
 @end

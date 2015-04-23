@@ -6,7 +6,7 @@
 #import <Foundation/Foundation.h>
 #import <Cordova/CDVPlugin.h>
 
-@interface CDPGateContext : NSObject
+@interface CDPMethodContext : NSObject
 
 @property (nonatomic, weak) UIWebView* webView;
 @property (nonatomic, weak) UIViewController* viewController;

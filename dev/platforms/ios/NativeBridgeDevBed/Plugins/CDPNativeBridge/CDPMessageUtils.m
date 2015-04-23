@@ -148,10 +148,10 @@
 /**
  * send success result
  *
- * @param context [in] Gate context object
+ * @param context [in] method context object
  * @param result  [in] result message object
  */
-+ (void) sendSuccessResultWithContext:(CDPGateContext*)context andResult:(NSDictionary*)result
++ (void) sendSuccessResultWithContext:(CDPMethodContext*)context andResult:(NSDictionary*)result
 {
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
     [context.commandDelegate sendPluginResult:pluginResult callbackId:context.callbackId];
@@ -161,10 +161,10 @@
  * send success result
  * helper function
  *
- * @param context [in] Gate context object
+ * @param context [in] method context object
  * @param taskId  [in] task ID
  */
-+ (void) sendSuccessResultWithContext:(CDPGateContext*)context andTaskId:(NSString*)taskId
++ (void) sendSuccessResultWithContext:(CDPMethodContext*)context andTaskId:(NSString*)taskId
 {
     [self sendSuccessResultWithContext:context andResult:[self makeMessaggeWithTaskId:taskId andParams:nil]];
 }
@@ -172,12 +172,12 @@
 /**
  * send error result
  *
- * @param context [in] Gate context object
+ * @param context [in] method context object
  * @param taskId  [in] task ID
  * @param code    [in] result code
  * @param message [in] message string
  */
-+ (void) sendErrorResultWithContext:(CDPGateContext*)context
++ (void) sendErrorResultWithContext:(CDPMethodContext*)context
                           andTaskId:(NSString*)taskId
                             andCode:(NSInteger)code
                          andMessage:(NSString*)message
@@ -188,10 +188,10 @@
 /**
  * send error result
  *
- * @param context [in] Gate context object
+ * @param context [in] method context object
  * @param result  [in] result message object
  */
-+ (void) sendErrorResultWithContext:(CDPGateContext*)context andResult:(NSDictionary*)result
++ (void) sendErrorResultWithContext:(CDPMethodContext*)context andResult:(NSDictionary*)result
 {
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:result];
     [context.commandDelegate sendPluginResult:pluginResult callbackId:context.callbackId];

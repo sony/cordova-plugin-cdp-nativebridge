@@ -4,7 +4,7 @@
  */
 
 #import "CDPNativeBridge.h"
-#import "CDPGateContext.h"
+#import "CDPMethodContext.h"
 #import "CDPGate.h"
 #import "CDPMessageUtils.h"
 
@@ -35,7 +35,7 @@
     // TODO:
     NSLog(@"execTask called.");
     
-    CDPGateContext* context = [[CDPGateContext alloc] initWithPlugin:self andCallbackId:command.callbackId andExecInfo:execInfo];
+    CDPMethodContext* context = [[CDPMethodContext alloc] initWithPlugin:self andCallbackId:command.callbackId andExecInfo:execInfo];
     
     {
         // TODO: test

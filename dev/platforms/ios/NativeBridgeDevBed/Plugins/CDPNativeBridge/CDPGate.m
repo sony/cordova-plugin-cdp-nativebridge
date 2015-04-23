@@ -7,7 +7,7 @@
 #import "CDPMessageUtils.h"
 
 @implementation CDPGate {
-    CDPGateContext* _currentContext;
+    CDPMethodContext* _currentContext;
     NSMutableDictionary* _cancelableTask;
 }
 
@@ -37,7 +37,7 @@
  * @param context [in] NativeBridge Gate context object
  * @return message object
  */
-- (NSDictionary*) invokeWithMethod:(NSString*)method andArgs:(NSArray*)args andContext:(CDPGateContext*)context
+- (NSDictionary*) invokeWithMethod:(NSString*)method andArgs:(NSArray*)args andContext:(CDPMethodContext*)context
 {
     if (context.compatible) {
         return [self invokeAsCordovaCompatibleWithMethod:method andArgs:args andContext:context];
@@ -77,7 +77,7 @@
  * @param context [in] NativeBridge Gate context object
  * @return message object
  */
-- (NSDictionary*) invokeAsCordovaCompatibleWithMethod:(NSString*)method andArgs:(NSArray*)args andContext:(CDPGateContext*)context
+- (NSDictionary*) invokeAsCordovaCompatibleWithMethod:(NSString*)method andArgs:(NSArray*)args andContext:(CDPMethodContext*)context
 {
     // 2 args. the context assigned second arg. (no-lable)
     NSString* methodName = [NSString stringWithFormat:@"%@::", context.methodName];
@@ -109,7 +109,7 @@
  * @param context [in] NativeBridge Gate context object
  * @return message object
  */
-- (NSDictionary*) invokeAsNativeBridgeWithMethod:(NSString*)method andArgs:(NSArray*)args andContext:(CDPGateContext*)context
+- (NSDictionary*) invokeAsNativeBridgeWithMethod:(NSString*)method andArgs:(NSArray*)args andContext:(CDPMethodContext*)context
 {
     SEL selector = NSSelectorFromString([self buildMethodSelectorStringFrom:method andArgs:args]);
     if ([self respondsToSelector:selector]) {

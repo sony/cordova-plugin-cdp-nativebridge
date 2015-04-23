@@ -38,7 +38,7 @@
 /**
  * compatible check method:
  */
-- (void) compatibleCheck:(CDVInvokedUrlCommand*)command :(CDPGateContext*)context
+- (void) compatibleCheck:(CDVInvokedUrlCommand*)command :(CDPMethodContext*)context
 {
     NSLog(@"%@ compatibleCheck, called.", TAG);
     

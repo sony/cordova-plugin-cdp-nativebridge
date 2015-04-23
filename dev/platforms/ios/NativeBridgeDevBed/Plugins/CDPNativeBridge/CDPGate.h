@@ -4,7 +4,7 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "CDPGateContext.h"
+#import "CDPMethodContext.h"
 
 @interface CDPGate : NSObject
 
@@ -27,7 +27,7 @@
  * @param context [in] NativeBridge Gate context object
  * @return message object
  */
-- (NSDictionary*) invokeWithMethod:(NSString*)method andArgs:(NSArray*)args andContext:(CDPGateContext*)context;
+- (NSDictionary*) invokeWithMethod:(NSString*)method andArgs:(NSArray*)args andContext:(CDPMethodContext*)context;
 
 /**
  * return params.

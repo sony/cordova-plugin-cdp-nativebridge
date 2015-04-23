@@ -30,7 +30,7 @@
 		30FC414916E50CA1004E6F35 /* icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 30FC414816E50CA1004E6F35 /* icon-72@2x.png */; };
 		4706C7A51AE4DDDF0069D8B4 /* SMPSimpleGate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4706C7A41AE4DDDF0069D8B4 /* SMPSimpleGate.m */; };
 		470C70251AE753280044DBA5 /* CDPGate.m in Sources */ = {isa = PBXBuildFile; fileRef = 470C701E1AE753280044DBA5 /* CDPGate.m */; };
-		470C70261AE753280044DBA5 /* CDPGateContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 470C70201AE753280044DBA5 /* CDPGateContext.m */; };
+		470C70261AE753280044DBA5 /* CDPMethodContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 470C70201AE753280044DBA5 /* CDPMethodContext.m */; };
 		470C70271AE753280044DBA5 /* CDPMessageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 470C70221AE753280044DBA5 /* CDPMessageUtils.m */; };
 		470C70281AE753280044DBA5 /* CDPNativeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 470C70241AE753280044DBA5 /* CDPNativeBridge.m */; };
 		5B1594DD16A7569C00FEF299 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */; };
@@ -94,8 +94,8 @@
 		4706C7A41AE4DDDF0069D8B4 /* SMPSimpleGate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMPSimpleGate.m; sourceTree = "<group>"; };
 		470C701D1AE753280044DBA5 /* CDPGate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDPGate.h; sourceTree = "<group>"; };
 		470C701E1AE753280044DBA5 /* CDPGate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDPGate.m; sourceTree = "<group>"; };
-		470C701F1AE753280044DBA5 /* CDPGateContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDPGateContext.h; sourceTree = "<group>"; };
-		470C70201AE753280044DBA5 /* CDPGateContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDPGateContext.m; sourceTree = "<group>"; };
+		470C701F1AE753280044DBA5 /* CDPMethodContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDPMethodContext.h; sourceTree = "<group>"; };
+		470C70201AE753280044DBA5 /* CDPMethodContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDPMethodContext.m; sourceTree = "<group>"; };
 		470C70211AE753280044DBA5 /* CDPMessageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDPMessageUtils.h; sourceTree = "<group>"; };
 		470C70221AE753280044DBA5 /* CDPMessageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDPMessageUtils.m; sourceTree = "<group>"; };
 		470C70231AE753280044DBA5 /* CDPNativeBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDPNativeBridge.h; sourceTree = "<group>"; };
@@ -275,8 +275,8 @@
 			children = (
 				470C701D1AE753280044DBA5 /* CDPGate.h */,
 				470C701E1AE753280044DBA5 /* CDPGate.m */,
-				470C701F1AE753280044DBA5 /* CDPGateContext.h */,
-				470C70201AE753280044DBA5 /* CDPGateContext.m */,
+				470C701F1AE753280044DBA5 /* CDPMethodContext.h */,
+				470C70201AE753280044DBA5 /* CDPMethodContext.m */,
 				470C70211AE753280044DBA5 /* CDPMessageUtils.h */,
 				470C70221AE753280044DBA5 /* CDPMessageUtils.m */,
 				470C70231AE753280044DBA5 /* CDPNativeBridge.h */,
@@ -427,7 +427,7 @@
 				470C70251AE753280044DBA5 /* CDPGate.m in Sources */,
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
 				470C70271AE753280044DBA5 /* CDPMessageUtils.m in Sources */,
-				470C70261AE753280044DBA5 /* CDPGateContext.m in Sources */,
+				470C70261AE753280044DBA5 /* CDPMethodContext.m in Sources */,
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
 				470C70281AE753280044DBA5 /* CDPNativeBridge.m in Sources */,
 			);

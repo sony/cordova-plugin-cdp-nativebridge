@@ -1,11 +1,11 @@
 /**
- * @file CDPGateContext.m
+ * @file CDPMethodContext.m
  * @brief Implementation file for CDP NativeBridge Gate Context class.
  */
 
-#import "CDPGateContext.h"
+#import "CDPMethodContext.h"
 
-@implementation CDPGateContext {
+@implementation CDPMethodContext {
     NSString* _callbackId;
     NSString* _className;
     NSString* _methodName;
