@@ -59,4 +59,20 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+/**
+ * compatible check method:
+ */
+- (void) threadMethod:(NSNumber*)arg1 :(BOOL)arg2 :(NSString*)arg3 :(NSDictionary*)arg4
+{
+    const CDPMethodContext* context = [self getContext];
+    
+    [self.commandDelegate runInBackground:^{
+        [self notifyParams:context withParams:@[arg1, (arg2 ? @YES : @NO)]];
+        [self notifyParams:context withParams:@[arg3, arg4]];
+        NSString* msg = [NSString stringWithFormat:@"arg1: %@, arg2: %@, arg3: %@, 日本語でOK: %@"
+                         , arg1, (arg2 ? @"true" : @"false"), arg3, (arg4[@"ok"] ? @"true" : @"false")];
+        [self resolveParams:context withParams:@[msg]];
+    }];
+}
+
 @end

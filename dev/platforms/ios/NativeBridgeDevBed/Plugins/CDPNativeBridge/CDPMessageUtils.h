@@ -107,7 +107,7 @@ static const NSInteger CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND    = 0x0009;
  * @param context [in] method context object
  * @param result  [in] result message object
  */
-+ (void) sendSuccessResultWithContext:(CDPMethodContext*)context andResult:(NSDictionary*)result;
++ (void) sendSuccessResultWithContext:(const CDPMethodContext*)context andResult:(NSDictionary*)result;
 
 /**
  * send success result
@@ -116,7 +116,7 @@ static const NSInteger CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND    = 0x0009;
  * @param context [in] method context object
  * @param taskId  [in] task ID
  */
-+ (void) sendSuccessResultWithContext:(CDPMethodContext*)context andTaskId:(NSString*)taskId;
++ (void) sendSuccessResultWithContext:(const CDPMethodContext*)context andTaskId:(NSString*)taskId;
 
 /**
  * send error result
@@ -126,7 +126,7 @@ static const NSInteger CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND    = 0x0009;
  * @param code    [in] result code
  * @param message [in] message string
  */
-+ (void) sendErrorResultWithContext:(CDPMethodContext*)context
++ (void) sendErrorResultWithContext:(const CDPMethodContext*)context
                           andTaskId:(NSString*)taskId
                             andCode:(NSInteger)code
                          andMessage:(NSString*)message;
@@ -137,6 +137,6 @@ static const NSInteger CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND    = 0x0009;
  * @param context [in] method context object
  * @param result  [in] result message object
  */
-+ (void) sendErrorResultWithContext:(CDPMethodContext*)context andResult:(NSDictionary*)result;
++ (void) sendErrorResultWithContext:(const CDPMethodContext*)context andResult:(NSDictionary*)result;
 
 @end

@@ -151,7 +151,7 @@
  * @param context [in] method context object
  * @param result  [in] result message object
  */
-+ (void) sendSuccessResultWithContext:(CDPMethodContext*)context andResult:(NSDictionary*)result
++ (void) sendSuccessResultWithContext:(const CDPMethodContext*)context andResult:(NSDictionary*)result
 {
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
     [context.commandDelegate sendPluginResult:pluginResult callbackId:context.callbackId];
@@ -164,7 +164,7 @@
  * @param context [in] method context object
  * @param taskId  [in] task ID
  */
-+ (void) sendSuccessResultWithContext:(CDPMethodContext*)context andTaskId:(NSString*)taskId
++ (void) sendSuccessResultWithContext:(const CDPMethodContext*)context andTaskId:(NSString*)taskId
 {
     [self sendSuccessResultWithContext:context andResult:[self makeMessaggeWithTaskId:taskId andParams:nil]];
 }
@@ -177,7 +177,7 @@
  * @param code    [in] result code
  * @param message [in] message string
  */
-+ (void) sendErrorResultWithContext:(CDPMethodContext*)context
++ (void) sendErrorResultWithContext:(const CDPMethodContext*)context
                           andTaskId:(NSString*)taskId
                             andCode:(NSInteger)code
                          andMessage:(NSString*)message
@@ -191,7 +191,7 @@
  * @param context [in] method context object
  * @param result  [in] result message object
  */
-+ (void) sendErrorResultWithContext:(CDPMethodContext*)context andResult:(NSDictionary*)result
++ (void) sendErrorResultWithContext:(const CDPMethodContext*)context andResult:(NSDictionary*)result
 {
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:result];
     [context.commandDelegate sendPluginResult:pluginResult callbackId:context.callbackId];

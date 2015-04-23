@@ -21,7 +21,7 @@
  *
  * @param plugin [in] plugin instance
  */
-- (id)initWithPlugin:(CDVPlugin*)plugin
+- (id)initWithPlugin:(const CDVPlugin*)plugin
 {
     self = [super init];
     if (self) {
@@ -111,7 +111,7 @@
  *
  * @param context [in] method context object.
  */
-- (void) notifyParams:(CDPMethodContext*)context
+- (void) notifyParams:(const CDPMethodContext*)context
 {
     [self notifyParams:context withParams:nil];
 }
@@ -124,7 +124,7 @@
  * @param context [in] method context object.
  * @param params  [in] notified params.
  */
-- (void) notifyParams:(CDPMethodContext*)context withParams:(NSArray*)params
+- (void) notifyParams:(const CDPMethodContext*)context withParams:(NSArray*)params
 {
     [self notifyParams:context withParams:params keepCallback:YES];
 }
@@ -136,7 +136,7 @@
  * @param params       [in] notified params.
  * @param keepCallback [in] notified params.
  */
-- (void) notifyParams:(CDPMethodContext*)context withParams:(NSArray*)params keepCallback:(BOOL)keepCallback
+- (void) notifyParams:(const CDPMethodContext*)context withParams:(NSArray*)params keepCallback:(BOOL)keepCallback
 {
     if (!context) {
         NSLog(@"%@ Invalid context object.", TAG);
@@ -156,7 +156,7 @@
  *
  * @param context [in] method context object.
  */
-- (void) resolveParams:(CDPMethodContext*)context
+- (void) resolveParams:(const CDPMethodContext*)context
 {
     [self resolveParams:context withParams:nil];
 }
@@ -167,7 +167,7 @@
  * @param context [in] method context object.
  * @param params  [in] notified params.
  */
-- (void) resolveParams:(CDPMethodContext*)context withParams:(NSArray*)params
+- (void) resolveParams:(const CDPMethodContext*)context withParams:(NSArray*)params
 {
     if (!context) {
         NSLog(@"%@ Invalid context object.", TAG);
@@ -184,7 +184,7 @@
  *
  * @param context [in] method context object.
  */
-- (void) rejectParams:(CDPMethodContext*)context
+- (void) rejectParams:(const CDPMethodContext*)context
 {
     [self rejectParams:context withParams:nil];
 }
@@ -196,7 +196,7 @@
  * @param context [in] method context object.
  * @param params  [in] notified params.
  */
-- (void) rejectParams:(CDPMethodContext*)context withParams:(NSArray*)params
+- (void) rejectParams:(const CDPMethodContext*)context withParams:(NSArray*)params
 {
     [self rejectParams:context withParams:params andCode:CDP_NATIVEBRIDGE_ERROR_FAIL andMessage:nil];
 }
@@ -209,7 +209,7 @@
  * @param errorCode [in] error code.
  * @param errorMsg  [in] error message.
  */
-- (void) rejectParams:(CDPMethodContext*)context
+- (void) rejectParams:(const CDPMethodContext*)context
            withParams:(NSArray*)params
               andCode:(NSInteger)errorCode
            andMessage:(NSString*)errorMsg
@@ -232,7 +232,7 @@
  * @param context [in] method context object
  * @return message object
  */
-- (NSDictionary*) invokeAsCordovaCompatibleWithContext:(CDPMethodContext*)context
+- (NSDictionary*) invokeAsCordovaCompatibleWithContext:(const CDPMethodContext*)context
 {
     NSString* methodName = [NSString stringWithFormat:@"%@:", context.methodName];
     SEL normalSelector = NSSelectorFromString(methodName);

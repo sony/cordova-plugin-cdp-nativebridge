@@ -20,7 +20,7 @@
  *
  * @param plugin [in] plugin instance
  */
-- (id)initWithPlugin:(CDVPlugin*)plugin;
+- (id)initWithPlugin:(const CDVPlugin*)plugin;
 
 //////////////////////////////////////////////////////
 // public methods
@@ -67,7 +67,7 @@
  *
  * @param context [in] method context object.
  */
-- (void) notifyParams:(CDPMethodContext*)context;
+- (void) notifyParams:(const CDPMethodContext*)context;
 
 /**
  * notify params.
@@ -77,7 +77,7 @@
  * @param context [in] method context object.
  * @param params  [in] notified params.
  */
-- (void) notifyParams:(CDPMethodContext*)context withParams:(NSArray*)params;
+- (void) notifyParams:(const CDPMethodContext*)context withParams:(NSArray*)params;
 
 /**
  * notify params.
@@ -86,7 +86,7 @@
  * @param params       [in] notified params.
  * @param keepCallback [in] notified params.
  */
-- (void) notifyParams:(CDPMethodContext*)context withParams:(NSArray*)params keepCallback:(BOOL)keepCallback;
+- (void) notifyParams:(const CDPMethodContext*)context withParams:(NSArray*)params keepCallback:(BOOL)keepCallback;
 
 /**
  * resolve params.
@@ -94,7 +94,7 @@
  *
  * @param context [in] method context object.
  */
-- (void) resolveParams:(CDPMethodContext*)context;
+- (void) resolveParams:(const CDPMethodContext*)context;
 
 /**
  * resolve params.
@@ -102,7 +102,7 @@
  * @param context [in] method context object.
  * @param params  [in] notified params.
  */
-- (void) resolveParams:(CDPMethodContext*)context withParams:(NSArray*)params;
+- (void) resolveParams:(const CDPMethodContext*)context withParams:(NSArray*)params;
 
 /**
  * reject params.
@@ -110,7 +110,7 @@
  *
  * @param context [in] method context object.
  */
-- (void) rejectParams:(CDPMethodContext*)context;
+- (void) rejectParams:(const CDPMethodContext*)context;
 
 /**
  * reject params.
@@ -119,7 +119,7 @@
  * @param context [in] method context object.
  * @param params  [in] notified params.
  */
-- (void) rejectParams:(CDPMethodContext*)context withParams:(NSArray*)params;
+- (void) rejectParams:(const CDPMethodContext*)context withParams:(NSArray*)params;
 
 /**
  * reject params.
@@ -129,7 +129,7 @@
  * @param errorCode [in] error code.
  * @param errorMsg  [in] error message.
  */
-- (void) rejectParams:(CDPMethodContext*)context
+- (void) rejectParams:(const CDPMethodContext*)context
            withParams:(NSArray*)params
               andCode:(NSInteger)errorCode
            andMessage:(NSString*)errorMsg;

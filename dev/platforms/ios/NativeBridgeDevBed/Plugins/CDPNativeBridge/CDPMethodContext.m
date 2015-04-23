@@ -21,9 +21,9 @@
  * @param execInfo  [in] execute information object
  * @param arguments [in] arguments array
  */
-- (id)initWithPlugin:(CDVPlugin*)plugin
-          andCommand:(CDVInvokedUrlCommand*)command
-         andExecInfo:(NSDictionary*)execInfo
+- (id)initWithPlugin:(const CDVPlugin*)plugin
+          andCommand:(const CDVInvokedUrlCommand*)command
+         andExecInfo:(const NSDictionary*)execInfo
        andArguments:(NSArray*)arguments
 {
     self = [super initWithArguments:arguments
