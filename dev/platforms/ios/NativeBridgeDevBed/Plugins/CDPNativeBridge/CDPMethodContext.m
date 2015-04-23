@@ -6,9 +6,6 @@
 #import "CDPMethodContext.h"
 
 @implementation CDPMethodContext {
-    NSString* _callbackId;
-    NSString* _className;
-    NSString* _methodName;
     NSString* _objectId;
     NSString* _taskId;
     BOOL _compatible;
@@ -19,18 +16,18 @@
 /**
  * initializer
  *
- * @param plugin     [in] Plugin instance
- * @param callbackId [in] callback ID
- * @param execInfo   [in] execute information object
+ * @param plugin   [in] plugin instance
+ * @param command  [in] command object
+ * @param execInfo [in] execute information object
  */
-- (id) initWithPlugin:(CDVPlugin*)plugin andCallbackId:(NSString*)callbackId andExecInfo:(NSDictionary*)execInfo;
+- (id)initWithPlugin:(CDVPlugin*)plugin andCommand:(CDVInvokedUrlCommand*)command andExecInfo:(NSDictionary*)execInfo;
 {
-    self = [super init];
+    self = [super initWithArguments:command.arguments
+                         callbackId:command.callbackId
+                          className:execInfo[@"feature"][@"ios"][@"packageInfo"]
+                         methodName:execInfo[@"method"] ? execInfo[@"method"] : nil];
     if (self) {
         self.commandDelegate = plugin.commandDelegate;
-        _callbackId = callbackId;
-        _className = execInfo[@"feature"][@"ios"][@"packageInfo"];
-        _methodName = execInfo[@"method"] ? execInfo[@"method"] : nil;
         _objectId = execInfo[@"objectId"];
         _taskId = execInfo[@"taskId"] ? execInfo[@"taskId"] : nil;
         _compatible = execInfo[@"compatible"] ? [execInfo[@"compatible"] boolValue] : NO;

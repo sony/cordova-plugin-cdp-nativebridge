@@ -5,13 +5,11 @@
 
 #import <Foundation/Foundation.h>
 #import <Cordova/CDVPlugin.h>
+#import <Cordova/CDVInvokedUrlCommand.h>
 
-@interface CDPMethodContext : NSObject
+@interface CDPMethodContext : CDVInvokedUrlCommand
 
 @property (nonatomic, weak) id <CDVCommandDelegate> commandDelegate;
-@property (nonatomic, readonly) NSString* callbackId;
-@property (nonatomic, readonly) NSString* className;
-@property (nonatomic, readonly) NSString* methodName;
 @property (nonatomic, readonly) NSString* objectId;
 @property (nonatomic, readonly) NSString* taskId;
 @property (nonatomic, readonly) BOOL compatible;
@@ -21,10 +19,10 @@
 /**
  * initializer
  *
- * @param plugin     [in] Plugin instance
- * @param callbackId [in] callback ID
- * @param execInfo   [in] execute information object
+ * @param plugin   [in] plugin instance
+ * @param command  [in] command object
+ * @param execInfo [in] execute information object
  */
-- (id)initWithPlugin:(CDVPlugin*)plugin andCallbackId:(NSString*)callbackId andExecInfo:(NSDictionary*)execInfo;
+- (id)initWithPlugin:(CDVPlugin*)plugin andCommand:(CDVInvokedUrlCommand*)command andExecInfo:(NSDictionary*)execInfo;
 
 @end

@@ -33,7 +33,7 @@
 {
     NSDictionary* execInfo = command.arguments[0];
     
-    CDPMethodContext* context = [[CDPMethodContext alloc] initWithPlugin:self andCallbackId:command.callbackId andExecInfo:execInfo];
+    CDPMethodContext* context = [[CDPMethodContext alloc] initWithPlugin:self andCommand:command andExecInfo:execInfo];
     
     {
         // TODO: test
