@@ -53,6 +53,38 @@
 }
 
 /**
+ * get mehtod context object.
+ * this method is accessible only from method entry thread.
+ * helper function
+ *
+ * @return method context object.
+ */
+- (CDPMethodContext*) getContext
+{
+    return [self getContextWithSendResultStatus:NO];
+}
+
+/**
+ * get mehtod context object.
+ * this method is accessible only from method entry thread.
+ *
+ * @param  autoSendResult [in] if YES set, sendPluginResult fired automatically
+ * @return method context object.
+ */
+- (CDPMethodContext*) getContextWithSendResultStatus:(BOOL)autoSendResult
+{
+    @synchronized (self) {
+        if (_currentContext && [[self getCurrentThreadId] isEqualToString:_currentContext.threadId]) {
+            _currentContext.needSendResult = autoSendResult;
+            return _currentContext;
+        } else {
+            NSLog(@"%@ Calling getContextWithSendResultStatus is permitted only from method entry thread.", TAG);
+            return nil;
+        }
+    }
+}
+
+/**
  * return params.
  * this method semantic is return statement.
  * this method is accessible only from method called thread.
@@ -70,6 +102,125 @@
             NSLog(@"%@ Calling returnParams is permitted only from method entry thread.", TAG);
         }
     }
+}
+
+/**
+ * notify params.
+ * helper function.
+ * keepCallback set as YES automatically.
+ *
+ * @param context [in] method context object.
+ */
+- (void) notifyParams:(CDPMethodContext*)context
+{
+    [self notifyParams:context withParams:nil];
+}
+
+/**
+ * notify params.
+ * helper function.
+ * keepCallback set as YES automatically.
+ *
+ * @param context [in] method context object.
+ * @param params  [in] notified params.
+ */
+- (void) notifyParams:(CDPMethodContext*)context withParams:(NSArray*)params
+{
+    [self notifyParams:context withParams:params keepCallback:YES];
+}
+
+/**
+ * notify params.
+ *
+ * @param context      [in] method context object.
+ * @param params       [in] notified params.
+ * @param keepCallback [in] notified params.
+ */
+- (void) notifyParams:(CDPMethodContext*)context withParams:(NSArray*)params keepCallback:(BOOL)keepCallback
+{
+    if (!context) {
+        NSLog(@"%@ Invalid context object.", TAG);
+        return;
+    }
+    
+    NSInteger resultCode = keepCallback ? CDP_NATIVEBRIDGE_SUCCESS_PROGRESS : CDP_NATIVEBRIDGE_SUCCESS_OK;
+    NSDictionary* message = [CDPMessageUtils makeMessaggeWithCode:resultCode andMessage:nil andTaskId:context.taskId andParams:params];
+    CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
+    [result setKeepCallbackAsBool:keepCallback];
+    [self.commandDelegate sendPluginResult:result callbackId:context.callbackId];
+}
+
+/**
+ * resolve params.
+ * helper function.
+ *
+ * @param context [in] method context object.
+ */
+- (void) resolveParams:(CDPMethodContext*)context
+{
+    [self resolveParams:context withParams:nil];
+}
+
+/**
+ * resolve params.
+ *
+ * @param context [in] method context object.
+ * @param params  [in] notified params.
+ */
+- (void) resolveParams:(CDPMethodContext*)context withParams:(NSArray*)params
+{
+    if (!context) {
+        NSLog(@"%@ Invalid context object.", TAG);
+        return;
+    }
+
+    NSDictionary* message = [CDPMessageUtils makeMessaggeWithTaskId:context.taskId andParams:params];
+    [CDPMessageUtils sendSuccessResultWithContext:context andResult:message];
+}
+
+/**
+ * reject params.
+ * helper function.
+ *
+ * @param context [in] method context object.
+ */
+- (void) rejectParams:(CDPMethodContext*)context
+{
+    [self rejectParams:context withParams:nil];
+}
+
+/**
+ * reject params.
+ * helper function.
+ *
+ * @param context [in] method context object.
+ * @param params  [in] notified params.
+ */
+- (void) rejectParams:(CDPMethodContext*)context withParams:(NSArray*)params
+{
+    [self rejectParams:context withParams:params andCode:CDP_NATIVEBRIDGE_ERROR_FAIL andMessage:nil];
+}
+
+/**
+ * reject params.
+ *
+ * @param context   [in] method context object.
+ * @param params    [in] notified params.
+ * @param errorCode [in] error code.
+ * @param errorMsg  [in] error message.
+ */
+- (void) rejectParams:(CDPMethodContext*)context
+           withParams:(NSArray*)params
+              andCode:(NSInteger)errorCode
+           andMessage:(NSString*)errorMsg
+{
+    if (!context) {
+        NSLog(@"%@ Invalid context object.", TAG);
+        return;
+    }
+    
+    NSDictionary* message = [CDPMessageUtils makeMessaggeWithCode:errorCode andMessage:errorMsg andTaskId:context.taskId andParams:params];
+    [CDPMessageUtils sendErrorResultWithContext:context andResult:message];
 }
 
 //////////////////////////////////////////////////////

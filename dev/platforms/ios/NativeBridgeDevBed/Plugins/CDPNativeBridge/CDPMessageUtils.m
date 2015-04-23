@@ -67,7 +67,7 @@
     if (taskId) {
         result[@"taskId"] = taskId;
     }
-    if (params) {
+    if (params && 0 < [params count]) {
         result[@"params"] = params;
     }
     
