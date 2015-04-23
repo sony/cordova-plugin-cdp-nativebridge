@@ -140,7 +140,7 @@ exports.defineAutoTests = function () {
 		});
 
 	});
-/*
+
 	describe("Void method call check",() => {
 		var value: NativeBridge.IResult;
 		var taskId: string;
@@ -163,7 +163,7 @@ exports.defineAutoTests = function () {
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleGate",
 				android: { packageInfo: "com.sony.cdp.sample.SimpleGate" },
-				ios: { packageInfo: "CDVNBSimpleGate" }
+				ios: { packageInfo: "SMPSimpleGate" }
 			});
 
 			taskId = instance.exec(callbacks.win, callbacks.fail, "voidMethod");
@@ -205,7 +205,7 @@ exports.defineAutoTests = function () {
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleGate",
 				android: { packageInfo: "com.sony.cdp.sample.SimpleGate" },
-				ios: { packageInfo: "CDVNBSimpleGate" }
+				ios: { packageInfo: "SMPSimpleGate" }
 			});
 
 			taskId = instance.exec(callbacks.win, callbacks.fail, "compatibleCheck", [1, false, "test", { ok: true }], { compatible: true });
@@ -227,7 +227,7 @@ exports.defineAutoTests = function () {
 			expect(value[1].arg4.ok).toBe(true);
 		});
 	});
-
+/*
 	describe("Method not found check",() => {
 		var value;
 		var taskId: string;
