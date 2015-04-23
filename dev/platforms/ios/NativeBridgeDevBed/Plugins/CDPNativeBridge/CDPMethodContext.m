@@ -27,12 +27,12 @@
     self = [super initWithArguments:methodArgs
                          callbackId:command.callbackId
                           className:execInfo[@"feature"][@"ios"][@"packageInfo"]
-                         methodName:execInfo[@"method"] ? execInfo[@"method"] : nil];
+                         methodName:[self isNull:execInfo[@"method"]] ? nil : execInfo[@"method"]];
     if (self) {
         self.commandDelegate = plugin.commandDelegate;
         _objectId = execInfo[@"objectId"];
-        _taskId = execInfo[@"taskId"] ? execInfo[@"taskId"] : nil;
-        _compatible = execInfo[@"compatible"] ? [execInfo[@"compatible"] boolValue] : NO;
+        _taskId = [self isNull:execInfo[@"taskId"]] ? nil : execInfo[@"taskId"];
+        _compatible = [self isNull:execInfo[@"compatible"]] ? NO : [execInfo[@"compatible"] boolValue];
         _threadId = [NSString stringWithFormat:@"%@", [NSThread currentThread]];
         _needSendResult = YES;
     }
@@ -53,6 +53,12 @@
     } else {
         return @[];
     }
+}
+
+//! slice method arguments.
+- (BOOL) isNull:(id)object
+{
+    return [NSStringFromClass([object class]) isEqualToString:@"NSNull"];
 }
 
 @end

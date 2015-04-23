@@ -385,7 +385,7 @@
     @synchronized (self) {
         if (!taskId) {
             for (id key in [_cancelableTask keyEnumerator]) {
-                _cancelableTask[taskId] = @YES;
+                _cancelableTask[key] = @YES;
             }
         } else {
             _cancelableTask[taskId] = @YES;
