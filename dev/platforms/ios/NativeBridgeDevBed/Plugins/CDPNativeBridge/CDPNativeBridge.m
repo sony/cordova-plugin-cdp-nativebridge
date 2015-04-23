@@ -33,11 +33,10 @@
 {
     CDPMethodContext* context = [[CDPMethodContext alloc] initWithPlugin:self andCommand:command];
     
-    {
-        // TODO: NOT_IMPLE case handling.
-    }
-
-    {
+    if (!context.className) {
+        NSString* errorMsg = [NSString stringWithFormat:@"%@ not implemented.", TAG];
+        [CDPMessageUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_NOT_IMPLEMENT andMessage:errorMsg];
+    } else {
         CDPGate* gate = [self getGateClassFromObjectId:context.objectId andClassName:context.className];
         if (!gate) {
             NSString* errorMsg = [NSString stringWithFormat:@"%@ class not found. class: %@", TAG, context.class];
@@ -98,11 +97,10 @@
     
     CDPMethodContext* context = [[CDPMethodContext alloc] initWithPlugin:self andCommand:command];
     
-    {
-        // TODO: NOT_IMPLE case handling.
-    }
-    
-    {
+    if (!context.className) {
+        NSString* errorMsg = [NSString stringWithFormat:@"%@ not implemented.", TAG];
+        [CDPMessageUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_NOT_IMPLEMENT andMessage:errorMsg];
+    } else {
         CDPGate* gate = [self getGateClassFromObjectId:context.objectId andClassName:context.className];
         if (!gate) {
             NSString* errorMsg = [NSString stringWithFormat:@"%@ class not found. class: %@", TAG, context.class];

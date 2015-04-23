@@ -26,8 +26,7 @@
     
     self = [super initWithArguments:methodArgs
                          callbackId:command.callbackId
-            // TODO: add className nil case.
-                          className:execInfo[@"feature"][@"ios"][@"packageInfo"]
+                          className:[self isNull:execInfo[@"feature"][@"ios"][@"packageInfo"]] ? nil : execInfo[@"feature"][@"ios"][@"packageInfo"]
                          methodName:[self isNull:execInfo[@"method"]] ? nil : execInfo[@"method"]];
     if (self) {
         self.commandDelegate = plugin.commandDelegate;

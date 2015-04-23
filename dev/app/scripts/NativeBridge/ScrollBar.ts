@@ -1,4 +1,4 @@
-﻿/// <reference path="../../modules/include/frameworks.d.ts" />
+/// <reference path="../../modules/include/frameworks.d.ts" />
 
 module NativeBridgeDevBed {
 	export module NativeBridge {
@@ -21,9 +21,6 @@ module NativeBridgeDevBed {
 					name: "ScrollBar",
 					android: {
 						packageInfo: "com.sony.cdp.sample.ScrollBar",
-					},
-					ios: {
-						packageInfo: "CNPScrollBar",
 					},
 				});
 			}
