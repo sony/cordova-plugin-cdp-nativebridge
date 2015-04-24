@@ -206,7 +206,7 @@ module SampleApp {
 
 | property                          | description                                                                                                                                                   |
 |:----------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `bridge`: CDP.Plugin.NativeBridge | cordova plugin の NativeBridge オブジェクトにアクセスします。protected 属性です。低レベルな `cordova.exec()` 互換 API である、`bridge.exec()` が使用可能です。|
+| `bridge: CDP.Plugin.NativeBridge` | cordova plugin の NativeBridge オブジェクトにアクセスします。protected 属性です。低レベルな `cordova.exec()` 互換 API である、`bridge.exec()` が使用可能です。|
 
 
 ## 3-2:Nativeレイヤ (Android)
