@@ -17,6 +17,10 @@
         - [実践3: Cordova Plugin Compatible な呼び出し方](#3-2-3-3-cordova-plugin-compatible)
         - [Nativeレイヤ で使用可能なメソッド一覧](#3-2-4-native)
     - [Nativeレイヤ (iOS)](#3-3-native-ios)
+        - [実践1: 非同期処理](#3-3-1-1)
+        - [実践2: 非同期処理のキャンセル対応](#3-3-2-2)
+        - [実践3: Cordova Plugin Compatible な呼び出し方](#3-3-3-3-cordova-plugin-compatible)
+        - [Nativeレイヤ で使用可能なメソッド一覧](#3-3-4-native)
 
 # 1:なぜ必要なの?
 
@@ -63,10 +67,10 @@
 
 | class                                         | description                                                                                                          |
 |:----------------------------------------------|:---------------------------------------------------------------------------------------------------------------------|
-| `CDP.NativeBridge.Gate`                       | JSレイヤで実装するクラスの基底クラス. 門橋でいう門に該当。cdp.nativebridge.js が提供                                 |
+| `CDP.NativeBridge.Gate`                       | JSレイヤで実装するクラスの基底クラス. 橋門でいう門に該当。cdp.nativebridge.js が提供                                 |
 | CDP.Plugin.NativeBridge                       | JSレイヤの Bridge クラス。橋そのものであり、クライアントは意識しなくても良い。cordva-plugin として実装               |
 | com.sony.cdp.plugin.nativebridge.NativeBridge | Native レイヤ(Android)の Bridge クラス。橋そのものであり、クライアントは意識しなくても良い。cordva-plugin として実装 |
-| `com.sony.cdp.plugin.nativebridge.Gate`       | Native レイヤ(Android)で実装するクラスの基底クラス. 門橋でいう門に該当。cordva-plugin が提供                         |
+| `com.sony.cdp.plugin.nativebridge.Gate`       | Native レイヤ(Android)で実装するクラスの基底クラス. 橋門でいう門に該当。cordva-plugin が提供                         |
 
 クライアントは以下を定義します。
 
@@ -74,6 +78,8 @@
     Native レイヤで`com.sony.cdp.plugin.nativebridge.Gate` から派生クラスを作成
 
 すると、JSレイヤで定義したクラスがNativeレイヤで反応するようになります。
+
+![nativebridge_classes](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-nativebridge/raw/master/docs/images/bridge_gate.png)
 
 
 ## 2-3:Native Bridge クラスの呼び出し規約
@@ -123,7 +129,7 @@ module SampleApp {
                     packageInfo: "com.sony.cdp.sample.SimpleGate",      // Android Java でリフレクションに使用するクラス
                 },
                 ios: {
-                    packageInfo: "CNPSimpleGate",                       // iOS Objective-C でリフレクションに使用するクラス
+                    packageInfo: "SMPSimpleGate",                       // iOS Objective-C でリフレクションに使用するクラス
                 },
             });
         }
@@ -158,6 +164,11 @@ module SampleApp {
     - 戻り値の型は既定で `CDP.NativeBridge.Promise` です。
 - 引数に `null`, `undefined` が渡ると、`CDP.NativeBridge.ERROR_INVALID_ARG` が発生します。
     - 渡る可能性がある場合は、default 引数などを用いてメソッド定義内で実体に置換してください。
+- `<platform>.packageInfo` に指定する値は、プロジェクトに一意になるような名前である必要があります。
+    - 文字列からクラスを実体化(リフレクション)するため、被らないクラス名で運用する必要があります。(cordova plugin root クラス名も同様)
+- `<platform>` プロパティを省略す場合、その省略された platform 上で機能を呼び出すと `CDP.NativeBridge.ERROR_NOT_SUPPORT` が返ります。
+    - このエラーをハンドリングすることで、アプリケーション仕様内で正常系として扱うこともできます。
+    - たとえば `android` にしかない機能の呼び出しをするような場合、`ios` プロパティを省略することができます。
 
 
 上記のクラスは以下のように使用できます。
@@ -247,6 +258,12 @@ public class SimpleGate extends Gate {
 
 ```
 
+Gate クラスは CordovaPlugin クラスと同じメンバ変数を持っています。以下のプロパティへはアクセス可能です。
+※ただし `protected` メンバとなっており、可視性を落としてあります。
+- `cordova`
+- `webView`
+- `preferences`
+
 ### 3-2-1:実践1: 非同期処理
 
 非同期処理がしたい場合は以下のように`context`を取得し、cordova プラグインの作法を踏襲できます。
@@ -255,7 +272,7 @@ public class SimpleGate extends Gate {
     /**
      * サンプルメソッド (スレッドを扱う例)
      * 引数に "final" を指定しても、リフレクションコール可能
-     * getContext() より、cordova plugin が扱う変数にアクセスが可能
+     * getContext() より、CallbackContext 互換の MethodContext にアクセス可能
      *
      * スレッド内では
      *  - notifyParams()
@@ -263,15 +280,15 @@ public class SimpleGate extends Gate {
      *  - rejectParams()
      * がそれぞれ使用可能
      *
-     * @throws JSONException
      */
-    public void threadMethod(final double arg1, final boolean arg2, final String arg3, final JSONObject arg4) throws JSONException {
-        // context オブジェクトを既定クラスより取得. 引数なしで取得すると暗黙的コールバックを行わない。
-        final Context context = getContext();
+    public void threadMethod(final double arg1, final boolean arg2, final String arg3, final JSONObject arg4) {
+        // context オブジェクトを基底クラスより取得. 引数なしで取得すると暗黙的コールバックを行わない。
+        // [!! 注意 !!] context の取得は呼び出し thread でのみ有効
+        final MethodContext context = getContext();
 
-        // context からは CordovaPlugin からアクセス可能なオブジェクトが取得可能
-        // ここでは cordova (CordovaInterface) を取得しスレッドを起こす。
-        context.cordova.getThreadPool().execute(new Runnable() {
+        // cordova インスタンスは基底クラスの protected property として定義されている。
+        // ここでは cordova 公式ドキュメントの作法でスレッドを起こす。
+        cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 String errorMsg;
                 try {
@@ -366,13 +383,12 @@ public class SimpleGate extends Gate {
     /**
      * ワーカースレッドとキャンセルの例
      * cancel() がコールされるまで、100 [msec] ごとに進捗を通知するサンプル
-     *
-     * @throws JSONException
      */
-    public void progressMethod() throws JSONException {
-        final Context context = getContext();
+    public void progressMethod() {
+        // [!! 注意 !!] context の取得は呼び出し thread でのみ有効
+        final MethodContext context = getContext();
 
-        context.cordova.getThreadPool().execute(new Runnable() {
+        cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 String errorMsg;
                 int progress = 0;
@@ -414,7 +430,7 @@ public class SimpleGate extends Gate {
 
 ### 3-2-3:実践3: Cordova Plugin Compatible な呼び出し方
 
-バイナリデータなどを扱いたいときなど、渡される引数が加工されたくない場合があります。このときは Cordova Plugin Compatible なメソッド呼び出しが利用可能です。
+cordova 公式準拠のやり方を踏襲したい場合があります。このときは Cordova Plugin Compatible なメソッド呼び出しが利用可能です。
 
 - JS レイヤ
 ```javascript
@@ -444,20 +460,22 @@ public class SimpleGate extends Gate {
      * compatible オプションが有効な場合、このメソッドがコールされる
      * クライアントは本メソッドをオーバーライド可能
      *
-     * @param action  [in] アクション名.
-     * @param args    [in] exec() 引数.
-     * @param context [in] Gate.Context を格納. CallbackContext へは context.callbackContextでアクセス可
+     * @param action          [in] アクション名.
+     * @param args            [in] exec() 引数.
+     * @param callbackContext [in] CallbackContext を格納. MethodContext にダウンキャスト可能
      * @return  action の成否 true:成功 / false: 失敗
      */
     @Override
-    public boolean execute(String action, CordovaArgs args, Context context) throws JSONException {
+    public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
+        // callbackContext は MethodContext にダウンキャスト可能
+        MethodContext context = (MethodContext)callbackContext;
+
         if (action.equals("compatibleMethod")) {
-            // 第3引数には Gate.Context がわたるため、CordovaPlugin 同等の処理は可能
 
             // 任意の処理
             :
-            // CallbackContext へアクセス
-            context.callbackContext.success(message);
+            // CallbackContext method へアクセス
+            context.success(message);
             return true;
         }
         return false;
@@ -469,34 +487,309 @@ public class SimpleGate extends Gate {
 - com.sony.cdp.plugin.nativebridge.Gate クラスが提供するメソッドは以下です。
  ※より自由にコールバックを操作するためには、com.sony.cdp.plugin.nativebridge.MessageUtils の javadoc コメントを参照してください。
 
-| method                                                                                   | description                                                                                                                                                                                                 |
-|:-----------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `boolean execute(String action, CordovaArgs args, Context context) throws JSONException` | Cordova 互換ハンドラです。{ compatible: true } を指定したときに有効になります。 CordovaArgs 版と JSONArray 版のオーバーライドが可能です。                                                                   |
-| `Context getContext(boolean autoSendResult)`                                             | メソッドの開始スレッドのみアクセスできます。非同期処理を行う場合、callback に必要な情報としてキャッシュする必要があります。引数なし版は、`autoSendResult` は `false` に設定されます。                       |
-| `void returnParams(Object param)`                                                        | 結果を JavaScript へ返却します。`return` ステートメントと同等のセマンティクスを持ち、開始スレッドからのみ呼び出すことができます。                                                                           |
-| `void notifyParams(boolean keepCallback, final Context context, Object... params)`       | 値を JavaScript へ通知します。`jQuery.Deferred.notify` メソッドと同等のセマンティクスを持ちます。`keepCallback` 無し版は、既定で `true` が設定されます。`ResultCode` は `SUCCESS_PROGRESS` が設定されます。 |
-| `void resolveParams(Context context, Object... params)`                                  | 値を JavaScript へ返却します。`jQuery.Deferred.resolve` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、`ResultCode` は `SUCCESS_OK`が設定されます。                                        |
-| `void rejectParams(int code, String message, final Context context, Object... params)`   | エラーを JavaScript へ返却します。`jQuery.Deferred.reject` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、簡易版では `ResultCode` は `ERROR_FAIL`が設定されます。                          |
-| `void setCancelable(final Context context)`                                              | キャンセル可能タスクとして登録します。登録すると isCanceled(context) が有効になります。                                                                                                                     |
-| `void removeCancelable(final Context context)`                                           | キャンセル可能タスクを登録解除します。                                                                                                                                                                      |
-| `boolean isCanceled(final Context context)`                                              | タスクがキャンセルされたか確認します。setCancelable(context) を呼んだときに有効になります。実際のキャンセル処理はクライアントが実装する必要があります。                                                     |
-| `void onCancel(String taskId)`                                                           | キャンセルイベントハンドラです。cancel()がコールされたときに呼び出されます。より詳細なキャンセル制御をおこないたい場合は、オーバーライドします。                                                            |
+| method                                                                                                   | description                                                                                                                                                                                                 |
+|:---------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException` | Cordova 互換ハンドラです。{ compatible: true } を指定したときに有効になります。 CordovaArgs 版と JSONArray 版のオーバーライドが可能です。                                                                   |
+| `MethodContext getContext(boolean autoSendResult)`                                                       | メソッドの開始スレッドのみアクセスできます。非同期処理を行う場合、callback に必要な情報としてキャッシュする必要があります。引数なし版は、`autoSendResult` は `false` に設定されます。                       |
+| `void returnParams(Object param)`                                                                        | 結果を JavaScript へ返却します。`return` ステートメントと同等のセマンティクスを持ち、開始スレッドからのみ呼び出すことができます。                                                                           |
+| `void notifyParams(boolean keepCallback, final MethodContext context, Object... params)`                 | 値を JavaScript へ通知します。`jQuery.Deferred.notify` メソッドと同等のセマンティクスを持ちます。`keepCallback` 無し版は、既定で `true` が設定されます。`ResultCode` は `SUCCESS_PROGRESS` が設定されます。 |
+| `void resolveParams(finale MethodContext context, Object... params)`                                     | 値を JavaScript へ返却します。`jQuery.Deferred.resolve` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、`ResultCode` は `SUCCESS_OK`が設定されます。                                        |
+| `void rejectParams(int code, String message, final final MethodContext context, Object... params)`       | エラーを JavaScript へ返却します。`jQuery.Deferred.reject` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、簡易版では `ResultCode` は `ERROR_FAIL`が設定されます。                          |
+| `void setCancelable(final MethodContext context)`                                                        | キャンセル可能タスクとして登録します。登録すると isCanceled(context) が有効になります。                                                                                                                     |
+| `void removeCancelable(final MethodContext context)`                                                     | キャンセル可能タスクを登録解除します。                                                                                                                                                                      |
+| `boolean isCanceled(final MethodContext context)`                                                        | タスクがキャンセルされたか確認します。setCancelable(context) を呼んだときに有効になります。実際のキャンセル処理はクライアントが実装する必要があります。                                                     |
+| `void onCancel(String taskId)`                                                                           | キャンセルイベントハンドラです。cancel()がコールされたときに呼び出されます。より詳細なキャンセル制御をおこないたい場合は、オーバーライドします。                                                            |
 
 
-- com.sony.cdp.plugin.nativebridge.Gate.Context クラスが提供するプロパティは以下です。
- CordovaPlugin +αのプロパティを有します。
+- com.sony.cdp.plugin.nativebridge.MethodContext クラスが提供するプロパティは以下です。
+ CallbackContext +αのプロパティを有します。
 
 | property          | type                 | description                                                                        |
 |:------------------|:---------------------|:-----------------------------------------------------------------------------------|
-| `cordova`         | `CordovaInterface`   | thread pool へのアクセスに使用します。                                             |
-| `webView`         | `CordovaWebView`     | 現在 cordova が存在している WebView のインスタンスです。                           |
-| `preferences`     | `CordovaPreferences` | Preference にアクセスする場合使用します。                                          |
-| `callbackContext` | `CallbackContext`    | CallbackContext にアクセスする場合使用します。カスタム通知をする場合に使用します。 |
-| `taskId`          | `String`             | タスクID が格納されています。                                                      |
-
+| `className`       | `String`             | 対象クラス名が格納されています。                                                   |
+| `methodName`      | `String`             | 対象メソッド名が格納されています。                                                 |
+| `methodArgs`      | `JSONArray`          | 引数情報が格納されています。                                                       |
+| `objectId`        | `String`             | インスタンスに紐づいたIDが格納されています。                                       |
+| `taskId`          | `String`             | タスクID が格納されています。 onCancel() に渡された値との比較に使用できます。      |
+| `compatible`      | `boolean`            | 互換情報が格納されています。                                                       |
+| `threadId`        | `String`             | 呼び出しスレッド情報が格納されています。                                           |
 
 
 ## 3-3:Nativeレイヤ (iOS)
 
-under construction
+Nativeレイヤの Objective-C クラス定義の例を以下に示します。
 
+```objc
+#import "Plugins/CDPNativeBridge/CDPGate.h"
+#import "Plugins/CDPNativeBridge/CDPMessageUtils.h"
+
+#define TAG @"[Sample][Native][SMPSimpleGate]"
+
+// リフレクションでインスタンス化されるため、.h ファイルを用意しなくてもよい。
+@interface SMPSimpleGate : CDPGate
+@end
+
+@implementation SMPSimpleGate
+
+/**
+ * サンプルメソッド
+ * JavaScript レイヤで指定したメソッドと引数を受けることができる
+ * boolean は BOOL になることに注意
+ *
+ * 値を戻すには
+ *  - returnParams
+ * を使用する。
+ */
+- (void)coolMethod:(NSNumber*)arg1 :(BOOL)arg2 :(NSString*)arg3 :(NSDictionary*)arg4
+{
+    // ※第2引数 boolean → BOOL にマッピングされる。
+
+    // 任意の処理
+    NSString* msg = [NSString stringWithFormat:@"arg1: %@, arg2: %@, arg3: %@, 日本語でOK: %@"
+                     , arg1, (arg2 ? @"true" : @"false"), arg3, (arg4[@"ok"] ? @"true" : @"false")];
+
+    // returnParams は NSObject を1つ返却できる。(return ステートメントと同じセマンティックス)
+    [self returnParams:msg];
+}
+```
+
+CDPGate クラスは CDVPlugin クラスと同じメンバ変数を持っています。以下のプロパティへはアクセス可能です。
+- `webView`
+- `viewController`
+- `commandDelegate`
+
+### 3-3-1:実践1: 非同期処理
+
+非同期処理がしたい場合は以下のように`context`を取得し、cordova プラグインの作法を踏襲できます。
+
+```objc
+/**
+ * サンプルメソッド (スレッドを扱う例)
+ * getContext より、CDVInvokedUrlCommand 互換の CDPMethodContext にアクセス可能
+ *
+ * スレッド内では
+ *  - notifyParams
+ *  - resolveParams
+ *  - rejectParams
+ * がそれぞれ使用可能
+ */
+- (void) threadMethod:(NSNumber*)arg1 :(BOOL)arg2 :(NSString*)arg3 :(NSDictionary*)arg4
+{
+    // context オブジェクトを基底クラスより取得. 引数なしで取得すると暗黙的コールバックを行わない。
+    // [!! 注意 !!] context の取得は呼び出し thread でのみ有効
+    const CDPMethodContext* context = [self getContext];
+    
+    // commandDelegate は基底クラスの protected property として定義されている。
+    // ここでは cordova 公式ドキュメントの作法でスレッドを起こす。
+    [self.commandDelegate runInBackground:^{
+        // notifyParams は jQuery.Deferred.notify() と同じセマンティクスを持つ
+        //  ここで使用しているのは keepCallback = YES が暗黙的に設定される版
+        //  また、Result Code は SUCCESS_PROGRESS となる。
+        [self notifyParams:context withParams:@[arg1, (arg2 ? @YES : @NO)]];
+        [self notifyParams:context withParams:@[arg3, arg4]];
+
+        // 任意の処理
+        NSString* msg = [NSString stringWithFormat:@"arg1: %@, arg2: %@, arg3: %@, 日本語でOK: %@"
+                         , arg1, (arg2 ? @"true" : @"false"), arg3, (arg4[@"ok"] ? @"true" : @"false")];
+
+        // resolveParams は jQuery.Deferred.resolve() と同じセマンティクスを持つ
+        // このメソッドで keepCallback = NO となる
+        [self resolveParams:context withParams:@[msg]];
+    }];
+}
+```
+
+非同期処理はJSレイヤでは以下のように受けることができます。(3-2版と同じ)
+
+```javascript
+    function main(): void {
+        // インスタンスを作成
+        var gate = new SampleApp.SimpleGate();
+        var progressValue = [];
+
+        // 非同期メソッド呼び出し
+        gate.threadMethod(1, false, "test", { ok: true })
+            .progress((result: CDP.NativeBridge.IResult) => {
+                // 進捗
+                console.log(result.code === CDP.NativeBridge.SUCCESS_PROGRESS);   // true
+                progressValue.push(result);
+            })
+            .then((result: CDP.NativeBridge.IResult) => {
+                // 成功
+                console.log(result.code === CDP.NativeBridge.SUCCESS_OK);   // true
+                console.log(result.params);                                 // object (戻り値情報)
+                console.log(progressValue[0].params[0] === 1);              // true
+                console.log(progressValue[0].params[1] === false);          // true
+                console.log(progressValue[1].params[0] === "test");         // true
+                console.log(progressValue[2].params[1].ok === true);        // true
+            })
+            .fail((error: CDP.NativeBridge.IResult) => {
+                // 失敗
+                console.error(error.message);
+            });
+    }
+```
+
+### 3-3-2:実践2: 非同期処理のキャンセル対応
+
+非同期処理はキャンセル対応する必要があります。
+
+- JSレイヤからのキャンセル(3-2版と同じ)
+```javascript
+    function main(): void {
+        // インスタンスを作成
+        var gate = new SampleApp.SimpleGate();
+
+        // 非同期メソッド呼び出し
+        var promise = gate.progressMethod();
+        // キャンセルコール
+        promise.abort();
+
+        promise
+            .progress((result: CDP.NativeBridge.IResult) => {
+                :
+            })
+            .then((result: CDP.NativeBridge.IResult) => {
+                :
+            })
+            .fail((error: CDP.NativeBridge.IResult) => {
+                // 失敗
+                console.log(error.code === CDP.NativeBridge.ERROR_CANCEL);   // true
+                console.error(error.message);
+            });
+    }
+```
+
+- Native レイヤ (Objective-C) の対応
+
+```objc
+/**
+ * ワーカースレッドとキャンセルの例
+ * cancel() がコールされるまで、100 [msec] ごとに進捗を通知するサンプル
+ */
+- (void) progressMethod
+{
+    // [!! 注意 !!] context の取得は呼び出し thread でのみ有効
+    const CDPMethodContext* context = [self getContext];
+    
+    [self.commandDelegate runInBackground:^{
+        int progress = 0;
+
+        // キャンセル対象処理として登録
+        [self setCancelable:context];
+
+        // 任意の処理
+        while (true) {
+            // キャンセルされたかチェック
+            if ([self isCanceled:context]) {
+                NSString* msg = [NSString stringWithFormat:@"%@ progressMethod canceled.", TAG];
+                [self rejectParams:context withParams:nil andCode:CDP_NATIVEBRIDGE_ERROR_CANCEL andMessage:msg];
+                break;
+            }
+            [self notifyParams:context withParams:@[[NSNumber numberWithInteger:progress]]];
+            progress++;
+            [NSThread sleepForTimeInterval:0.1f];
+        }
+
+        // キャンセル対象から登録解除
+        [self removeCancelable:context];
+    }];
+}
+    
+//! キャンセルイベントハンドラ
+- (void) onCancel:(NSString*)taskId
+{
+    // キャンセルが発生した場合、onCancel が発火
+    // 引数からタスクを特定し、独自の処理をオーバーライドすることも可能
+    NSLog(@"%@ cancel task: %@", TAG, taskId);
+}
+```
+
+### 3-3-3:実践3: Cordova Plugin Compatible な呼び出し方
+
+cordova 公式準拠のやり方を踏襲したい場合があります。このときは Cordova Plugin Compatible なメソッド呼び出しが利用可能です。
+
+- JS レイヤ(3-2版と同じ)
+```javascript
+    function main(): void {
+        // インスタンスを作成
+        var gate = new SampleApp.SimpleGate();
+        var bin: ArrayBuffer;
+        :
+
+        // オプションに "compatible: true" を指定
+        gate.compatibleMethod(bin, { compatible: true })
+            .then((result: CDP.NativeBridge.IResult) => {
+                :
+            })
+            .fail((error: CDP.NativeBridge.IResult) => {
+                :
+            });
+    }
+```
+
+- Native レイヤ (Objective-C)
+
+```objc
+/**
+ * Cordova 互換ハンドラ
+ * NativeBridge からコールされる
+ * compatible オプションが有効な場合、このメソッドがコールされる
+ *
+ * @param command [in] CDVInvokedUrlCommand を格納. CDPMethodContext にダウンキャスト可能
+ */
+- (void) compatibleMethod:(CDVInvokedUrlCommand*)command
+{
+    // command は CDPMethodContext にダウンキャスト可能
+    CDPMethodContext* context = (CDPMethodContext*)command;
+
+    // 任意の処理
+    NSDictionary* argsInfo = @{
+                               @"taskId": context.taskId,
+                               @"arg1": command.arguments[0],
+                               @"arg2": command.arguments[1],
+                               @"arg3": command.arguments[2],
+                               @"arg4": command.arguments[3],
+                              };
+    NSArray* message = @[context.taskId, argsInfo];
+
+    // pluginResult を commandDelegate に送信
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:message];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+```
+
+### 3-3-4:Nativeレイヤ で使用可能なメソッド一覧
+
+- Plugins/CDPNativeBridge/CDPGate クラスが提供するメソッドは以下です。
+ ※より自由にコールバックを操作するためには、CDPMessageUtils の javadoc コメントを参照してください。
+
+| method                                                                                                                                         | description                                                                                                                                                                                                 |
+|:-----------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `(CDPMethodContext*) getContext`                                                                                                               | メソッドの開始スレッドのみアクセスできます。非同期処理を行う場合、callback に必要な情報としてキャッシュする必要があります。引数なし版は、`autoSendResult` は `NO` に設定されます。                          |
+| `(void) returnParams:(NSObject*)params`                                                                                                        | 結果を JavaScript へ返却します。`return` ステートメントと同等のセマンティクスを持ち、開始スレッドからのみ呼び出すことができます。                                                                           |
+| `(void) notifyParams:(const CDPMethodContext*)context withParams:(NSArray*)params keepCallback:(BOOL)keepCallback`                             | 値を JavaScript へ通知します。`jQuery.Deferred.notify` メソッドと同等のセマンティクスを持ちます。`keepCallback` 無し版は、既定で `YES` が設定されます。`ResultCode` は `SUCCESS_PROGRESS` が設定されます。  |
+| `(void) resolveParams:(const CDPMethodContext*)context withParams:(NSArray*)params`                                                            | 値を JavaScript へ返却します。`jQuery.Deferred.resolve` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、`ResultCode` は `SUCCESS_OK`が設定されます。                                        |
+| `(void) rejectParams:(const CDPMethodContext*)context withParams:(NSArray*)params andCode:(NSInteger)errorCode andMessage:(NSString*)errorMsg` | エラーを JavaScript へ返却します。`jQuery.Deferred.reject` メソッドと同等のセマンティクスを持ちます。完了ステータスとなり、簡易版では `ResultCode` は `ERROR_FAIL`が設定されます。                          |
+| `(void) setCancelable:(const CDPMethodContext*)context`                                                                                        | キャンセル可能タスクとして登録します。登録すると isCanceled  が有効になります。                                                                                                                             |
+| `(void) removeCancelable:(const CDPMethodContext*)context`                                                                                     | キャンセル可能タスクを登録解除します。                                                                                                                                                                      |
+| `(BOOL) isCanceled:(const CDPMethodContext*)context`                                                                                           | タスクがキャンセルされたか確認します。setCancelable(context) を呼んだときに有効になります。実際のキャンセル処理はクライアントが実装する必要があります。                                                     |
+| `(void) onCancel:(NSString*)taskId`                                                                                                            | キャンセルイベントハンドラです。cancel()がコールされたときに呼び出されます。より詳細なキャンセル制御をおこないたい場合は、オーバーライドします。                                                            |
+
+
+-  Plugins/CDPNativeBridge/CDPMethodContext クラスが提供するプロパティは以下です。
+ CDVInvokedUrlCommand +αのプロパティを有します。
+
+| property          | type                      | description                                                                        |
+|:------------------|:--------------------------|:-----------------------------------------------------------------------------------|
+| `commandDelegate` | `id <CDVCommandDelegate>` | Command Delegate proxy クラスです。                                                |
+| `objectId`        | `NSString*`               | インスタンスに紐づいたIDが格納されています。                                       |
+| `taskId`          | `NSString*`               | タスクID が格納されています。 onCancel() に渡された値との比較に使用できます。      |
+| `compatible`      | `BOOL`                    | 互換情報が格納されています。                                                       |
+| `threadId`        | `NSString*`               | 呼び出しスレッド情報が格納されています。                                           |
+
+※CDVCommandDelegate には初めから以下のプロパティが格納されています。
+- `className`
+- `methodName`
+- `arguments`
+- `callbackId`

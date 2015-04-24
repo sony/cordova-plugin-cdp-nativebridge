@@ -1,5 +1,6 @@
 package com.sony.cdp.sample;
 
+import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,9 +59,8 @@ public class SimpleGate extends Gate {
      *  - rejectParams()
      * がそれぞれ使用可能
      *
-     * @throws JSONException
      */
-    public void threadMethod(final double arg1, final boolean arg2, final String arg3, final JSONObject arg4) throws JSONException {
+    public void threadMethod(final double arg1, final boolean arg2, final String arg3, final JSONObject arg4) {
         // context の取得は呼び出し thread でのみ有効
         final MethodContext context = getContext();
 
@@ -85,10 +85,8 @@ public class SimpleGate extends Gate {
     /**
      * ワーカースレッドとキャンセルの例
      * cancel() がコールされるまで、100 [msec] ごとに進捗を通知するサンプル
-     *
-     * @throws JSONException
      */
-    public void progressMethod() throws JSONException {
+    public void progressMethod() {
         // context の取得は呼び出し thread でのみ有効
         final MethodContext context = getContext();
 
@@ -134,13 +132,16 @@ public class SimpleGate extends Gate {
      * 拡張情報は context に格納される。
      * クライアントは本メソッドをオーバーライド可能
      *
-     * @param action  [in] アクション名.
-     * @param args    [in] exec() 引数.
-     * @param context [in] MethodContext を格納. CallbackContext としてアクセス可
+     * @param action          [in] アクション名.
+     * @param args            [in] exec() 引数.
+     * @param callbackContext [in] CallbackContext を格納. MethodContext にダウンキャスト可能
      * @return  action の成否 true:成功 / false: 失敗
      */
     @Override
-    public boolean execute(String action, JSONArray args, MethodContext context) throws JSONException {
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        // callbackContext は MethodContext にダウンキャスト可能
+        MethodContext context = (MethodContext)callbackContext;
+
         if (action.equals("compatibleCheck")) {
             JSONArray message = new JSONArray();
             message.put(context.taskId);

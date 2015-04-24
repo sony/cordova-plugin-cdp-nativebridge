@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPreferences;
@@ -56,13 +57,13 @@ public class Gate {
      * compatible オプションが有効な場合、このメソッドがコールされる
      * クライアントは本メソッドをオーバーライド可能
      *
-     * @param action  [in] アクション名.
-     * @param args    [in] exec() 引数.
-     * @param context [in] MethodContext を格納. CallbackContext としてアクセス可
+     * @param action          [in] アクション名.
+     * @param args            [in] exec() 引数.
+     * @param callbackContext [in] CallbackContext を格納. MethodContext にダウンキャスト可能
      * @return  action の成否 true:成功 / false: 失敗
      */
-    public boolean execute(String action, JSONArray args, MethodContext context) throws JSONException {
-        return execute(action, new CordovaArgs(args), context);
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        return execute(action, new CordovaArgs(args), callbackContext);
     }
 
     /**
@@ -71,12 +72,12 @@ public class Gate {
      * compatible オプションが有効な場合、このメソッドがコールされる
      * クライアントは本メソッドをオーバーライド可能
      *
-     * @param action  [in] アクション名.
-     * @param args    [in] exec() 引数.
-     * @param context [in] MethodContext を格納. CallbackContext としてアクセス可
+     * @param action          [in] アクション名.
+     * @param args            [in] exec() 引数.
+     * @param callbackContext [in] CallbackContext を格納. MethodContext にダウンキャスト可能
      * @return  action の成否 true:成功 / false: 失敗
      */
-    public boolean execute(String action, CordovaArgs args, MethodContext context) throws JSONException {
+    public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
         Log.w(TAG, "execute() method should be override from sub class.");
         return false;
     }
