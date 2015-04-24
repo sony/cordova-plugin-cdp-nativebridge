@@ -34,8 +34,8 @@
     CDPMethodContext* context = [[CDPMethodContext alloc] initWithPlugin:self andCommand:command];
     
     if (!context.className) {
-        NSString* errorMsg = [NSString stringWithFormat:@"%@ not implemented.", TAG];
-        [CDPMessageUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_NOT_IMPLEMENT andMessage:errorMsg];
+        NSString* errorMsg = [NSString stringWithFormat:@"%@ the function is not supported on ios.", TAG];
+        [CDPMessageUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_NOT_SUPPORT andMessage:errorMsg];
     } else {
         CDPGate* gate = [self getGateClassFromObjectId:context.objectId andClassName:context.className];
         if (!gate) {
@@ -99,8 +99,8 @@
     CDPMethodContext* context = [[CDPMethodContext alloc] initWithPlugin:self andCommand:command];
     
     if (!context.className) {
-        NSString* errorMsg = [NSString stringWithFormat:@"%@ not implemented.", TAG];
-        [CDPMessageUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_NOT_IMPLEMENT andMessage:errorMsg];
+        NSString* errorMsg = [NSString stringWithFormat:@"%@ the function is not supported on ios.", TAG];
+        [CDPMessageUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_NOT_SUPPORT andMessage:errorMsg];
     } else {
         CDPGate* gate = [self getGateClassFromObjectId:context.objectId andClassName:context.className];
         if (!gate) {
