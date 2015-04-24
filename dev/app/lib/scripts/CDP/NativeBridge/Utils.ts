@@ -1,4 +1,5 @@
 ﻿/// <reference path="../../../../modules/include/require.d.ts" />
+/// <reference path="../../../../modules/include/cordova.d.ts" />
 /// <reference path="Interfaces.ts" />
 
 module CDP {

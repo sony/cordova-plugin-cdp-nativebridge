@@ -1,6 +1,4 @@
-﻿/// <reference path="Interfaces.ts" />
-
-module CDP {
+﻿module CDP {
 	export module NativeBridge {
 
 		///////////////////////////////////////////////////////////////////////
