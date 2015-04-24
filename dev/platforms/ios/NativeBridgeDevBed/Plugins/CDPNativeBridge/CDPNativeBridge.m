@@ -59,6 +59,7 @@
 {
     NSString* objectId = [self cancelProc:command];
     if (objectId) {
+        [_gates[objectId] dispose];
         [_gates removeObjectForKey:objectId];
     }
 }
