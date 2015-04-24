@@ -257,6 +257,10 @@ public class SimpleGate extends Gate {
 }
 
 ```
+※注意点:
+- js の `number` 型は Java の `double` にマッピングされます。
+    - js の number の仕様に合わせています。
+    - しかしながら、Cordova Framework の中で、整数は `int` に、小数は `float` に一度変換されているため、精度を求めることはあきらめなくてはいけません。
 
 Gate クラスは CordovaPlugin クラスと同じメンバ変数を持っています。以下のプロパティへはアクセス可能です。
 ※ただし `protected` メンバとなっており、可視性を落としてあります。
@@ -534,7 +538,8 @@ Nativeレイヤの Objective-C クラス定義の例を以下に示します。
 /**
  * サンプルメソッド
  * JavaScript レイヤで指定したメソッドと引数を受けることができる
- * boolean は BOOL になることに注意
+ * boolean は BOOL 型になる
+ * 第2引数以降の Label は記述しないこと
  *
  * 値を戻すには
  *  - returnParams
@@ -552,6 +557,13 @@ Nativeレイヤの Objective-C クラス定義の例を以下に示します。
     [self returnParams:msg];
 }
 ```
+
+※注意点:
+- js の `boolean` 型は Objective-C の慣例に従い `BOOL` にマッピングされます。
+    - Objective-C では C99 から使用可能な `bool` もありますが、iOS Framework 内では出番がほとんどありません。
+- 第2引数以降の Lable は使用できません。
+    - Objective-C では Label 情報も関数の型として認識されます。リフレクションで解決するには、js から指定する必要が出てきます。
+    - Objective-C の入り口までは、js メソッドのメタファーがあると割り切ってください。
 
 CDPGate クラスは CDVPlugin クラスと同じメンバ変数を持っています。以下のプロパティへはアクセス可能です。
 - `webView`
