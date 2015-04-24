@@ -454,7 +454,10 @@ var CDP;
                     inNavigation: true,
                 };
                 // ページ遷移開始通知
-                notifyBeforeRouteChange().then(function () {
+                notifyBeforeRouteChange().fail(function () {
+                    // beforeRouteChange() が失敗した場合、致命的な不具合となるため、error 記録のみにして先に進む。
+                    console.error("before route change call, failed.");
+                }).always(function () {
                     if (Router.isRouting() && !Router.s_lastNavigateInfo.noHashChange) {
                         if (navOptions.subFlow) {
                             switch (navOptions.subFlow.operation) {
@@ -491,9 +494,6 @@ var CDP;
                         })();
                         Router.changePage(url);
                     }
-                }).fail(function () {
-                    console.error("before route change call, failed.");
-                    Router.s_lastNavigateInfo = {};
                 });
             };
             /**

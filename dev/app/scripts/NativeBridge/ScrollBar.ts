@@ -22,6 +22,7 @@ module NativeBridgeDevBed {
 					android: {
 						packageInfo: "com.sony.cdp.sample.ScrollBar",
 					},
+					// iOS 版は不要
 				});
 			}
 
@@ -31,15 +32,20 @@ module NativeBridgeDevBed {
 			/**
 			 * Vertical ScrollBar の 表示
 			 */
-			public showVertical(): Promise {
-				return super.exec("showVertical", <any>arguments);
+			public showVertical(): void {
+				super.exec("showVertical", <any>arguments);
 			}
 
 			/**
 			 * Vertical ScrollBar の 表示
 			 */
-			public hideVertical(): Promise {
-				return super.exec("hideVertical", <any>arguments);
+			public hideVertical(): JQueryPromise<void> {
+				var df = $.Deferred<void>();
+				super.exec("hideVertical", <any>arguments)
+					.always(() => {
+						df.resolve();
+					});
+				return df.promise();
 			}
 		}
 	}

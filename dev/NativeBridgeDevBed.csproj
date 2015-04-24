@@ -283,8 +283,8 @@
     <Content Include="app\modules\sony\cdp\scripts\cdp.core-1.1.0.js" />
     <Content Include="app\modules\sony\cdp\scripts\cdp.core-1.1.0.min.js" />
     <Content Include="app\modules\sony\cdp\scripts\cdp.core.js" />
-    <Content Include="app\modules\sony\cdp\scripts\cdp.framework.jqm-1.1.0.js" />
-    <Content Include="app\modules\sony\cdp\scripts\cdp.framework.jqm-1.1.0.min.js" />
+    <Content Include="app\modules\sony\cdp\scripts\cdp.framework.jqm-1.1.1.js" />
+    <Content Include="app\modules\sony\cdp\scripts\cdp.framework.jqm-1.1.1.min.js" />
     <Content Include="app\modules\sony\cdp\scripts\cdp.framework.jqm.js" />
     <Content Include="app\modules\sony\cdp\scripts\cdp.lazyload-1.1.0.js" />
     <Content Include="app\modules\sony\cdp\scripts\cdp.lazyload-1.1.0.min.js" />
