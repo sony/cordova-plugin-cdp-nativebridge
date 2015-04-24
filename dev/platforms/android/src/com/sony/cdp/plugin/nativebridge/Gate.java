@@ -5,10 +5,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaInterface;
-import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaPreferences;
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PluginResult;
@@ -27,41 +25,30 @@ import android.util.Log;
 public class Gate {
     private static final String TAG = "[com.sony.cdp.plugin.nativebridge][Native][Gate] ";
 
-    /**
-     * @class Context
-     * @brief Native Bridge Context 情報を格納
-     */
-    protected final class Context {
-        public final CordovaInterface   cordova;
-        public final CordovaWebView     webView;
-        public final CordovaPreferences preferences;
-        public final CallbackContext    callbackContext;
-        public final String             className;
-        public final String             methodName;
-        public final String             objectId;
-        public final String             taskId;
-        public final boolean           compatible;
-        public final String             threadId = Thread.currentThread().getName();
-        public        boolean           needSendResult = true;
-        Context(CordovaPlugin plugin, CordovaPreferences preferences, CallbackContext ctx, JSONObject execInfo) throws JSONException {
-            this.cordova            = plugin.cordova;
-            this.webView            = plugin.webView;
-            this.preferences        = preferences;
-            this.callbackContext    = ctx;
-            JSONObject feature = execInfo.getJSONObject("feature");
-            this.className  = feature.getJSONObject("android").getString("packageInfo");
-            this.methodName = execInfo.isNull("method") ? null : execInfo.getString("method");
-            this.objectId   = execInfo.getString("objectId");
-            this.taskId     = execInfo.isNull("taskId") ? null : execInfo.getString("taskId");
-            this.compatible = execInfo.getBoolean("compatible");
-        }
-    }
+    protected CordovaWebView webView;
+    protected CordovaInterface cordova;
+    protected CordovaPreferences preferences;
 
-    private Context mCurrentContext = null;
+    private MethodContext mCurrentContext = null;
     private Map<String, Boolean> mCancelableTask = new HashMap<String, Boolean>();
 
     ///////////////////////////////////////////////////////////////////////
     // public methods
+
+    /**
+     * CordovaPlugin 相当の初期化
+     * オーバーライド不可
+     *
+     * @param cordova [in] CordovaInterface インスタンス
+     * @param webView [in] CordovaWebView インスタンス
+     * @param preferences [in] CordovaPreferences インスタンス
+     */
+    public final void privateInitialize(CordovaInterface cordova, CordovaWebView webView, CordovaPreferences preferences) {
+        this.cordova = cordova;
+        this.webView = webView;
+        this.preferences = preferences;
+        initialize(cordova, webView);
+    }
 
     /**
      * Cordova 互換ハンドラ (JSONArray 版)
@@ -71,10 +58,10 @@ public class Gate {
      *
      * @param action  [in] アクション名.
      * @param args    [in] exec() 引数.
-     * @param context [in] Gate.Context を格納. CallbackContext へは context.callbackContextでアクセス可
+     * @param context [in] MethodContext を格納. CallbackContext としてアクセス可
      * @return  action の成否 true:成功 / false: 失敗
      */
-    public boolean execute(String action, JSONArray args, Context context) throws JSONException {
+    public boolean execute(String action, JSONArray args, MethodContext context) throws JSONException {
         return execute(action, new CordovaArgs(args), context);
     }
 
@@ -86,10 +73,10 @@ public class Gate {
      *
      * @param action  [in] アクション名.
      * @param args    [in] exec() 引数.
-     * @param context [in] Gate.Context を格納. CallbackContext へは context.callbackContextでアクセス可
+     * @param context [in] MethodContext を格納. CallbackContext としてアクセス可
      * @return  action の成否 true:成功 / false: 失敗
      */
-    public boolean execute(String action, CordovaArgs args, Context context) throws JSONException {
+    public boolean execute(String action, CordovaArgs args, MethodContext context) throws JSONException {
         Log.w(TAG, "execute() method should be override from sub class.");
         return false;
     }
@@ -100,12 +87,13 @@ public class Gate {
      *
      * @param mehtodName    [in] 呼び出し対象のメソッド名
      * @param args          [in] exec() の引数リスト
-     * @param context       [in] Callback Context
+     * @param context       [in] MethodContext オブジェクト
      * @return エラー情報
      */
-    public final JSONObject invoke(String methodName, JSONArray args, Context context) {
+    public final JSONObject invoke(final MethodContext context) {
         synchronized (this) {
             try {
+                JSONArray args = context.methodArgs;
                 Class<?> cls = this.getClass();
                 int length = args.length();
                 Class<?>[] argTypes = new Class[length];
@@ -115,12 +103,12 @@ public class Gate {
                     argTypes[i] = normalizeType(arg.getClass());
                     argValues[i] = arg;
                 }
-                Method method = cls.getMethod(methodName, argTypes);
+                Method method = cls.getMethod(context.methodName, argTypes);
 
                 mCurrentContext = context;
                 method.invoke(this, argValues);
                 if (mCurrentContext.needSendResult) {
-                    MessageUtils.sendSuccessResult(context.callbackContext, context.taskId);
+                    MessageUtils.sendSuccessResult(context, context.taskId);
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "Invalid JSON object", e);
@@ -148,53 +136,47 @@ public class Gate {
      * cancel 呼び出し
      * NativeBridge からコールされる。
      *
-     * @param context [in] Gate.Context オブジェクト
+     * @param context [in] metod context オブジェクト
      */
-    public final void cancel(final Context context) {
+    public final void cancel(final MethodContext context) {
         setCancelState(context.taskId);
         onCancel(context.taskId);
         return;
     }
 
     ///////////////////////////////////////////////////////////////////////
-    // public static methods
-
-    /**
-     * Native Bridge が使用する Gate.Context の生成
-     * NativeBridge からコールされる
-     *
-     * @param plugin          [in] cordova plugin
-     * @param preferences     [in] cordova preferences
-     * @param callbackContext [in] callback context
-     * @param execInfo        [in] JavaSript 情報
-     * @throws JSONException
-     */
-    public final static Context newContext(CordovaPlugin plugin, CordovaPreferences preferences, CallbackContext callbackContext, JSONObject execInfo) throws JSONException {
-        return new Gate().new Context(plugin, preferences, callbackContext, execInfo);
-    }
-
-    ///////////////////////////////////////////////////////////////////////
     // protected methods
 
     /**
-     * Context の取得
+     * CordovaPlugin 相当の初期化
+     * オーバーライド可能
+     *
+     * @param cordova [in] CordovaInterface インスタンス
+     * @param webView [in] CordovaWebView インスタンス
+     */
+    protected void initialize(CordovaInterface cordova, CordovaWebView webView) {
+        // override
+    }
+
+    /**
+     * MethodContext の取得
      * getContext() のヘルパー関数。 既定で autoSendResult を false に設定する。
      *
-     * @return Context オブジェクト
+     * @return MethodContext オブジェクト
      */
-    protected final Context getContext() {
+    protected final MethodContext getContext() {
         return getContext(false);
     }
 
     /**
-     * Context の取得
-     * method 呼び出されたスレッドからのみ Context 取得が可能
+     * MethodContext の取得
+     * method 呼び出されたスレッドからのみ MethodContext 取得が可能
      * compatible オプションを伴って呼ばれた場合は無効になる。
      *
      * @param  autoSendResult [in] Framework 内で暗黙的に sendResult() する場合には true を指定
-     * @return Context オブジェクト
+     * @return MethodContext オブジェクト
      */
-    protected final Context getContext(boolean autoSendResult) {
+    protected final MethodContext getContext(boolean autoSendResult) {
         synchronized (this) {
             if (null != mCurrentContext && Thread.currentThread().getName().equals(mCurrentContext.threadId)) {
                 mCurrentContext.needSendResult = autoSendResult;
@@ -217,7 +199,7 @@ public class Gate {
     protected final void returnParams(Object param) {
         if (null != mCurrentContext && Thread.currentThread().getName().equals(mCurrentContext.threadId)) {
             mCurrentContext.needSendResult = false;
-            MessageUtils.sendSuccessResult(mCurrentContext.callbackContext, MessageUtils.makeMessage(mCurrentContext.taskId, param));
+            MessageUtils.sendSuccessResult(mCurrentContext, MessageUtils.makeMessage(mCurrentContext.taskId, param));
         } else {
             Log.e(TAG, "Calling returnMessage() is permitted only from method entry thread.");
         }
@@ -227,10 +209,10 @@ public class Gate {
      * 値を JavaScript へ通知
      * sendPluginResult() のヘルパー関数。 既定で keepCallback を有効にする。
      *
-     * @param context [in] context オブジェクトを指定
+     * @param context [in] MethodContext オブジェクトを指定
      * @param params  [in] パラメータを可変引数で指定
      */
-    protected final void notifyParams(final Context context, Object... params) {
+    protected final void notifyParams(final MethodContext context, Object... params) {
         notifyParams(true, context, params);
     }
 
@@ -239,18 +221,18 @@ public class Gate {
      * sendPluginResult() のヘルパー関数
      *
      * @param keepCallback [in] keepCallback 値
-     * @param context      [in] context オブジェクトを指定
+     * @param context      [in] MethodContext オブジェクトを指定
      * @param params       [in] パラメータを可変引数で指定
      */
-    protected final void notifyParams(boolean keepCallback, final Context context, Object... params) {
-        if (null == context || null == context.callbackContext) {
+    protected final void notifyParams(boolean keepCallback, final MethodContext context, Object... params) {
+        if (null == context) {
             Log.e(TAG, "Invalid context object.");
             return;
         }
         int resultCode = keepCallback ? MessageUtils.SUCCESS_PROGRESS : MessageUtils.SUCCESS_OK;
         PluginResult result = new PluginResult(PluginResult.Status.OK, MessageUtils.makeMessage(resultCode, null, context.taskId, params));
         result.setKeepCallback(keepCallback);
-        context.callbackContext.sendPluginResult(result);
+        context.sendPluginResult(result);
     }
 
     /**
@@ -258,15 +240,15 @@ public class Gate {
      * ワーカースレッドから使用可能
      * keepCallback は false が指定される
      *
-     * @param context [in] context オブジェクトを指定
+     * @param context [in] MethodContext オブジェクトを指定
      * @param params  [in] パラメータを可変引数で指定
      */
-    protected final void resolveParams(final Context context, Object... params) {
-        if (null == context || null == context.callbackContext) {
+    protected final void resolveParams(final MethodContext context, Object... params) {
+        if (null == context) {
             Log.e(TAG, "Invalid context object.");
             return;
         }
-        MessageUtils.sendSuccessResult(context.callbackContext, MessageUtils.makeMessage(context.taskId, params));
+        MessageUtils.sendSuccessResult(context, MessageUtils.makeMessage(context.taskId, params));
     }
 
     /**
@@ -274,10 +256,10 @@ public class Gate {
      * ヘルパー関数
      * keepCallback は false が指定される
      *
-     * @param context [in] context オブジェクトを指定
+     * @param context [in] MethodContext オブジェクトを指定
      * @param params  [in] パラメータを可変引数で指定
      */
-    protected final void rejectParams(final Context context, Object... params) {
+    protected final void rejectParams(final MethodContext context, Object... params) {
         rejectParams(MessageUtils.ERROR_FAIL, null, context, params);
     }
 
@@ -288,23 +270,23 @@ public class Gate {
      *
      * @param code    [in] エラーコード
      * @param message [in] エラーメッセージ
-     * @param context [in] context オブジェクトを指定
+     * @param context [in] MethodContext オブジェクトを指定
      * @param params  [in] パラメータを可変引数で指定
      */
-    protected final void rejectParams(int code, String message, final Context context, Object... params) {
-        if (null == context || null == context.callbackContext) {
+    protected final void rejectParams(int code, String message, final MethodContext context, Object... params) {
+        if (null == context) {
             Log.e(TAG, "Invalid context object.");
             return;
         }
-        MessageUtils.sendErrorResult(context.callbackContext, MessageUtils.makeMessage(code, message, context.taskId, params));
+        MessageUtils.sendErrorResult(context, MessageUtils.makeMessage(code, message, context.taskId, params));
     }
 
     /**
      * キャンセル可能タスクとして登録
      *
-     * @param context [in] context オブジェクトを指定
+     * @param context [in] MethodContext オブジェクトを指定
      */
-    protected final void setCancelable(final Context context) {
+    protected final void setCancelable(final MethodContext context) {
         synchronized (this) {
             mCancelableTask.put(context.taskId, false);
         }
@@ -313,9 +295,9 @@ public class Gate {
     /**
      * キャンセル可能タスクとして登録解除
      *
-     * @param context [in] context オブジェクトを指定
+     * @param context [in] MethodContext オブジェクトを指定
      */
-    protected final void removeCancelable(final Context context) {
+    protected final void removeCancelable(final MethodContext context) {
         synchronized (this) {
             mCancelableTask.remove(context.taskId);
         }
@@ -326,7 +308,7 @@ public class Gate {
      *
      * @param context [in] context オブジェクトを指定
      */
-    protected final boolean isCanceled(final Context context) {
+    protected final boolean isCanceled(final MethodContext context) {
         synchronized (this) {
             return mCancelableTask.get(context.taskId);
         }

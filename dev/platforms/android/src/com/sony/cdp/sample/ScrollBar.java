@@ -20,17 +20,15 @@ public class ScrollBar extends Gate {
      * Vertical ScrollBar の 表示
      */
     public void showVertical() {
-        final Context context = getContext(true);
-        context.webView.setVerticalScrollBarEnabled(true);
+        webView.setVerticalScrollBarEnabled(true);
         Log.d(TAG, "showVertical() called.");
     }
 
     /**
-     * Vertical ScrollBar の 表示
+     * Vertical ScrollBar を非表示
      */
     public void hideVertical() {
-        final Context context = getContext(true);
-        context.webView.setVerticalScrollBarEnabled(false);
+        webView.setVerticalScrollBarEnabled(false);
         Log.d(TAG, "hideVertical() called.");
     }
 }

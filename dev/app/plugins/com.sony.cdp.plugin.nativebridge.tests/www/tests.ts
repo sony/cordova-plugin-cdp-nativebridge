@@ -269,6 +269,45 @@ exports.defineAutoTests = function () {
 		});
 	});
 
+	describe("Function not supported check",() => {
+		var value;
+		var taskId: string;
+		var callbacks;
+
+		beforeEach((done) => {
+			callbacks = {
+				win: (arg) => {
+					done();
+				},
+				fail: (err) => {
+					value = err;
+					done();
+				}
+			};
+
+			spyOn(callbacks, "win").and.callThrough();
+			spyOn(callbacks, "fail").and.callThrough();
+
+			var instance = new CDP.Plugin.NativeBridge({
+				name: "SimpleGate",
+			});
+
+			taskId = instance.exec(callbacks.win, callbacks.fail, "notSupported", [1, false, "test", { ok: true }]);
+		});
+
+		it("to have been called",() => {
+			expect(callbacks.win).not.toHaveBeenCalled();
+			expect(callbacks.fail).toHaveBeenCalled();
+		});
+
+		it("check return value",() => {
+			expect(value).toBeDefined();
+			expect(value.code).toBe(NativeBridge.ERROR_NOT_SUPPORT);
+			expect(value.message.match(/not supported/)).toBeDefined();
+			expect(value.taskId).toBe(taskId);
+		});
+	});
+
 	describe("Invalid arg check",() => {
 		var value;
 		var taskId: string;

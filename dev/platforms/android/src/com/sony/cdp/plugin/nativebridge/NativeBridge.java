@@ -33,14 +33,18 @@ public final class NativeBridge extends CordovaPlugin {
      */
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (action.equals("execTask")) {
-            execTask(args.getJSONObject(0), getMethodArgs(args), callbackContext);
+        MethodContext context = new MethodContext(callbackContext.getCallbackId(), webView, args);
+        if (null == context.className) {
+            MessageUtils.sendErrorResult(callbackContext, context.taskId, MessageUtils.ERROR_NOT_SUPPORT, (TAG + "the function is not supported on android."));
+            return true;
+        } else if (action.equals("execTask")) {
+            execTask(context);
             return true;
         } else if (action.equals("cancelTask")) {
-            cancelTask(args.getJSONObject(0), callbackContext);
+            cancelTask(context);
             return true;
         } else if (action.equals("disposeTask")) {
-            disposeTask(args.getJSONObject(0), callbackContext);
+            disposeTask(context);
             return true;
         }
         return false;
@@ -50,85 +54,48 @@ public final class NativeBridge extends CordovaPlugin {
     // private methods
 
     /**
-     * 生引数をメソッド引数に変換
-     *
-     * @param rawArgs [in] cordova.exec() に指定された引数
-     * @return JSONArray (index == 1 からの引数リスト)
-     * @throws JSONException
-     */
-    private JSONArray getMethodArgs(JSONArray rawArgs) throws JSONException {
-        JSONArray methodArgs = new JSONArray();
-        for (int i = 1; i < rawArgs.length(); i++) {
-            methodArgs.put(rawArgs.get(i));
-        }
-        return methodArgs;
-    }
-
-    /**
      * "execTask" のエントリ
      *
-     * @param execInfo        [in] 実行情報を格納
-     * @param argsInfo        [in] 引数情報を格納
-     * @param callbackContext [in] Callback Context
+     * @param context [in] MethodContext オブジェクト
+     * @throws JSONException
      */
-    private void execTask(JSONObject execInfo, JSONArray argsInfo, CallbackContext callbackContext) {
-        try {
-            Gate.Context context = Gate.newContext(this, this.preferences, callbackContext, execInfo);
-
-            {
-                Gate gate = getGateClass(context.objectId, context.className);
-                if (null == gate) {
-                    MessageUtils.sendErrorResult(callbackContext, context.taskId, MessageUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + context.className));
-                    return;
-                }
-                if (context.compatible) {
-                    if (!gate.execute(context.methodName, argsInfo, context)) {
-                        MessageUtils.sendErrorResult(callbackContext, context.taskId, MessageUtils.ERROR_NOT_IMPLEMENT, (TAG + "execute() is not implemented. class: " + context.className));
-                    }
-                } else {
-                    JSONObject errorResult = gate.invoke(context.methodName, argsInfo, context);
-                    if (null != errorResult) {
-                        MessageUtils.sendErrorResult(callbackContext, errorResult);
-                    }
-                }
+    private void execTask(final MethodContext context) throws JSONException {
+        Gate gate = getGateClass(context.objectId, context.className);
+        if (null == gate) {
+            MessageUtils.sendErrorResult(context, context.taskId, MessageUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + context.className));
+            return;
+        }
+        if (context.compatible) {
+            if (!gate.execute(context.methodName, context.methodArgs, context)) {
+                MessageUtils.sendErrorResult(context, context.taskId, MessageUtils.ERROR_NOT_IMPLEMENT, (TAG + "execute() is not implemented. class: " + context.className));
             }
-
-        } catch (JSONException e) {
-            String errorMsg = "Invalid JSON object.";
-            Log.e(TAG, errorMsg, e);
-            MessageUtils.sendErrorResult(callbackContext, null, MessageUtils.ERROR_INVALID_ARG, (TAG + errorMsg));
+        } else {
+            JSONObject errorResult = gate.invoke(context);
+            if (null != errorResult) {
+                MessageUtils.sendErrorResult(context, errorResult);
+            }
         }
     }
 
     /**
      * "cancelTask" のエントリ
      *
-     * @param execInfo        [in] 実行情報を格納
-     * @param callbackContext [in] Callback Context
+     * @param context [in] MethodContext オブジェクト
      * @return 対象のオブジェクト ID を返却
      */
-    private String cancelTask(JSONObject execInfo, CallbackContext callbackContext) {
+    private String cancelTask(final MethodContext context) {
         String objectId = null;
 
-        try {
-            Gate.Context context = Gate.newContext(this, this.preferences, callbackContext, execInfo);
-
-            {
-                Gate gate = getGateClass(context.objectId, context.className);
-                if (null == gate) {
-                    MessageUtils.sendErrorResult(callbackContext, context.taskId, MessageUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + context.className));
-                    return null;
-                }
-
-                gate.cancel(context);
-                MessageUtils.sendSuccessResult(callbackContext, MessageUtils.makeMessage(null));
-                objectId = context.objectId;
+        {
+            Gate gate = getGateClass(context.objectId, context.className);
+            if (null == gate) {
+                MessageUtils.sendErrorResult(context, context.taskId, MessageUtils.ERROR_CLASS_NOT_FOUND, (TAG + "class not found. class: " + context.className));
+                return null;
             }
 
-        } catch (JSONException e) {
-            String errorMsg = "Invalid JSON object.";
-            Log.e(TAG, errorMsg, e);
-            MessageUtils.sendErrorResult(callbackContext, null, MessageUtils.ERROR_INVALID_ARG, (TAG + errorMsg));
+            gate.cancel(context);
+            MessageUtils.sendSuccessResult(context, MessageUtils.makeMessage(null));
+            objectId = context.objectId;
         }
 
         return objectId;
@@ -137,11 +104,10 @@ public final class NativeBridge extends CordovaPlugin {
     /**
      * "disposelTask" のエントリ
      *
-     * @param execInfo        [in] 実行情報を格納
-     * @param callbackContext [in] Callback Context
+     * @param context [in] MethodContext オブジェクト
      */
-    private void disposeTask(JSONObject execInfo, CallbackContext callbackContext) {
-        String objectId = cancelTask(execInfo, callbackContext);
+    private void disposeTask(final MethodContext context) {
+        String objectId = cancelTask(context);
         if (null != objectId) {
             mGates.remove(objectId);
         }
@@ -180,6 +146,7 @@ public final class NativeBridge extends CordovaPlugin {
             }
             if (null != cls && Gate.class.isAssignableFrom(cls)) {
                 ret = (Gate)cls.newInstance();
+                ret.privateInitialize(cordova, webView, preferences);
             }
         } catch (Exception e) {
             Log.d(TAG, "class not found. class: " + className, e);

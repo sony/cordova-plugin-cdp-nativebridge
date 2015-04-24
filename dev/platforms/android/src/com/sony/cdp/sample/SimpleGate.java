@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.sony.cdp.plugin.nativebridge.Gate;
 import com.sony.cdp.plugin.nativebridge.MessageUtils;
+import com.sony.cdp.plugin.nativebridge.MethodContext;
 
 
 /**
@@ -49,7 +50,7 @@ public class SimpleGate extends Gate {
     /**
      * サンプルメソッド (スレッドを扱う例)
      * 引数に "final" を指定しても、リフレクションコール可能
-     * getContext() より、cordova plugin が扱う変数にアクセスが可能
+     * getContext() より、MethodContextにアクセスが可能
      *
      * スレッド内では
      *  - notifyParams()
@@ -60,9 +61,10 @@ public class SimpleGate extends Gate {
      * @throws JSONException
      */
     public void threadMethod(final double arg1, final boolean arg2, final String arg3, final JSONObject arg4) throws JSONException {
-        final Context context = getContext();
+        // context の取得は呼び出し thread でのみ有効
+        final MethodContext context = getContext();
 
-        context.cordova.getThreadPool().execute(new Runnable() {
+        cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 String errorMsg;
                 try {
@@ -87,9 +89,10 @@ public class SimpleGate extends Gate {
      * @throws JSONException
      */
     public void progressMethod() throws JSONException {
-        final Context context = getContext();
+        // context の取得は呼び出し thread でのみ有効
+        final MethodContext context = getContext();
 
-        context.cordova.getThreadPool().execute(new Runnable() {
+        cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 String errorMsg;
                 int progress = 0;
@@ -133,11 +136,11 @@ public class SimpleGate extends Gate {
      *
      * @param action  [in] アクション名.
      * @param args    [in] exec() 引数.
-     * @param context [in] Gate.Context を格納. CallbackContext へは context.callbackContextでアクセス可
+     * @param context [in] MethodContext を格納. CallbackContext としてアクセス可
      * @return  action の成否 true:成功 / false: 失敗
      */
     @Override
-    public boolean execute(String action, JSONArray args, Context context) throws JSONException {
+    public boolean execute(String action, JSONArray args, MethodContext context) throws JSONException {
         if (action.equals("compatibleCheck")) {
             JSONArray message = new JSONArray();
             message.put(context.taskId);
@@ -148,7 +151,7 @@ public class SimpleGate extends Gate {
             argsInfo.put("arg3", args.getString(2));
             argsInfo.put("arg4", args.getJSONObject(3));
             message.put(argsInfo);
-            context.callbackContext.success(message);
+            context.success(message);
             return true;
         }
         return false;
