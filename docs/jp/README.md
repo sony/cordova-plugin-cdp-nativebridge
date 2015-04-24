@@ -194,7 +194,7 @@ module SampleApp {
 
 ### 3-1-1:JSレイヤ で使用可能なメソッド一覧
 
-- CDP.NativeBridge.Gate クラスが提供するメソッドは以下です。
+- CDP.NativeBridge.Gate クラスが提供するメソッド/プロパティは以下です。
  ※ExecOptionについては、javadoc コメントを参照してください。本稿では触れません。
 
 | method                                                               | description                                                                                                                                     |
@@ -202,6 +202,11 @@ module SampleApp {
 | `exec(method: string, args?: any[], options?: ExecOptions): Promise` | 指定した method 名に対応する Native Class の method を呼び出します。                                                                            |
 | `cancel(options?: ExecOptions): JQueryPromise<IResult>`              | すべてのタスクのキャンセルします。キャンセルが返す Promise オブジェクト自体は成否のみが返ります。タスクの実行結果は exec() の戻り値に返ります。 |
 | `dispose(options?: ExecOptions): JQueryPromise<IResult>`             | Native の参照を解除します。破棄の直前に呼ぶことを想定しており、以降、exec は無効となります。戻り値はキャンセルと同等です。                      |
+
+
+| property                          | description                                                                                                                                                   |
+|:----------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `bridge`: CDP.Plugin.NativeBridge | cordova plugin の NativeBridge オブジェクトにアクセスします。protected 属性です。低レベルな `cordova.exec()` 互換 API である、`bridge.exec()` が使用可能です。|
 
 
 ## 3-2:Nativeレイヤ (Android)

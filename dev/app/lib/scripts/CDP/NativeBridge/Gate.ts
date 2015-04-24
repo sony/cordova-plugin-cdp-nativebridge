@@ -143,6 +143,19 @@ module CDP {
 			}
 
 			///////////////////////////////////////////////////////////////////////
+			// protected methods
+
+			/**
+			 * Plugin.NativeBridge オブジェクトへのアクセス
+			 * 低レベル exec() を使用したい場合に利用可能
+			 *
+			 * @return {Plugin.NativeBridge}
+			 */
+			protected get bridge(): Plugin.NativeBridge {
+				return this._bridge;
+			}
+
+			///////////////////////////////////////////////////////////////////////
 			// private methods
 
 			//! Fatal Error オブジェクトの生成
