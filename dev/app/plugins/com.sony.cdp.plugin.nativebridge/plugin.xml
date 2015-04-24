@@ -12,6 +12,7 @@
     </config-file>
     <config-file parent="/*" target="AndroidManifest.xml" />
     <source-file src="src/android/NativeBridge.java" target-dir="src/com/sony/cdp/plugin/nativebridge" />
+    <source-file src="src/android/MethodContext.java" target-dir="src/com/sony/cdp/plugin/nativebridge" />
     <source-file src="src/android/Gate.java" target-dir="src/com/sony/cdp/plugin/nativebridge" />
     <source-file src="src/android/MessageUtils.java" target-dir="src/com/sony/cdp/plugin/nativebridge" />
   </platform>
