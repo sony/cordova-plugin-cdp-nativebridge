@@ -1,4 +1,4 @@
-﻿/// <reference path="../../../modules/include/jasmine.d.ts" />
+/// <reference path="../../../modules/include/jasmine.d.ts" />
 /// <reference path="../../../modules/include/cordova.d.ts" />
 /// <reference path="../../../plugins/com.sony.cdp.plugin.nativebridge/www/cdp.plugin.nativebridge.d.ts" />
 
@@ -118,7 +118,7 @@ exports.defineAutoTests = function () {
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleGate",
 				android: { packageInfo: "com.sony.cdp.sample.SimpleGate" },
-				ios: { packageInfo: "CDVNBSimpleGate" }
+				ios: { packageInfo: "SMPSimpleGate" }
 			});
 
 			taskId = instance.exec(callbacks.win, callbacks.fail, "coolMethod", [1, false, "test", { ok: true }]);
@@ -138,6 +138,7 @@ exports.defineAutoTests = function () {
 			expect(value.params.length).toBe(1);
 			expect(value.params[0]).toBe("arg1: 1, arg2: false, arg3: test, 日本語でOK: true");
 		});
+
 	});
 
 	describe("Void method call check",() => {
@@ -162,7 +163,7 @@ exports.defineAutoTests = function () {
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleGate",
 				android: { packageInfo: "com.sony.cdp.sample.SimpleGate" },
-				ios: { packageInfo: "CDVNBSimpleGate" }
+				ios: { packageInfo: "SMPSimpleGate" }
 			});
 
 			taskId = instance.exec(callbacks.win, callbacks.fail, "voidMethod");
@@ -204,7 +205,7 @@ exports.defineAutoTests = function () {
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleGate",
 				android: { packageInfo: "com.sony.cdp.sample.SimpleGate" },
-				ios: { packageInfo: "CDVNBSimpleGate" }
+				ios: { packageInfo: "SMPSimpleGate" }
 			});
 
 			taskId = instance.exec(callbacks.win, callbacks.fail, "compatibleCheck", [1, false, "test", { ok: true }], { compatible: true });
@@ -249,7 +250,7 @@ exports.defineAutoTests = function () {
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleGate",
 				android: { packageInfo: "com.sony.cdp.sample.SimpleGate" },
-				ios: { packageInfo: "CDVNBSimpleGate" }
+				ios: { packageInfo: "SMPSimpleGate" }
 			});
 
 			taskId = instance.exec(callbacks.win, callbacks.fail, "notFoundCheck", [1, false, "test", { ok: true }]);
@@ -290,7 +291,7 @@ exports.defineAutoTests = function () {
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleGate",
 				android: { packageInfo: "com.sony.cdp.sample.SimpleGate" },
-				ios: { packageInfo: "CDVNBSimpleGate" }
+				ios: { packageInfo: "SMPSimpleGate" }
 			});
 
 			taskId = instance.exec(callbacks.win, callbacks.fail, "coolMethod", [null, false, "test", { ok: true }]);
@@ -333,7 +334,7 @@ exports.defineAutoTests = function () {
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleGate",
 				android: { packageInfo: "com.sony.cdp.sample.SimpleGate" },
-				ios: { packageInfo: "CDVNBSimpleGate" }
+				ios: { packageInfo: "SMPSimpleGate" }
 			});
 
 			taskId = instance.exec(callbacks.win, callbacks.fail, "threadMethod", [1, false, "test", { ok: true }]);
@@ -390,7 +391,7 @@ exports.defineAutoTests = function () {
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleGate",
 				android: { packageInfo: "com.sony.cdp.sample.SimpleGate" },
-				ios: { packageInfo: "CDVNBSimpleGate" }
+				ios: { packageInfo: "SMPSimpleGate" }
 			});
 
 			taskId = instance.exec(callbacks.win, callbacks.fail, "progressMethod");
@@ -431,7 +432,7 @@ exports.defineAutoTests = function () {
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleGate",
 				android: { packageInfo: "com.sony.cdp.sample.SimpleGate" },
-				ios: { packageInfo: "CDVNBSimpleGate" }
+				ios: { packageInfo: "SMPSimpleGate" }
 			});
 
 			taskId = instance.exec(callbacks.win, callbacks.fail, "progressMethod");
@@ -459,7 +460,7 @@ exports.defineAutoTests = function () {
 			var instance = new CDP.Plugin.NativeBridge({
 				name: "SimpleGate",
 				android: { packageInfo: "com.sony.cdp.sample.SimpleGate" },
-				ios: { packageInfo: "CDVNBSimpleGate" }
+				ios: { packageInfo: "SMPSimpleGate" }
 			});
 
 			errorHandlers = {
