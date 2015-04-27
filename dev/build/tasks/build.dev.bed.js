@@ -6,67 +6,95 @@ module.exports = function (grunt) {
 
     grunt.extendConfig({
 
-        // config variable entries: root
-        cdvtests: 'cdvtests',
-
+        // all work directories cleaning
         clean: {
-            dev_plugins: {
-                files: [
-                    {// app/scripts.
-                        expand: true,
-                        cwd: '<%= orgsrc %>/<%= plugins %>',
-                        src: ['**/*.js', '**/*.map'],
-                    },
-                ],
+            // deploy.
+            devbed_deploy: {
+                files: {
+                    src: [
+                        '../www/*', '../src/*', '../tests/*', '../dist/**'
+                    ],
+                },
             },
         },
 
         // file copy
         copy: {
-            // for cdvtests
-            dev_bed: {
-                files: [
-                    {// test frameworks
-                        expand: true,
-                        cwd: '<%= orgsrc %>',
-                        src: ['<%= cdvtests %>/**'],
-                        dest: '<%= pkgdir %>'
-                    },
-                ]
-            },
-
             // deploy.
-            deploy: {
+            devbed_deploy: {
                 files: [
-                    {
+                    {// cdp.plugin.nativebridge js source files.
                         expand: true,
-                        cwd: '<%= tmpdir %>/<%= plugins %>/com.sony.cdp.plugin.nativebridge',
+                        cwd: '<%= tmpdir %>/<%= pkgcomp_work_pkg_dir %>/<%= plugins %>/com.sony.cdp.plugin.nativebridge/www',
                         src: ['**'],
-                        dest: '../../',
+                        dest: '../www',
+                    },
+                    {// cdp.plugin.nativebridge native source files
+                        expand: true,
+                        cwd: '<%= tmpdir %>/<%= pkgcomp_work_pkg_dir %>/<%= plugins %>/com.sony.cdp.plugin.nativebridge/src',
+                        src: ['**'],
+                        dest: '../src',
+                    },
+                    {// cdp.plugin.nativebridge plugin.xml
+                        expand: true,
+                        cwd: '<%= tmpdir %>/<%= pkgcomp_work_pkg_dir %>/<%= plugins %>/com.sony.cdp.plugin.nativebridge',
+                        src: ['plugin.xml'],
+                        dest: '../',
+                    },
+                    {// cdp.plugin.nativebridge.tests
+                        expand: true,
+                        cwd: '<%= tmpdir %>/<%= pkgcomp_work_pkg_dir %>/<%= plugins %>/com.sony.cdp.plugin.nativebridge.tests',
+                        src: ['**/*.xml', '**/*.js', '!**/*.min.js'],
+                        dest: '../tests',
+                    },
+                    {// cdp.nativebridge
+                        expand: true,
+                        cwd: '<%= tmpdir %>/<%= pkgcomp_work_pkg_dir %>/<%= libraries %>/<%= scripts %>',
+                        src: ['**/*.js'],
+                        dest: '../dist',
+                    },
+                    {// cdp.nativebridge
+                        expand: true,
+                        cwd: '<%= tmpdir %>/<%= pkgcomp_work_pkg_dir %>/<%= libraries %>/include',
+                        src: ['**/*.d.ts'],
+                        dest: '../dist/include',
+                    },
+                ],
+            },
+            devbed_deploy_external: {// TBD
+                files: [
+                    {// external: jquery
+                        expand: true,
+                        cwd: '<%= orgsrc %>/<%= modules %>/jquery/<%= scripts %>',
+                        src: ['jquery-*.js', 'jquery.js'],
+                        dest: '../dist/external',
+                    },
+                    {// external: underscore
+                        expand: true,
+                        cwd: '<%= orgsrc %>/<%= modules %>/underscore/<%= scripts %>',
+                        src: ['underscore-*.js', 'underscore.js'],
+                        dest: '../dist/external',
+                    },
+                    {// external: cdp.tools
+                        expand: true,
+                        cwd: '<%= orgsrc %>/<%= modules %>/sony/cdp/<%= scripts %>',
+                        src: ['cdp.tools-*.js', 'cdp.tools.js'],
+                        dest: '../dist/external',
+                    },
+                    {// external: d.ts
+                        expand: true,
+                        cwd: '<%= orgsrc %>/<%= modules %>/include',
+                        src: ['jquery.d.ts', 'underscore.d.ts', 'cdp.tools.d.ts'],
+                        dest: '../dist/include',
                     },
                 ],
             },
         },
     });
 
-    //__________________________________________________________________________________________________________________________________________________________________________________________//
-
-    //grunt.cdp = grunt.createCustomTaskEntry(grunt.cdp, 'app_after_package');
-    //grunt.cdp.custom_tasks['app_after_package'].release.push('copy:dev_bed');
-    //grunt.cdp.custom_tasks['app_after_package'].debug.push('copy:dev_bed');
 
     //__________________________________________________________________________________________________________________________________________________________________________________________//
 
-    grunt.registerTask('clean_dev', ['clean:dev_plugins']);
-    grunt.registerTask('deploy', ['plugin', 'copy:deploy', 'clean:tmpdir']);
 
-    // custom task: restore environment for package plugins.
-    grunt.registerTask('test', function () {
-        var $ = require('jquery')(jsdom.jsdom().parentWindow);
-        var df = $.Deferred();
-        console.log("df: " + df);
-        console.log("$: " + $);
-        console.log("$.Deferred: " + $.Deferred);
-    });
-
+    grunt.registerTask('deploy', ['clean:devbed_deploy', 'module', 'copy:devbed_deploy', 'copy:devbed_deploy_external', /*'clean:tmpdir'*/]);
 };
