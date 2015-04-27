@@ -1,0 +1,30 @@
+{
+    "name": "cdp.nativebridge",
+    "version": "0.9.0-master",
+    "authors": [
+        "Shin Ogata <Shin.Ogata@jp.sony.com>"
+    ],
+    "description": "CDP Native Bridge utility class",
+    "license": "Sony",
+    "main": "dist/cdp.nativebridge.js",
+    "ignore": [
+        "**/.*",
+        "!**/.gitkeep",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "underscore": "http://github.com/jashkenas/underscore.git#1.7.0",
+        "jquery": "http://github.com/jquery/jquery.git#2.1.3"
+    },
+    "devDependencies": {
+        "cdp.tools": "0.3.0"
+    },
+    "keywords": [
+        "cdp.module",
+        "javascript",
+        "library"
+    ]
+}
