@@ -28,11 +28,6 @@ module.exports = function (grunt) {
         app_plugins_work_id: '',            // work plugin id
         app_plugins_work_script_name: '',   // work script file name
 
-        app_plugins_tmpdir_org: '<%= tmpdir %>',
-        app_plugins_tmpdir: '<%= app_plugins_tmpdir_org %>/_<%= tmpdir %>',
-        app_plugins_pkgdir_org: '<%= app_plugins_pkgdir %>',
-        pkgcomp_remove_src_comment_targets_org: ['<%= pkgcomp_work_appdir %>/<%= libraries %>/<%= scripts %>/*.js'],
-
         app_plugins_native_src: {},
 
         // clean for plugin directory
@@ -258,28 +253,6 @@ module.exports = function (grunt) {
         }
     });
 
-    // custom task: set environment for package plugins.
-    grunt.registerTask('app_plugins_set_env', function () {
-        grunt.config.set('app_plugins_tmpdir_org', grunt.config.get('tmpdir'));
-        grunt.config.set('tmpdir', grunt.config.get('app_plugins_tmpdir'));
-
-        grunt.config.set('app_plugins_pkgdir_org', grunt.config.get('app_plugins_pkgdir'));
-        grunt.config.set('app_plugins_pkgdir', path.join(grunt.config.get('app_plugins_tmpdir_org'), grunt.config.get('app_plugins_pkgdir_org')));
-
-        grunt.config.set('pkgcomp_remove_src_comment_targets_org', grunt.config.get('pkgcomp_remove_src_comment_targets'));
-        grunt.config.set('pkgcomp_remove_src_comment_targets', [
-            path.join(grunt.config.get('tmpdir'), grunt.config.get('plugins'), '**/*.js'),
-            path.join(grunt.config.get('tmpdir'), grunt.config.get('plugins'), '**/*.d.ts'),
-        ]);
-    });
-
-    // custom task: restore environment for package plugins.
-    grunt.registerTask('app_plugins_restore_env', function () {
-        grunt.config.set('tmpdir', grunt.config.get('app_plugins_tmpdir_org'));
-        grunt.config.set('app_plugins_pkgdir', grunt.config.get('app_plugins_pkgdir_org'));
-        grunt.config.set('pkgcomp_remove_src_comment_targets', grunt.config.get('pkgcomp_remove_src_comment_targets_org'));
-    });
-
     // custom task: set native source information
     grunt.registerTask('app_plugins_set_native_src', function () {
         doPluginTask(this, function (plugin) {
@@ -415,28 +388,4 @@ module.exports = function (grunt) {
     // for app build entry
     grunt.registerTask('app_plugins_cordova_prepare_release',   ['app_prepare_release', 'app_plugins_release', 'clean:tmpdir']);
     grunt.registerTask('app_plugins_cordova_prepare_debug',     [                       'app_plugins_debug'                  ]);
-
-    // for package task js package
-    grunt.registerTask('app_plugins_package_js', [
-        'app_prepare_release', 'app_plugins_prepare_release', 'app_plugins_set_work_plugins', 'app_plugins_build_plugins',
-        'pkgcomp_remove_src_path_comments',
-        'uglify:app_plugins_min',
-        'copy:app_plugins_plugin_package',
-        'clean:tmpdir',
-    ]);
-
-    // for package task native source package
-    grunt.registerTask('app_plugins_package_native', [
-        'app_plugins_set_work_plugins', 'app_plugins_set_native_src',
-        'app_plugins_copy_native_src'
-    ]);
-
-    // for plugin package entry
-    grunt.registerTask('plugin', [
-        'clean:tmpdir',
-        'app_plugins_set_env',
-        'app_plugins_package_js',
-        'app_plugins_package_native',
-        'app_plugins_restore_env',
-    ]);
 };

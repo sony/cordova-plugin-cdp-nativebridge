@@ -21,8 +21,10 @@ module.exports = function (grunt) {
         pkgcomp_target_root_dir: '<%= pkgcomp_tmpdir_backup %>/<%= pkgcomp_work_pkg_dir %>',
 
         // backup variable.
+        pkgcomp_lower_enable_backup: false,
         pkgcomp_tmpdir_backup: '<%= tmpdir %>',
         pkgcomp_pkgdir_backup: '<%= pkgdir %>',
+        pkgcomp_app_plugins_pkgdir_backup: '<%= app_plugins_pkgdir %>',
 
         pkgcomp_build_dir: 'build',
         pkgcomp_build_tasks_dir: 'build/tasks',
@@ -33,7 +35,7 @@ module.exports = function (grunt) {
         pkgcomp_work_platfrom_porting_dir: "<%= pkgcomp_work_tmpdir %>/<%= cordova_platform_porting %>",
 
         pkgcomp_revise_d_ts_targets: ['<%= pkgcomp_work_appdir %>/<%= libraries %>/<%= scripts %>/*.d.ts'],
-        pkgcomp_remove_src_comment_targets: ['<%= pkgcomp_work_appdir %>/<%= libraries %>/<%= scripts %>/*.js'],
+        pkgcomp_remove_src_spwords_targets: ['<%= pkgcomp_work_appdir %>/<%= libraries %>/<%= scripts %>/*.js', '<%= pkgcomp_work_appdir %>/<%= plugins %>/**/*.d.ts', '<%= pkgcomp_work_appdir %>/<%= plugins %>/**/*.js'],
         pkgcomp_package_targets: [{ src: '<%= pkgcomp_work_appdir %>/<%= libraries %>', dst: '<%= pkgcomp_src_root_dir %>/<%= libraries %>' }],
 
         pkgcomp_work_package_targets: [],
@@ -201,10 +203,10 @@ module.exports = function (grunt) {
             },
         },
 
-        // custom task: remove "reference path" and "sourceURL" comments from js files.
-        pkgcomp_remove_src_path_comments: {
+        // custom task: remove "reference path" and "sourceURL" comments and "declare var module: any" from js files.
+        pkgcomp_remove_src_special_words: {
             build: {
-                src: '<%= pkgcomp_remove_src_comment_targets %>',
+                src: '<%= pkgcomp_remove_src_spwords_targets %>',
             },
         },
     });
@@ -215,32 +217,26 @@ module.exports = function (grunt) {
 
     // custom task: switch package directory for package component spec.
     grunt.registerTask('pkgcomp_set_env', 'switch work directory for pacakge component.', function () {
-        // off: lower
-        grunt.config.set('lower_enable', false);
-
         // backup
+        grunt.config.set('pkgcomp_lower_enable_backup', grunt.config.get('lower_enable'));
         grunt.config.set('pkgcomp_tmpdir_backup', grunt.config.get('tmpdir'));
         grunt.config.set('pkgcomp_pkgdir_backup', grunt.config.get('pkgdir'));
+        grunt.config.set('pkgcomp_app_plugins_pkgdir_backup', grunt.config.get('app_plugins_pkgdir'));
 
         // switch
+        grunt.config.set('lower_enable', false);
         grunt.config.set('tmpdir', path.join(grunt.config.get('pkgcomp_tmpdir_backup'), grunt.config.get('pkgcomp_work_root'), grunt.config.get('pkgcomp_tmpdir_backup')));
         grunt.config.set('pkgdir', path.join(grunt.config.get('pkgcomp_tmpdir_backup'), grunt.config.get('pkgcomp_work_root'), grunt.config.get('pkgcomp_pkgdir_backup')));
-
-        console.log("tmpdir: " + grunt.config.get('tmpdir'));
-        console.log("pkgdir: " + grunt.config.get('pkgdir'));
+        grunt.config.set('app_plugins_pkgdir', path.join(grunt.config.get('pkgcomp_tmpdir_backup'), grunt.config.get('pkgcomp_work_pkg_dir'), grunt.config.get('pkgcomp_app_plugins_pkgdir_backup')));
     });
 
     // custom task: rollback package directory for default.
     grunt.registerTask('pkgcomp_restore_env', 'rollback work directory for default.', function () {
         // rollback
-        grunt.config.set('tmpdir', grunt.config.get('pkgcomp_tmpdir_backup'));
+        grunt.config.set('app_plugins_pkgdir', grunt.config.get('pkgcomp_app_plugins_pkgdir_backup'));
         grunt.config.set('pkgdir', grunt.config.get('pkgcomp_pkgdir_backup'));
-
-        // on: lower
-        grunt.config.set('lower_enable', true);
-
-        console.log("tmpdir: " + grunt.config.get('tmpdir'));
-        console.log("pkgdir: " + grunt.config.get('pkgdir'));
+        grunt.config.set('tmpdir', grunt.config.get('pkgcomp_tmpdir_backup'));
+        grunt.config.set('lower_enable', grunt.config.get('pkgcomp_lower_enable_backup'));
     });
 
     // custom task: set cordova target platforms.
@@ -254,11 +250,11 @@ module.exports = function (grunt) {
         if (0 < targetPratforms.length) {
             (function () {
                 var reviseTargets = grunt.config.get('pkgcomp_revise_d_ts_targets');
-                var removeSrcCommentTargets = grunt.config.get('pkgcomp_remove_src_comment_targets');
+                var removeSrcSpWordsTargets = grunt.config.get('pkgcomp_remove_src_spwords_targets');
                 var packageTargets = grunt.config.get('pkgcomp_package_targets');
                 // dev
                 reviseTargets.push(path.join(grunt.config.get('pkgcomp_work_appdir'), grunt.config.get('porting'), grunt.config.get('scripts'), '*.d.ts'));
-                removeSrcCommentTargets.push(path.join(grunt.config.get('pkgcomp_work_appdir'), grunt.config.get('porting'), grunt.config.get('scripts'), '*.js'));
+                removeSrcSpWordsTargets.push(path.join(grunt.config.get('pkgcomp_work_appdir'), grunt.config.get('porting'), grunt.config.get('scripts'), '*.js'));
                 packageTargets.push({
                     src: path.join(grunt.config.get('pkgcomp_work_appdir'), grunt.config.get('porting')),
                     dst: path.join(grunt.config.get('pkgcomp_src_root_dir'), grunt.config.get('porting')),
@@ -268,13 +264,13 @@ module.exports = function (grunt) {
                 targetPratforms.forEach(function (platform) {
                     grunt.config.set('cordova_platform', platform);
                     reviseTargets.push(path.join(grunt.config.get('pkgcomp_work_platfrom_porting_dir'), '*.d.ts'));
-                    removeSrcCommentTargets.push(path.join(grunt.config.get('pkgcomp_work_platfrom_porting_dir'), '*.js'));
+                    removeSrcSpWordsTargets.push(path.join(grunt.config.get('pkgcomp_work_platfrom_porting_dir'), '*.js'));
                     packageTargets.push({
                         src: grunt.config.get('pkgcomp_work_platfrom_porting_dir'),
                         dst: path.join(grunt.config.get('pkgcomp_src_root_dir'), grunt.config.get('porting') + '_' + platform),
                     });
                     grunt.config.set('pkgcomp_revise_d_ts_targets', reviseTargets);
-                    grunt.config.set('pkgcomp_remove_src_comment_targets', removeSrcCommentTargets);
+                    grunt.config.set('pkgcomp_remove_src_spwords_targets', removeSrcSpWordsTargets);
                     grunt.config.set('pkgcomp_package_targets', packageTargets);
                 });
             }());
@@ -340,14 +336,15 @@ module.exports = function (grunt) {
         });
     });
 
-    // custom task: remove "reference path" and "sourceURL" comments from js files.
-    grunt.registerMultiTask('pkgcomp_remove_src_path_comments', 'Remove "reference path" and "sourceURL" comments from js files.', function () {
+    // custom task: remove "reference path" and "sourceURL" comments and "declare var module: any" from js files.
+    grunt.registerMultiTask('pkgcomp_remove_src_special_words', 'Remove "reference path" and "sourceURL" comments from js files.', function () {
         this.filesSrc.forEach(function (file) {
             var src = grunt.file.read(file);
             var rev = src;
             rev = rev.replace(/\/\/\/ <reference path="[\s\S]*?>/g, '');
             rev = rev.replace(/\/\/@ sourceURL=[\s\S]*?\n/g, '');
             rev = rev.replace(/\/\/# sourceURL=[\s\S]*?\n/g, '');
+            rev = rev.replace(/declare var module: any;[\s\S]*?\n/g, '');
             fs.writeFileSync(file, rev);
         });
     });
@@ -467,20 +464,47 @@ module.exports = function (grunt) {
 
 
     // task unit
-    grunt.registerTask('pkgcomp_prepare', ['pkgcomp_set_env', 'clean:pkgcomp', 'pkgcomp_set_cordova_target_platforms', 'glue_ts_cordova_set_env', 'glue_ts_cordova_prepare_release', 'copy:lib_prepare', 'legacy_command_set_pkgdst:development', 'copy:legacy_command_dev_prepare', 'copy:pkgcomp_prepare', 'glue_ts_cordova_restore_env']);
+    grunt.registerTask('pkgcomp_prepare', ['pkgcomp_set_env',
+                                           'clean:pkgcomp',
+                                           'pkgcomp_set_cordova_target_platforms',
+                                           'glue_ts_cordova_set_env', 'glue_ts_cordova_prepare_release',
+                                           'copy:lib_prepare',
+                                           'legacy_command_set_pkgdst:development', 'copy:legacy_command_dev_prepare',
+                                           'app_plugins_prepare_release',
+                                           'copy:pkgcomp_prepare',
+                                           'glue_ts_cordova_restore_env'
+    ]);
 
-    grunt.registerTask('pkgcomp_module_compile',        ['lib_update_env', 'lib_build_modules']);
+    grunt.registerTask('pkgcomp_module_compile', ['lib_update_env', 'lib_build_modules']);
+
+    grunt.registerTask('pkgcomp_compile_app_plugins',   ['app_plugins_set_work_plugins', 'app_plugins_build_plugins']);
     grunt.registerTask('pkgcomp_compile_modules',       ['glue_ts_cordova_set_env', 'lib_extract_module_info:scripts', 'pkgcomp_module_compile', 'cordova_set_work_platforms', 'pkgcomp_cordova_build_platform', 'glue_ts_cordova_restore_env']);
     grunt.registerTask('pkgcomp_compile_dev_modules',   ['glue_ts_cordova_set_env', 'legacy_command_set_pkgdst:development', 'pkgcomp_build_dev_poritng', 'glue_ts_cordova_restore_env']);
-    grunt.registerTask('pkgcomp_compile',               ['pkgcomp_compile_modules', 'pkgcomp_compile_dev_modules']);
+    grunt.registerTask('pkgcomp_compile',               ['pkgcomp_compile_app_plugins', 'pkgcomp_compile_modules', 'pkgcomp_compile_dev_modules']);
 
-    grunt.registerTask('pkgcomp_revise',        ['pkgcomp_revise_d_ts_reference_path', 'pkgcomp_remove_src_path_comments', 'pkgcomp_set_work_package_targets', 'pkgcomp_copy_package']);
+    grunt.registerTask('pkgcomp_revise',        ['pkgcomp_revise_d_ts_reference_path', 'pkgcomp_remove_src_special_words', 'pkgcomp_set_work_package_targets', 'pkgcomp_copy_package']);
     grunt.registerTask('pkgcomp_versioning',    ['pkgcomp_versioning_preprocess', 'glue_ts_cordova_set_env', 'lib_extract_module_info', 'glue_ts_cordova_restore_env', 'pkgcomp_set_work_package_targets', 'pkgcomp_module_versioning', 'pkgcomp_versioning_postprocess']);
-    grunt.registerTask('pkgcomp_minify',        ['pkgcomp_set_work_package_targets', 'pkgcomp_module_minify']);
+    grunt.registerTask('pkgcomp_minify',        ['uglify:app_plugins_min', 'pkgcomp_set_work_package_targets', 'pkgcomp_module_minify']);
 
     grunt.registerTask('pkgcomp_preprocess',   ['pkgcomp_prepare', 'pkgcomp_compile', 'pkgcomp_revise', 'pkgcomp_versioning', 'pkgcomp_minify', 'cleanempty:pkgcomp']);
     grunt.registerTask('pkgcomp_postprocess',  ['clean:pkgcomp', 'pkgcomp_restore_env']);
 
+    grunt.registerTask('pkgcomp_package_app_plugins', [
+        'copy:app_plugins_plugin_package',
+        'app_plugins_set_work_plugins', 'app_plugins_set_native_src',
+        'app_plugins_copy_native_src'
+    ]);
+
     // for module release task.
-    grunt.registerTask('module', ['pkgcomp_cmdline_parse', 'pkgcomp_preprocess', 'copy:pkgcomp_module_release', 'pkgcomp_postprocess']);
+    grunt.registerTask('module', ['pkgcomp_cmdline_parse', 'pkgcomp_preprocess', 'pkgcomp_package_app_plugins', 'copy:pkgcomp_module_release', 'pkgcomp_postprocess']);
+
+    // for plugin package entry
+    grunt.registerTask('plugin', [
+        'pkgcomp_set_env', 'glue_ts_cordova_set_env', 'app_plugins_prepare_release', 'copy:pkgcomp_prepare', 'glue_ts_cordova_restore_env',
+        'pkgcomp_compile_app_plugins',
+        'pkgcomp_remove_src_special_words',
+        'uglify:app_plugins_min',
+        'pkgcomp_package_app_plugins',
+        'pkgcomp_postprocess'
+    ]);
 };
