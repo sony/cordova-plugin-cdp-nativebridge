@@ -29,14 +29,22 @@ module.exports = function (grunt) {
         cordova_copy_src_stylesheets: ['<%= stylesheets %>/**'],
         cordova_copy_src_templates: ['<%= templates %>/**'],
 
+        // clean
         clean: {
             cordova_platform: {
                 files: {
                     src: [
                         '<%= cordova_platform_www %>/<%= porting %>'
                     ],
-                }
-            }
+                },
+            },
+            cordova_platform_all: {
+                files: {
+                    src: [
+                        'platforms/*/platform_www/<%= porting %>',
+                    ],
+                },
+            },
         },
 
         // file copy

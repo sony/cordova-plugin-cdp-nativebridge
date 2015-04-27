@@ -9,15 +9,24 @@ module.exports = function (grunt) {
     grunt.extendConfig({
 
         legacy_command_platform_target: '',
-        legacy_command_pkgdst: '',
+        legacy_command_pkgdst: '<%= tmpdir %>',
 
         clean: {
             legacy_command: {
                 files: {
                     src: [
-                        '<%= legacy_command_pkgdst %>/*', '!<%= legacy_command_pkgdst %>/*.js', '!<%= legacy_command_pkgdst %>/plugins', '!<%= legacy_command_pkgdst %>/www',
+                        '<%= legacy_command_pkgdst %>/*', '!<%= legacy_command_pkgdst %>/*.js', '!<%= legacy_command_pkgdst %>/plugins', '!<%= legacy_command_pkgdst %>',
                     ],
-                }
+                },
+            },
+            legacy_command_all: {
+                files: {
+                    src: [
+                        'platforms/android/assets/www/*', '!platforms/android/assets/www/*.js', '!platforms/android/assets/www/plugins', '!platforms/android/assets/www',
+                        'platforms/*/www/*', '!platforms/*/www/*.js', '!platforms/*/www/plugins', '!platforms/*/www',
+                        '<%= pkgdir %>/*', '!<%= pkgdir %>/*.js', '!<%= pkgdir %>/plugins', '!<%= pkgdir %>',
+                    ],
+                },
             },
         },
 

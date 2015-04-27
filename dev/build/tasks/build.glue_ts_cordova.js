@@ -15,6 +15,34 @@ module.exports = function (grunt) {
         glue_ts_cordova_platform_work_dir: '<%= glue_ts_cordova_tmpdir_org %>/platforms/<%= cordova_platform %>',       // for release build. platform working directory.
         glue_ts_cordova_platform_pkg_dir: '<%= glue_ts_cordova_tmpdir_org %>/<%= porting %>_<%= cordova_platform %>',   // for release build. platform temporary package directory.
 
+        // clean
+        clean: {
+            glue_ts_cordova_porting_all: {
+                files: [
+                    {// porting/scripts.
+                        expand: true,
+                        cwd: '<%= orgsrc %>/<%= porting %>/<%= scripts %>',
+                        src: ['**/*.js', '**/*.map'],
+                    },
+                    {// porting/stylesheets.
+                        expand: true,
+                        cwd: '<%= orgsrc %>/<%= porting %>/<%= stylesheets %>',
+                        src: ['*.css', '.sass-cache'],
+                    },
+                    {// platforms/*/porting/scripts.
+                        expand: true,
+                        cwd: 'platforms/*/<%= porting %>/<%= scripts %>',
+                        src: ['**/*.js', '**/*.map'],
+                    },
+                    {// platforms/*/porting/stylesheets.
+                        expand: true,
+                        cwd: 'platforms/*/<%= porting %>/<%= stylesheets %>',
+                        src: ['*.css', '.sass-cache'],
+                    },
+                ],
+            },
+        },
+
         // file copy
         copy: {
             // for relase build preprocess prepare task

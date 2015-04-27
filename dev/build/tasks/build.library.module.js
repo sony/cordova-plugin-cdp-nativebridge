@@ -88,6 +88,24 @@ module.exports = function (grunt) {
             },
         },
 
+        // clean
+        clean: {
+            lib: {
+                files: [
+                    {// lib/scripts.
+                        expand: true,
+                        cwd: '<%= orgsrc %>/<%= libraries %>/<%= scripts %>',
+                        src: ['**/*.js', '!**/cdp.core.js', '!**/cdp.lazyload.js', '**/*.map'],
+                    },
+                    {// lib/stylesheets.
+                        expand: true,
+                        cwd: '<%= orgsrc %>/<%= libraries %>/<%= stylesheets %>',
+                        src: ['*.css', '.sass-cache'],
+                    },
+                ],
+            },
+        },
+
         // file copy
         copy: {
             // for release build.

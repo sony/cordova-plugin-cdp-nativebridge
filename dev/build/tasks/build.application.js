@@ -6,6 +6,24 @@ module.exports = function (grunt) {
 
     grunt.extendConfig({
 
+        // clean
+        clean: {
+            app: {
+                files: [
+                    {// app/scripts.
+                        expand: true,
+                        cwd: '<%= orgsrc %>/<%= scripts %>',
+                        src: ['**/*.js', '**/*.map'],
+                    },
+                    {// app/stylesheets.
+                        expand: true,
+                        cwd: '<%= orgsrc %>/<%= stylesheets %>',
+                        src: ['*.css', '.sass-cache'],
+                    },
+                ],
+            },
+        },
+
         // special key word replace by build configration
         'string-replace': {
             release: {

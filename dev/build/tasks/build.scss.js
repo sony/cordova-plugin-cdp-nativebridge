@@ -9,6 +9,17 @@ module.exports = function (grunt) {
 
     grunt.extendConfig({
 
+        // clean
+        clean: {
+            sass: {
+                files: [
+                    {// root/.sass-cache.
+                        src: ['.sass-cache'],
+                    },
+                ],
+            },
+        },
+
         // compass scss
         compass: {
             app: {
