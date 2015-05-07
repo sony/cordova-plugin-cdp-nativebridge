@@ -541,7 +541,7 @@ An example of Objective-C class definition of a Native layer is indicated below.
 
 #define TAG @"[Sample][Native][SMPSimpleGate]"
 
-// You don't need to prepare a header file because it's instantiated by reflection.
+// you need not to prepare a header file because it's instantiated by reflection.
 @interface SMPSimpleGate : CDPGate
 @end
 
