@@ -586,6 +586,7 @@
     <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\CDPNativeBridge\CDPMethodContext.m" />
     <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\CDPNativeBridge\CDPNativeBridge.m" />
     <Content Include="platforms\ios\NativeBridgeDevBed\Samples\SMPSimpleGate.m" />
+    <Content Include="README.md" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

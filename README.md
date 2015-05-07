@@ -2,48 +2,83 @@
 
 ## About cordova-plugin-nativebridge/cdp.nativebridge
 
-cordova-plugin-nativebridge: 汎用 Native Bridge を実現する cordova plugin
+`cordova-plugin-nativebridge`: cordova plugin module which achieves generic Native Bridge function.
 
-cdp.nativebridge: cordova-plugin-nativebridge を簡単に使用するための js モジュール
+`cdp.nativebridge`: The js module for which utilize cordova-plug-in-nativebridge.
 
 
 ### Repository structure
-レポジトリの構成は以下となる。
+Folder and file structure of this repository is the following list.
 
     root/
-        components/                                 // [Bower module]  最新のバージョンの cdp.nativebridge.js のルート
-                  app/modules/sony                  // [Bower module]  最新のバージョンの cdp.nativebridge.js のソースを格納
-        src/                                        // [Plugin module] 最新のバージョンの Native のソースを格納
-            android/                                // [Plugin module] 最新のバージョンの Android の Native のソースを格納
-            ios/                                    // [Plugin module] 最新のバージョンの iOS の Native のソースを格納
-        www/                                        // [Plugin module] 最新のバージョンの JavaScript のソースを格納
-            cdp.plugin.nativebridge.d.ts            // [Plugin module] 最新のバージョンの TypeScript 用定義ファイル (d.ts)
-            cdp.plugin.nativebridge.js              // [Plugin module] 最新のバージョンの JavaScript ファイル
-            cdp.plugin.nativebridge.min.js          // [Plugin module] 最新のバージョンの JavaScript ファイル (Minify)
-        plugin.xml                                  // [Plugin module] 最新のバージョンの plugin.xml
-        dev/                                        // 本 Plugin 開発用のプロジェクトおよびソースを格納
-        docs/                                       // 本 PLugin の仕様書を格納
+        dev/                                        // Folder contains development bed projects for this libraries
+        docs/                                       // Folder contains specification documents for this libraries
+        src/                                        // *[Plugin module] the plugin native source directory.
+        www/                                        // *[Plugin module] the plugin js source directory.
+        tests/                                      // *[Plugin module] the plugin jasmine test plugin directory.
+        plugin.xml                                  // *[Plugin module] cordova plugin.xml file.
+        bower.json                                  // [Bower module] the bower module settings file.
 
+ `*` The case of master branch is empty.
 
 ### How to install
-[TBD] アプリケーションの Cordova project ディレクトリにて、下記コマンドを実行
 
-cordova-plugin-nativebridge
+#### Switch the Branch!
 
-    $ cordova plugin add http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-nativebridge.git
+![switch](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-nativebridge/raw/master/docs/images/switch_the_branch.png)
 
+Please change to the named version branch by drop down list.
 
-cdp.nativebridge.js
+#### or build the moudles
 
-    $ voila install http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-nativebridge.git
+If you want to use newest version, you can build the modules yourself as follow steps.
 
+1. build the modules
+
+        $ cd dev
+        $ npm install
+        $ grunt deploy
+
+2. pick up from the `release` directory.
+
+        root/
+            release/
+                modules/                            js bower moudle here.
+                     include/                       d.ts files here.
+                     jquery/                        jquery here.
+                     underscore/                    underscore here.
+                     sony/
+                        cdp/                        cdp modules here.
+                            scripts/
+                                cdp.nativebridge.js *: nativebridge module.
+                                cdp.tools.js           dependency module.
+                plugins/
+                    com.sony.cdp.plugin.nativebridge/  cordova plugin
+                        src/
+                        www/
+                        plugin.xml
+
+3. install cordova plugin
+
+        copy plugins direcotry to somewhere. ex: temp dir
+        
+        $ cd <%your project root%>
+        $ cordova plugin add <%temp%>/plugins/com.sony.cdp.nativebridge
+
+4. setup bower module manualy to your project.
 
 ### How to use
-使い方は以下のドキュメントを参照。
+Please see the following documentation.
 
 - [English/英語](docs/en)
 - [Japanese/日本語](docs/jp)
 
+## Release Notes
+Please see the following link.
+
+- [Release Notes](RELEASENOTE.md)
 
 
 ## License
+
+[TBD] We are planning to make these libraries MIT license.

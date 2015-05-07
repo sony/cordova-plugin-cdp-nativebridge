@@ -7,7 +7,7 @@
 - [設計情報](#2)
     - [モジュール構成](#2-1)
     - [クラス構成](#2-2)
-    - [Native Bridge クラスの呼び出し規約](#2-2)
+    - [Native Bridge クラスの呼び出し規約](#2-3)
 - [Native Bridge クラスの作り方/使い方](#3-native-bridge)
     - [JSレイヤ](#3-1-js)
         - [JSレイヤ で使用可能なメソッド一覧](#3-1-1-js)
@@ -141,7 +141,7 @@ module SampleApp {
          * coolMethod
          * クライアントメソッドの定義
          *
-         * 引数は任意で OK. (void も可能)
+         * 引数は任意の primitive, JSON で OK. (cordova 互換. void も可能)
          * 戻り値は既定で Promise の形をとる
          */
         public coolMethod(arg1: number, arg2: boolean, arg3: string, arg4: Object): Promise {
@@ -195,6 +195,7 @@ module SampleApp {
 ### 3-1-1:JSレイヤ で使用可能なメソッド一覧
 
 - CDP.NativeBridge.Gate クラスが提供するメソッド/プロパティは以下です。
+
  ※ExecOptionについては、javadoc コメントを参照してください。本稿では触れません。
 
 | method                                                               | description                                                                                                                                     |
@@ -494,6 +495,7 @@ cordova 公式準拠のやり方を踏襲したい場合があります。この
 ### 3-2-4:Nativeレイヤ で使用可能なメソッド一覧
 
 - com.sony.cdp.plugin.nativebridge.Gate クラスが提供するメソッドは以下です。
+
  ※より自由にコールバックを操作するためには、com.sony.cdp.plugin.nativebridge.MessageUtils の javadoc コメントを参照してください。
 
 | method                                                                                                   | description                                                                                                                                                                                                 |
@@ -511,6 +513,7 @@ cordova 公式準拠のやり方を踏襲したい場合があります。この
 
 
 - com.sony.cdp.plugin.nativebridge.MethodContext クラスが提供するプロパティは以下です。
+
  CallbackContext +αのプロパティを有します。
 
 | property          | type                 | description                                                                        |
@@ -609,9 +612,15 @@ CDPGate クラスは CDVPlugin クラスと同じメンバ変数を持ってい�
         NSString* msg = [NSString stringWithFormat:@"arg1: %@, arg2: %@, arg3: %@, 日本語でOK: %@"
                          , arg1, (arg2 ? @"true" : @"false"), arg3, (arg4[@"ok"] ? @"true" : @"false")];
 
-        // resolveParams は jQuery.Deferred.resolve() と同じセマンティクスを持つ
-        // このメソッドで keepCallback = NO となる
-        [self resolveParams:context withParams:@[msg]];
+        if (succeeded) {
+            // resolveParams は jQuery.Deferred.resolve() と同じセマンティクスを持つ
+            // このメソッドで keepCallback = NO となる
+            [self resolveParams:context withParams:@[msg]];
+        } else {
+            // rejectParams は jQuery.Deferred.reject() と同じセマンティクスを持つ
+            // このメソッドで keepCallback = NO となる
+            [self rejectParams:context withParams:nil andCode:CDP_NATIVEBRIDGE_ERROR_FAIL andMessage:@"error"];
+        }
     }];
 }
 ```
@@ -805,7 +814,7 @@ cordova 公式準拠のやり方を踏襲したい場合があります。この
 | `compatible`      | `BOOL`                    | 互換情報が格納されています。                                                       |
 | `threadId`        | `NSString*`               | 呼び出しスレッド情報が格納されています。                                           |
 
-※CDVCommandDelegate には初めから以下のプロパティが格納されています。
+※CDVInvokedUrlCommand には初めから以下のプロパティが格納されています。
 - `className`
 - `methodName`
 - `arguments`
