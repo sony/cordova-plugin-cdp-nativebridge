@@ -12,68 +12,6 @@ declare module CDP {
 }
 declare module CDP {
     module Tools {
-        /**
-         * @interface AsyncProcParam
-         * @brief     AsyncProc が使用する内部パラメータ定義
-         */
-        interface AsyncProcParam {
-            processHandler: (element: any, info?: any) => void;
-            finishHandler: (canceled: boolean, info?: any) => void;
-            errorHandler: (event: any, info?: any) => void;
-            info?: any;
-        }
-        /**
-         * @class AsyncProc
-         * @brief Web Worker と同一I/Fを提供する非同期処理クラス
-         *        Web Worker が使用不可の環境でエミュレートするためのスーパークラス
-         */
-        class AsyncProc implements Worker {
-            private _canceled;
-            onmessage: (event: any) => any;
-            onerror: (event: ErrorEvent) => any;
-            /**
-             * 処理の開始
-             *
-             * @param msg [in] 処理に使用するパラメータを指定
-             */
-            postMessage(message: any, ports?: any): void;
-            /**
-             * 処理の中止
-             */
-            terminate(): void;
-            /**
-             * 一要素の処理
-             *
-             * @param element [in] 要素
-             * @param info    [in] 付加情報
-             */
-            protected onProcess(element: any, info?: any): void;
-            protected onFinish(canceled: boolean, info?: any): void;
-            protected onError(event: any, info?: any): void;
-            isCanceled(): boolean;
-            result: any;
-            addEventListener(type: string, listener: EventListener, useCapture?: boolean): void;
-            removeEventListener(type: string, listener: EventListener, useCapture?: boolean): void;
-            dispatchEvent(event: Event): boolean;
-        }
-        /**
-         * @class AsyncProcUtil
-         * @brief 非同期処理の実装を提供するユーティリティクラス
-         */
-        class AsyncProcUtil {
-            /**
-             * 配列を非同期処理する
-             *
-             * @param context   [in] 処理コンテキスト
-             * @param array     [in] 処理対象の配列
-             * @param params    [in] AsyncProcParam
-             */
-            static asyncProcArray(context: AsyncProc, array: any, params: AsyncProcParam): void;
-        }
-    }
-}
-declare module CDP {
-    module Tools {
         module Blob {
             /**
              * ArrayBuffer to Blob

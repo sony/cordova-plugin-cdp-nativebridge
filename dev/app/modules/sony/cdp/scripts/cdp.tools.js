@@ -25,127 +25,6 @@ var CDP;
         Tools.global = Tools.global || window;
     })(Tools = CDP.Tools || (CDP.Tools = {}));
 })(CDP || (CDP = {}));
-var CDP;
-(function (CDP) {
-    var Tools;
-    (function (Tools) {
-        var TAG = "[CDP.Tools.AsyncProc] ";
-        /**
-         * @class AsyncProc
-         * @brief Web Worker と同一I/Fを提供する非同期処理クラス
-         *        Web Worker が使用不可の環境でエミュレートするためのスーパークラス
-         */
-        var AsyncProc = (function () {
-            function AsyncProc() {
-                ///////////////////////////////////////////////////////////////////////
-                // データメンバ
-                this._canceled = false;
-            }
-            /**
-             * 処理の開始
-             *
-             * @param msg [in] 処理に使用するパラメータを指定
-             */
-            AsyncProc.prototype.postMessage = function (message, ports) {
-                this._canceled = false;
-            };
-            /**
-             * 処理の中止
-             */
-            AsyncProc.prototype.terminate = function () {
-                this._canceled = true;
-            };
-            ///////////////////////////////////////////////////////////////////////
-            // オーバーライドメソッド
-            /**
-             * 一要素の処理
-             *
-             * @param element [in] 要素
-             * @param info    [in] 付加情報
-             */
-            AsyncProc.prototype.onProcess = function (element, info) {
-                console.warn(TAG + "onProcess(), need override this method.");
-            };
-            //! 終了処理ハンドラ(正常系)
-            AsyncProc.prototype.onFinish = function (canceled, info) {
-                console.warn(TAG + "onFinish(), need override this method.");
-            };
-            //! 終了処理ハンドラ(異常系)
-            AsyncProc.prototype.onError = function (event, info) {
-                console.warn(TAG + "onError(), need override this method.");
-            };
-            //! キャンセル判定
-            AsyncProc.prototype.isCanceled = function () {
-                return this._canceled;
-            };
-            AsyncProc.prototype.addEventListener = function (type, listener, useCapture) {
-                console.warn(TAG + "AsyncProc.addEventListener() is not supported.");
-            };
-            AsyncProc.prototype.removeEventListener = function (type, listener, useCapture) {
-                console.warn(TAG + "AsyncProc.removeEventListener() is not supported.");
-            };
-            AsyncProc.prototype.dispatchEvent = function (event) {
-                console.warn(TAG + "AsyncProc.dispatchEvent() is not supported.");
-                return false;
-            };
-            return AsyncProc;
-        })();
-        Tools.AsyncProc = AsyncProc;
-        //___________________________________________________________________________________________________________________//
-        /**
-         * @class AsyncProcUtil
-         * @brief 非同期処理の実装を提供するユーティリティクラス
-         */
-        var AsyncProcUtil = (function () {
-            function AsyncProcUtil() {
-            }
-            /**
-             * 配列を非同期処理する
-             *
-             * @param context   [in] 処理コンテキスト
-             * @param array     [in] 処理対象の配列
-             * @param params    [in] AsyncProcParam
-             */
-            AsyncProcUtil.asyncProcArray = function (context, array, params) {
-                // 作業用コピーを作る
-                var arrayWork = array.concat();
-                var proc = function () {
-                    var startTime = new Date(); // 開始時刻
-                    if (context && context.isCanceled()) {
-                        params.finishHandler.call(context, true, params.info);
-                    }
-                    try {
-                        while (true) {
-                            if (context && context.isCanceled()) {
-                                params.finishHandler.call(context, true, params.info);
-                            }
-                            var current = arrayWork.shift();
-                            // 配列を1要素処理する
-                            params.processHandler.call(context, current, params.info);
-                            if (arrayWork.length <= 0) {
-                                // 全要素処理を行った -> 終了処理
-                                params.finishHandler.call(context, false, params.info);
-                                return;
-                            }
-                            // タイムアウト発生 -> 一旦処理を終わる
-                            if (new Date().getTime() - startTime.getTime() > 100) {
-                                break;
-                            }
-                        }
-                        // Post して続きの処理を行う
-                        setTimeout(proc, 0);
-                    }
-                    catch (e) {
-                        params.errorHandler.call(context, e, params.info);
-                    }
-                };
-                setTimeout(proc, 0);
-            };
-            return AsyncProcUtil;
-        })();
-        Tools.AsyncProcUtil = AsyncProcUtil;
-    })(Tools = CDP.Tools || (CDP.Tools = {}));
-})(CDP || (CDP = {}));
 
 var CDP;
 (function (CDP) {
@@ -480,7 +359,6 @@ var CDP;
         Tools.DateTime = DateTime;
     })(Tools = CDP.Tools || (CDP.Tools = {}));
 })(CDP || (CDP = {}));
-
 
 /*jshint multistr: true */
 var CDP;
