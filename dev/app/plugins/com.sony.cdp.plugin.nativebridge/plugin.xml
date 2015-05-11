@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<plugin id="com.sony.cdp.plugin.nativebridge" version="0.9.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<plugin id="com.sony.cdp.plugin.nativebridge" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
   <name>NativeBridge</name>
   <js-module name="NativeBridge" src="www/cdp.plugin.nativebridge.js">
     <clobbers target="CDP.Plugin.NativeBridge" />
