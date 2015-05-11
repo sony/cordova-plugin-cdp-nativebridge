@@ -30,7 +30,7 @@ module.exports = function (grunt) {
                 options: {
                     replacements: [
                         {
-                            pattern: '%% buildsetting %%',
+                            pattern: /%% buildsetting %%/gm,
                             replacement: '',
                         }
                     ],
@@ -87,6 +87,29 @@ module.exports = function (grunt) {
                         cwd: '<%= orgsrc %>',
                         src: ['<%= stylesheets %>/**', '!**/*.css', '!**/*.scss', '!**/*.rb'],
                         dest: '<%= pkgdir %>'
+                    },
+                ],
+            },
+            // instead of minify copy task
+            app_instead_of_minify: {
+                files: [
+                    {// "scripts"
+                        expand: true,
+                        cwd: '<%= tmpdir %>',
+                        src: ['<%= scripts %>/*.js'],
+                        dest: '<%= pkgdir %>',
+                    },
+                    {// "stylesheets"
+                        expand: true,
+                        cwd: '<%= orgsrc %>',
+                        src: ['<%= stylesheets %>/*.css'],
+                        dest: '<%= pkgdir %>',
+                    },
+                    {// "templates"
+                        expand: true,
+                        cwd: '<%= orgsrc %>',
+                        src: ['<%= templates %>/**/*.<%= template_ext %>'],
+                        dest: '<%= pkgdir %>',
                     },
                 ],
             },
@@ -225,19 +248,29 @@ module.exports = function (grunt) {
         }
     });
 
+    // custom task: mifnify if needed.
+    grunt.registerTask('app_minify', function () {
+        if (!grunt.option('no-minify')) {
+            grunt.task.run(['uglify:app', 'cssmin:app', 'htmlmin:app']);
+        } else {
+            grunt.task.run('copy:app_instead_of_minify');
+        }
+    });
+
+
     //__________________________________________________________________________________________________________________________________________________________________________________________//
 
 
     // task unit
     grunt.registerTask('app_revise_index_file_release',     ['remove_lazy_scripts_info',    'lower_path_in_html:app']);
     grunt.registerTask('app_revise_index_file_debug',       ['copy:app_index_file',         'lower_path_in_html:app']);
-    grunt.registerTask('app_minify',                        ['uglify:app', 'cssmin:app', 'htmlmin:app']);
+//    grunt.registerTask('app_minify',                        ['uglify:app', 'cssmin:app', 'htmlmin:app']);
 
     grunt.registerTask('app_prepare_release',               ['clean:general', 'copy:app_prepare', 'copy:lib_prepare']);
     grunt.registerTask('app_prepare_debug',                 ['clean:general'                                        ]);
 
-    grunt.registerTask('app_build_release',                 ['prepare_lazy_scripts_info',   'lib_build_release',    'typescript:release',   'string-replace:release',   'compass:app',  'app_revise_index_file_release', 'app_minify']);
-    grunt.registerTask('app_build_debug',                   [                               'lib_build_debug',      'typescript:debug',                                 'compass',      'app_revise_index_file_debug'                ]);
+    grunt.registerTask('app_build_release',                 ['prepare_lazy_scripts_info',   'lib_build_release',    'typescript_app:release',   'string-replace:release',   'compass:app',  'app_revise_index_file_release', 'app_minify']);
+    grunt.registerTask('app_build_debug',                   [                               'lib_build_debug',      'typescript_app:debug',                                 'compass',      'app_revise_index_file_debug'                ]);
 
     grunt.registerTask('app_copy_release',                  ['copy:app_release'                 ]);
     grunt.registerTask('app_copy_debug',                    ['copy:app_debug',  'copy:lib_debug']);

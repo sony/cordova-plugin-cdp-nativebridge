@@ -167,6 +167,19 @@ module.exports = function (grunt) {
                     },
                 ],
             },
+            pkgcomp_plugins: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= app_plugins_root_dir %>',
+                        src: ['*/<%= plugins_www %>/*.js'],
+                        dest: '<%= app_plugins_pkgdir %>',
+                        rename: function (dest, src) {
+                            return dest + '/' + src.replace(/\.js$/i, '.min.js');
+                        },
+                    },
+                ],
+            },
         },
 
         // css minify
@@ -386,12 +399,9 @@ module.exports = function (grunt) {
 
     // custom task: command line parse.
     grunt.registerTask('pkgcomp_cmdline_parse', function () {
-        (function () {
-            var sourceMap = grunt.option('srcmap');
-            if (null != sourceMap) {
-                grunt.config.set('pkgcomp_srcmap_enable', !!sourceMap);
-            }
-        })();
+        if (grunt.option('no-srcmap')) {
+            grunt.config.set('pkgcomp_srcmap_enable', false);
+        }
     });
 
     //__________________________________________________________________________________________________________________________________________________________________________________________//
@@ -484,7 +494,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('pkgcomp_revise',        ['pkgcomp_revise_d_ts_reference_path', 'pkgcomp_remove_src_special_words', 'pkgcomp_set_work_package_targets', 'pkgcomp_copy_package']);
     grunt.registerTask('pkgcomp_versioning',    ['pkgcomp_versioning_preprocess', 'glue_ts_cordova_set_env', 'lib_extract_module_info', 'glue_ts_cordova_restore_env', 'pkgcomp_set_work_package_targets', 'pkgcomp_module_versioning', 'pkgcomp_versioning_postprocess']);
-    grunt.registerTask('pkgcomp_minify',        ['uglify:app_plugins_min', 'pkgcomp_set_work_package_targets', 'pkgcomp_module_minify']);
+    grunt.registerTask('pkgcomp_minify',        ['uglify:pkgcomp_plugins', 'pkgcomp_set_work_package_targets', 'pkgcomp_module_minify']);
 
     grunt.registerTask('pkgcomp_preprocess',   ['pkgcomp_prepare', 'pkgcomp_compile', 'pkgcomp_revise', 'pkgcomp_versioning', 'pkgcomp_minify', 'cleanempty:pkgcomp']);
     grunt.registerTask('pkgcomp_postprocess',  ['clean:pkgcomp', 'pkgcomp_restore_env']);
@@ -503,7 +513,7 @@ module.exports = function (grunt) {
         'pkgcomp_set_env', 'glue_ts_cordova_set_env', 'app_plugins_prepare_release', 'copy:pkgcomp_prepare', 'glue_ts_cordova_restore_env',
         'pkgcomp_compile_app_plugins',
         'pkgcomp_remove_src_special_words',
-        'uglify:app_plugins_min',
+        'uglify:pkgcomp_plugins',
         'pkgcomp_package_app_plugins',
         'pkgcomp_postprocess'
     ]);

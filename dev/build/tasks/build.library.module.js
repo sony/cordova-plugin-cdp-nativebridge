@@ -73,7 +73,7 @@ module.exports = function (grunt) {
                         src: ['<%= stylesheets %>/*.css'],
                         dest: '<%= lib_target_dir %>',
                     },
-                ]
+                ],
             },
         },
 
@@ -115,6 +115,23 @@ module.exports = function (grunt) {
                         expand: true,
                         cwd: '<%= lib_root_dir %>',
                         src: ['<%= stylesheets %>/**', '!**/*.css', '!**/*.scss', '!**/*.rb'],
+                        dest: '<%= lib_target_dir %>',
+                    },
+                ],
+            },
+            // instead of minify copy task
+            lib_instead_of_minify: {
+                files: [
+                    {// "lib/scripts"
+                        expand: true,
+                        cwd: '<%= lib_root_dir %>',
+                        src: ['<%= scripts %>/*.js'],
+                        dest: '<%= lib_target_dir %>',
+                    },
+                    {// "lib/stylesheets"
+                        expand: true,
+                        cwd: '<%= lib_root_dir %>',
+                        src: ['<%= stylesheets %>/*.css'],
                         dest: '<%= lib_target_dir %>',
                     },
                 ],
@@ -206,23 +223,15 @@ module.exports = function (grunt) {
             // schedule next tasks.
             grunt.task.run(['typescript:lib']);
             grunt.task.run(['rename:lib_replace_d_ts']);
-            grunt.task.run(['lib_append_module_imple']);
+            grunt.task.run(['lib_embed_module_imple']);
         }
     });
 
     // custom task: Append module implementation to module's root file.
-    grunt.registerTask('lib_append_module_imple', "Append module implementation to module's root file.", function () {
+    grunt.registerTask('lib_embed_module_imple', "Embed module implementation to module's root file.", function () {
         var target = path.join(grunt.config.get('lib_work_dir_scripts'), grunt.config.get('lib_module_target'));
-
-        var root = grunt.file.read(target + '.js');
-        var imple = grunt.file.read(target + '-all.js');
-        // replace "//<<" *** "//>>" to -all.js text.
-        var jsModule = root.replace(/\/\/<<[\s\S]*?\/\/>>/, imple);
-
-        fs.writeFileSync(target + '.js', jsModule);
-        //      grunt.file.delete(target + '-all.js');
-        fs.renameSync(target + '-all.js', target + '-all.js.txt');
-
+        // embed "target-all.js" to "target.js".
+        grunt.cdp.embedConcatenatedScript(target);
         // schedule next task, check next module.
         grunt.task.run(['lib_build_scripts']);
     });
@@ -265,6 +274,14 @@ module.exports = function (grunt) {
         }
     });
 
+    // custom task: mifnify if needed.
+    grunt.registerTask('lib_minify', function () {
+        if (!grunt.option('no-minify')) {
+            grunt.task.run(['uglify:lib', 'cssmin:lib']);
+        } else {
+            grunt.task.run('copy:lib_instead_of_minify');
+        }
+    });
 
     //__________________________________________________________________________________________________________________________________________________________________________________________//
 
@@ -305,7 +322,6 @@ module.exports = function (grunt) {
     // task unit
     grunt.registerTask('lib_update_env',    ['lib_set_compass_target:release', 'lib_set_js_module_info']);
     grunt.registerTask('lib_build_modules', ['lib_build_scripts', 'lib_build_stylesheets']);
-    grunt.registerTask('lib_minify',        ['uglify:lib', 'cssmin:lib']);
 
     // library build for release build
     grunt.registerTask('lib_build_release', ['lib_update_env', 'lib_build_modules', 'lib_minify', 'copy:lib_release']);

@@ -59,6 +59,17 @@ module.exports = function (grunt) {
                     },
                 ],
             },
+            // instead of minify copy task
+            glue_ts_cordova_instead_of_minify: {
+                files: [
+                    {// "templates"
+                        expand: true,
+                        cwd: '<%= glue_ts_cordova_platform_work_dir %>/<%= porting %>',
+                        src: ['<%= templates %>/**/*.<%= template_ext %>'],
+                        dest: '<%= glue_ts_cordova_platform_pkg_dir %>',
+                    },
+                ],
+            },
         },
 
         // html minify
@@ -148,7 +159,11 @@ module.exports = function (grunt) {
             grunt.task.run('lib_extract_module_info:scripts');
             grunt.task.run('lib_build_release');
             // html minify.
-            grunt.task.run('htmlmin:glue_ts_cordova');
+            if (!grunt.option('no-minify')) {
+                grunt.task.run('htmlmin:glue_ts_cordova');
+            } else {
+                grunt.task.run('copy:glue_ts_cordova_instead_of_minify');
+            }
         });
     });
 

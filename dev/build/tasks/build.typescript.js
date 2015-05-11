@@ -1,18 +1,12 @@
-/**
-    build.typescript.js
-
-    description:
-
-    supporting typescript.
-
-    tasks:
-
-    - "typescript:release" : orgsrc の中身を、tmpdir/scripts/app.js に連結し変換、
-    - "typescript:debug" : orgsrc の中身を、そのままその場所で、jsに変換。
-*/
+/*
+ * build.typescript.js
+ */
 
 
 module.exports = function (grunt) {
+
+    var fs = require('fs'),
+        path = require('path');
 
     grunt.extendConfig({
 
@@ -22,7 +16,7 @@ module.exports = function (grunt) {
         // typescript building
         typescript: {
             options: {
-                target: 'es5', // or es3
+                target: 'es5', // or es3/es6
                 sourceMap: false,
             },
             release: {
@@ -31,7 +25,7 @@ module.exports = function (grunt) {
                         '': ['<%= tmpdir %>/<%= scripts %>/*.ts'],
                     },
                     {// loaded with lazy and concatenated
-                        '<%= tmpdir %>/<%= scripts %>/app.js': '<%= app_scripts %>',
+                        '<%= tmpdir %>/<%= scripts %>/app<%= app_js_suffix %>.js': '<%= app_scripts %>',
                     },
                 ],
             },
@@ -48,9 +42,10 @@ module.exports = function (grunt) {
             },
         },
 
-        // url string lower task
-        update_module_general_ignore_type: {
-            build: {},
+        // custom task: typescript app build
+        typescript_app: {
+            release: {},
+            debug: {},
         },
 
     });
@@ -63,9 +58,43 @@ module.exports = function (grunt) {
 
 
     // custom task: Build typescript libraries.
-    grunt.registerMultiTask('update_module_general_ignore_type', "Update module general copy task's ignore list.", function () {
+    grunt.registerTask('update_module_general_ignore_type', "Update module general copy task's ignore list.", function () {
         var list = grunt.config.get('module_general_target');
         list.push('!**/*.d.ts');
         grunt.config.set('module_general_target', list);
     });
+
+    // custom task: embed app-all.js.
+    grunt.registerTask('app_embed_all_scripts', " Embed app-all.js. to app.js.", function () {
+        grunt.cdp.embedConcatenatedScript(path.join(grunt.config.get('tmpdir'), grunt.config.get('scripts'), 'app'));
+    });
+
+    // custom task: typescript app build.
+    grunt.registerMultiTask('typescript_app', 'Build Typescript for app task.', function () {
+        switch (this.target) {
+            case 'release':
+                grunt.task.run('typescript:release');
+                if (!!grunt.config.get('app_js_suffix')) {
+                    grunt.task.run('app_embed_all_scripts');
+                }
+                break;
+            case 'debug':
+                grunt.task.run('typescript:debug');
+                break;
+            default:
+                throw 'unknown build option: ' + this.target;
+        }
+    });
+
+    // embed "target-all.js" to "target.js" special comment block.
+    grunt.cdp.embedConcatenatedScript = function (target) {
+        var root = grunt.file.read(target + '.js');
+        var imple = grunt.file.read(target + '-all.js');
+        // replace "//<<" *** "//>>" to -all.js text.
+        var jsModule = root.replace(/\/\/<<[\s\S]*?\/\/>>/, imple);
+
+        fs.writeFileSync(target + '.js', jsModule);
+        //grunt.file.delete(target + '-all.js');
+        fs.renameSync(target + '-all.js', target + '-all.js.txt');
+    }
 };

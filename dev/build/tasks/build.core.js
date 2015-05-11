@@ -1,53 +1,8 @@
-/**
-    build.core.js
-
-    core task
-
-    tasks:
-
-    - "copy:module_general"     : Copies all files in orgsrc/modules/ except *.js and *.css into package.
-
-    - "copy:module_debug" :
-      Copying JS and CSS files in module dir from original dir to package dir ignores min version.
-      - Copying JS without version.
-      - Copying JS with version trimming version number.
-      - Copying CSS without version.
-      - Copying CSS with version trimming version number
-
-    - "copy:module_release" :
-      Copying JS and CSS files in module dir from original dir to package dir only for min version.
-      - Copying min.js trimming version number and ".min"
-      - Copying min.css trimming version number and ".min"
-
-    - module_general_target
-      A list indicates which files are copied as it is in module directory.
-      Default value is set to copy all files except *.js and *.css.
-      So *.js and *.css will be copied as 
-
-    - "prepare" : Alias task
-    - "package_module_debug" : Alias task
-    - "package_module_release" : Alias task
-
-    description:
-
-    - moduleディレクトリ
-      - modulesの下には、componentのJSと、packageの全体が入る。
-    
-    - modulesの下に対する処理方針。
-      - debug build では、minifyされていないバージョンを極力利用する。
-      - release build では、minifyされたバージョンを極力利用する。
-      - modulesの下のディレクトリ構成に依存せずに、動作可能になるように、
-        Productionにコピーする。
-      - ここでは、bower.jsonや、package.jsonは読まない。(読めない想定)
-
-    - 動作
-      - JS, CSS以外に関して全ファイルをコピーしている。
-      - JS, CSSに関しては、.min.js/css がある場合は、minifyされた
-        JS/CSSとして扱い、.min の部分をとってコピーする。(release build 時)
-      - debug buildの時には、.min.js/cssは、コピーしない。
-      - version番号付きのものが存在した場合には、そちらのファイルを優先する。
-
-*/
+/*
+ * build.core.js
+ *
+ * core common task
+ */
 
 module.exports = function (grunt) {
 
@@ -65,7 +20,7 @@ module.exports = function (grunt) {
             general: {
                 files: {
                     src: [
-                        '<%= tmpdir %>', '<%= pkgdir %>/*',   // '/*' では . 始まりのファイルは削除されない様子
+                        '<%= tmpdir %>', '<%= pkgdir %>/*',
                     ],
                 },
             },
@@ -242,7 +197,7 @@ module.exports = function (grunt) {
 
     // Helper API
 
-    var _version_or_min_suffix_re = /(\-[0-9]+\.[0-9]+\.[A-Za-z0-9_-]+)?(\.min)?(\.[a-zA-Z]+$)/;
+    var _version_or_min_suffix_re = /(\-[0-9]+\.[0-9]+\.[A-Za-z0-9_\-]+)?(\.min)?(\.[a-zA-Z]+$)/;
 
     /**
      * check version string. exit.

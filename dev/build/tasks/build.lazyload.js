@@ -12,6 +12,7 @@ module.exports = function (grunt) {
 
     grunt.extendConfig({
         // internal variable. do not configurate.
+        app_js_suffix: '',
         app_scripts: [],
         js_modules_info: [],
     });
@@ -41,9 +42,13 @@ module.exports = function (grunt) {
 
         // [type=lazy] for app scripts.
         (function (dom) {
-            var $appScripts = $(dom).find('script[type="lazy"]');
-            // piece js are removed except "app.js."
-            $appScripts.slice(1).remove();
+            var $appScripts = $(dom)
+                .find('script[type="lazy"]')
+                .filter(function () {
+                    // piece js are removed except "app.js."
+                    return (null == $(this).attr('src').match(/app.js$/i));
+                });
+            $appScripts.remove();
         }(docDom));
 
         fs.writeFileSync(path.join(grunt.config.get('pkgdir'), 'index.html'), jsdom.serializeDocument(docDom));
@@ -99,7 +104,7 @@ module.exports = function (grunt) {
     function getExtension(file) {
         var ret;
         if (file) {
-            var fileTypes = file.split(".");
+            var fileTypes = file.split('.');
             var len = fileTypes.length;
             if (0 === len) {
                 return ret;
@@ -131,14 +136,22 @@ module.exports = function (grunt) {
         // read index file, and getting target ts files.
         var appScripts = [];
         var $appScripts = $(docDom).find('script[type="lazy"]');
+        var findAppJs = false;
 
         $appScripts.each(function () {
             var $scripts = getScriptElements($(this));
             $scripts.each(function () {
                 var src = $(this).attr('src');
+                if (src.match(/app.js$/i)) {
+                    findAppJs = true;
+                }
                 appScripts.push(path.join(grunt.config.get('tmpdir'), src).replace(/\.js$/i, '.ts'));
             });
         });
+
+        if (!findAppJs) {
+            grunt.config.set('app_js_suffix', '-all');
+        }
 
         // set app_scripts
         grunt.config.set('app_scripts', appScripts);

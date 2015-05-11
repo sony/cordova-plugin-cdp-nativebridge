@@ -55,6 +55,7 @@
         var gruntcmd = (process.platform === 'win32' ? 'grunt.cmd' : 'grunt');
         var cmdTasks = parsePlatforms();
         cmdTasks.push(task);
+        cmdTasks = cmdTasks.concat(parseGruntCommandLine());
 
         var grunt = spawn(gruntcmd, cmdTasks, { cwd: 'build', stdio: 'inherit' });
 
@@ -139,6 +140,27 @@
         });
 
         return gruntTasks;
+    }
+
+    // check command line
+    /** Judge the grunt command line.
+        * if the command line includes "--*", call set to the grunt command line.
+        */
+    function parseGruntCommandLine() {
+        var cmdline = _cmdline.match(/--[\S]+\b/ig);
+
+        if (null != cmdline) {
+            for (var i = 0, n = cmdline.length; i < n; i++) {
+                // if cmdline does not have "=", set "true" as default value.
+                if (!cmdline[i].match(/=/i)) {
+                    cmdline[i] += '=true';
+                }
+            }
+        } else {
+            cmdline = [];
+        }
+
+        return cmdline;
     }
 
     var gruntTask = queryGruntTask();

@@ -62,6 +62,17 @@ module.exports = function (grunt) {
                     },
                 ],
             },
+            // instead of minify copy task
+            app_plugins_instead_of_minify: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= app_plugins_root_dir %>',
+                        src: ['*/<%= plugins_www %>/*.js'],
+                        dest: '<%= app_plugins_pkgdir %>',
+                    },
+                ],
+            },
             app_plugins_package: {
                 files: [
                     {
@@ -129,19 +140,6 @@ module.exports = function (grunt) {
                         cwd: '<%= app_plugins_root_dir %>',
                         src: ['*/<%= plugins_www %>/*.js'],
                         dest: '<%= app_plugins_pkgdir %>',
-                    },
-                ],
-            },
-            app_plugins_min: {
-                files: [
-                    {
-                        expand: true,
-                        cwd: '<%= app_plugins_root_dir %>',
-                        src: ['*/<%= plugins_www %>/*.js'],
-                        dest: '<%= app_plugins_pkgdir %>',
-                        rename: function (dest, src) {
-                            return dest + '/' + src.replace(/\.js$/i, '.min.js');
-                        },
                     },
                 ],
             },
@@ -329,6 +327,14 @@ module.exports = function (grunt) {
         }
     });
 
+    // custom task: mifnify if needed.
+    grunt.registerTask('app_plugins_minify', function () {
+        if (!grunt.option('no-minify')) {
+            grunt.task.run('uglify:app_plugins');
+        } else {
+            grunt.task.run('copy:app_plugins_instead_of_minify');
+        }
+    });
 
     //__________________________________________________________________________________________________________________________________________________________________________________________//
 
@@ -376,7 +382,7 @@ module.exports = function (grunt) {
     grunt.registerTask('app_plugins_prepare_release',   ['copy:app_plugins_prepare',    'app_plugins_set_root_dir:release',    'app_plugins_set_targets', 'app_plugins_set_work_plugins', 'app_plugins_clean']);
     grunt.registerTask('app_plugins_prepare_debug',     [                               'app_plugins_set_root_dir:debug',      'app_plugins_set_targets', 'app_plugins_set_work_plugins', 'app_plugins_clean']);
 
-    grunt.registerTask('app_plugins_build_release',     ['app_plugins_set_work_plugins', 'app_plugins_build_plugins', 'uglify:app_plugins']);
+    grunt.registerTask('app_plugins_build_release',     ['app_plugins_set_work_plugins', 'app_plugins_build_plugins', 'app_plugins_minify']);
     grunt.registerTask('app_plugins_build_debug',       ['app_plugins_set_work_plugins', 'app_plugins_build_plugins'                      ]);
 
     grunt.registerTask('app_plugins_package_release',   ['copy:app_plugins_package']);
