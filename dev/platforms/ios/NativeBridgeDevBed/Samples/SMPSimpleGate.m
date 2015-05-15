@@ -3,8 +3,8 @@
  * @brief Sample for CDP NativeBridge plugin client.
  */
 
-#import "../Plugins/CDPNativeBridge/CDPGate.h"
-#import "../Plugins/CDPNativeBridge/CDPMessageUtils.h"
+#import "../Plugins/com.sony.cdp.plugin.nativebridge/CDPGate.h"
+#import "../Plugins/com.sony.cdp.plugin.nativebridge/CDPMessageUtils.h"
 
 #define TAG @"[Sample][Native][SMPSimpleGate]"
 

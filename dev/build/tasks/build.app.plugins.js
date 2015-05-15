@@ -283,10 +283,10 @@ module.exports = function (grunt) {
                 var $ios = $(domPluginXml).find('platform[name=ios]').find('source-file, header-file');
                 $ios.each(function (index, src) {
                     var pluginSrc = $(src).attr('src');
-                    var pluginDst = $(src).attr('target-dir');
+                    var pluginDst = $(src).attr('target-dir') ? $(src).attr('target-dir') : '';
                     var pluginFile = path.basename(pluginSrc);
                     nativeSrc[plugin.id].push({
-                        packageSrc: path.join('platforms/ios', appDirName, 'Plugins', pluginDst, pluginFile),
+                        packageSrc: path.join('platforms/ios', appDirName, 'Plugins', plugin.id, pluginDst, pluginFile),
                         packageDst: path.join(plugin.id, pluginSrc),
                     });
                 });

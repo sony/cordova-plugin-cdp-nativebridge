@@ -22,13 +22,13 @@
         <param name="ios-package" value="CDPNativeBridge" />
       </feature>
     </config-file>
-    <header-file src="src/ios/CDPNativeBridge.h" target-dir="CDPNativeBridge" />
-    <source-file src="src/ios/CDPNativeBridge.m" target-dir="CDPNativeBridge" />
-    <header-file src="src/ios/CDPMethodContext.h" target-dir="CDPNativeBridge" />
-    <source-file src="src/ios/CDPMethodContext.m" target-dir="CDPNativeBridge" />
-    <header-file src="src/ios/CDPGate.h" target-dir="CDPNativeBridge" />
-    <source-file src="src/ios/CDPGate.m" target-dir="CDPNativeBridge" />
-    <header-file src="src/ios/CDPMessageUtils.h" target-dir="CDPNativeBridge" />
-    <source-file src="src/ios/CDPMessageUtils.m" target-dir="CDPNativeBridge" />
+    <header-file src="src/ios/CDPNativeBridge.h" />
+    <source-file src="src/ios/CDPNativeBridge.m" />
+    <header-file src="src/ios/CDPMethodContext.h" />
+    <source-file src="src/ios/CDPMethodContext.m" />
+    <header-file src="src/ios/CDPGate.h" />
+    <source-file src="src/ios/CDPGate.m" />
+    <header-file src="src/ios/CDPMessageUtils.h" />
+    <source-file src="src/ios/CDPMessageUtils.m" />
   </platform>
 </plugin>
