@@ -29,10 +29,10 @@
 		30C1856619D5FC0A00212699 /* icon-60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 30C1856519D5FC0A00212699 /* icon-60@3x.png */; };
 		30FC414916E50CA1004E6F35 /* icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 30FC414816E50CA1004E6F35 /* icon-72@2x.png */; };
 		4706C7A51AE4DDDF0069D8B4 /* SMPSimpleGate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4706C7A41AE4DDDF0069D8B4 /* SMPSimpleGate.m */; };
-		470C70251AE753280044DBA5 /* CDPGate.m in Sources */ = {isa = PBXBuildFile; fileRef = 470C701E1AE753280044DBA5 /* CDPGate.m */; };
-		470C70261AE753280044DBA5 /* CDPMethodContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 470C70201AE753280044DBA5 /* CDPMethodContext.m */; };
-		470C70271AE753280044DBA5 /* CDPMessageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 470C70221AE753280044DBA5 /* CDPMessageUtils.m */; };
-		470C70281AE753280044DBA5 /* CDPNativeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 470C70241AE753280044DBA5 /* CDPNativeBridge.m */; };
+		472FF7F01B0581AB0037B05B /* CDPGate.m in Sources */ = {isa = PBXBuildFile; fileRef = 472FF7E91B0581AB0037B05B /* CDPGate.m */; };
+		472FF7F11B0581AB0037B05B /* CDPMessageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 472FF7EB1B0581AB0037B05B /* CDPMessageUtils.m */; };
+		472FF7F21B0581AB0037B05B /* CDPMethodContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 472FF7ED1B0581AB0037B05B /* CDPMethodContext.m */; };
+		472FF7F31B0581AB0037B05B /* CDPNativeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 472FF7EF1B0581AB0037B05B /* CDPNativeBridge.m */; };
 		5B1594DD16A7569C00FEF299 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */; };
 		7E7966DE1810823500FA85AD /* icon-40.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966D41810823500FA85AD /* icon-40.png */; };
 		7E7966DF1810823500FA85AD /* icon-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966D51810823500FA85AD /* icon-40@2x.png */; };
@@ -92,14 +92,14 @@
 		30FC414816E50CA1004E6F35 /* icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-72@2x.png"; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* NativeBridgeDevBed-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NativeBridgeDevBed-Prefix.pch"; sourceTree = "<group>"; };
 		4706C7A41AE4DDDF0069D8B4 /* SMPSimpleGate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMPSimpleGate.m; sourceTree = "<group>"; };
-		470C701D1AE753280044DBA5 /* CDPGate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDPGate.h; sourceTree = "<group>"; };
-		470C701E1AE753280044DBA5 /* CDPGate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDPGate.m; sourceTree = "<group>"; };
-		470C701F1AE753280044DBA5 /* CDPMethodContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDPMethodContext.h; sourceTree = "<group>"; };
-		470C70201AE753280044DBA5 /* CDPMethodContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDPMethodContext.m; sourceTree = "<group>"; };
-		470C70211AE753280044DBA5 /* CDPMessageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDPMessageUtils.h; sourceTree = "<group>"; };
-		470C70221AE753280044DBA5 /* CDPMessageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDPMessageUtils.m; sourceTree = "<group>"; };
-		470C70231AE753280044DBA5 /* CDPNativeBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDPNativeBridge.h; sourceTree = "<group>"; };
-		470C70241AE753280044DBA5 /* CDPNativeBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDPNativeBridge.m; sourceTree = "<group>"; };
+		472FF7E81B0581AB0037B05B /* CDPGate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDPGate.h; sourceTree = "<group>"; };
+		472FF7E91B0581AB0037B05B /* CDPGate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDPGate.m; sourceTree = "<group>"; };
+		472FF7EA1B0581AB0037B05B /* CDPMessageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDPMessageUtils.h; sourceTree = "<group>"; };
+		472FF7EB1B0581AB0037B05B /* CDPMessageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDPMessageUtils.m; sourceTree = "<group>"; };
+		472FF7EC1B0581AB0037B05B /* CDPMethodContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDPMethodContext.h; sourceTree = "<group>"; };
+		472FF7ED1B0581AB0037B05B /* CDPMethodContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDPMethodContext.m; sourceTree = "<group>"; };
+		472FF7EE1B0581AB0037B05B /* CDPNativeBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDPNativeBridge.h; sourceTree = "<group>"; };
+		472FF7EF1B0581AB0037B05B /* CDPNativeBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDPNativeBridge.m; sourceTree = "<group>"; };
 		5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		7E7966D41810823500FA85AD /* icon-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-40.png"; sourceTree = "<group>"; };
 		7E7966D51810823500FA85AD /* icon-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-40@2x.png"; sourceTree = "<group>"; };
@@ -216,7 +216,7 @@
 		307C750510C5A3420062BCA9 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
-				470C701C1AE753280044DBA5 /* CDPNativeBridge */,
+				472FF7E71B0581AB0037B05B /* com.sony.cdp.plugin.nativebridge */,
 			);
 			name = Plugins;
 			path = NativeBridgeDevBed/Plugins;
@@ -270,19 +270,19 @@
 			path = NativeBridgeDevBed/Samples;
 			sourceTree = "<group>";
 		};
-		470C701C1AE753280044DBA5 /* CDPNativeBridge */ = {
+		472FF7E71B0581AB0037B05B /* com.sony.cdp.plugin.nativebridge */ = {
 			isa = PBXGroup;
 			children = (
-				470C701D1AE753280044DBA5 /* CDPGate.h */,
-				470C701E1AE753280044DBA5 /* CDPGate.m */,
-				470C701F1AE753280044DBA5 /* CDPMethodContext.h */,
-				470C70201AE753280044DBA5 /* CDPMethodContext.m */,
-				470C70211AE753280044DBA5 /* CDPMessageUtils.h */,
-				470C70221AE753280044DBA5 /* CDPMessageUtils.m */,
-				470C70231AE753280044DBA5 /* CDPNativeBridge.h */,
-				470C70241AE753280044DBA5 /* CDPNativeBridge.m */,
+				472FF7E81B0581AB0037B05B /* CDPGate.h */,
+				472FF7E91B0581AB0037B05B /* CDPGate.m */,
+				472FF7EA1B0581AB0037B05B /* CDPMessageUtils.h */,
+				472FF7EB1B0581AB0037B05B /* CDPMessageUtils.m */,
+				472FF7EC1B0581AB0037B05B /* CDPMethodContext.h */,
+				472FF7ED1B0581AB0037B05B /* CDPMethodContext.m */,
+				472FF7EE1B0581AB0037B05B /* CDPNativeBridge.h */,
+				472FF7EF1B0581AB0037B05B /* CDPNativeBridge.m */,
 			);
-			path = CDPNativeBridge;
+			path = com.sony.cdp.plugin.nativebridge;
 			sourceTree = "<group>";
 		};
 		EB87FDF11871DA420020F90C /* Staging */ = {
@@ -423,13 +423,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
+				472FF7F21B0581AB0037B05B /* CDPMethodContext.m in Sources */,
 				4706C7A51AE4DDDF0069D8B4 /* SMPSimpleGate.m in Sources */,
-				470C70251AE753280044DBA5 /* CDPGate.m in Sources */,
+				472FF7F01B0581AB0037B05B /* CDPGate.m in Sources */,
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
-				470C70271AE753280044DBA5 /* CDPMessageUtils.m in Sources */,
-				470C70261AE753280044DBA5 /* CDPMethodContext.m in Sources */,
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
-				470C70281AE753280044DBA5 /* CDPNativeBridge.m in Sources */,
+				472FF7F11B0581AB0037B05B /* CDPMessageUtils.m in Sources */,
+				472FF7F31B0581AB0037B05B /* CDPNativeBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
