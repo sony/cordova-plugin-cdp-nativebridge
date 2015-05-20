@@ -133,9 +133,10 @@ module.exports = function (grunt) {
                     },
                 ],
             },
+            // for "grunt module"/"grunt plugin" package task
             pkgcomp_module_release: {
                 files: [
-                    {// js
+                    {
                         expand: true,
                         cwd: '<%= pkgcomp_src_root_dir %>',
                         src: ['**', '!<%= pkgcomp_build_dir %>/**'],
@@ -222,6 +223,28 @@ module.exports = function (grunt) {
                 src: '<%= pkgcomp_remove_src_spwords_targets %>',
             },
         },
+
+        // custom task: add BOM for development files.
+        pkgcomp_add_bom: {
+            build: {
+                files: [
+                    {// file name is appended ".min"
+                        expand: true,
+                        cwd: '<%= pkgcomp_src_root_dir %>',
+                        src: [
+                            '**/*.js',
+                            '!**/*.min.js',
+                            '!<%= pkgcomp_build_dir %>/**/*.js',
+                            '**/*.css',
+                            '!**/*.min.css',
+                            '!<%= pkgcomp_build_dir %>/**/*.css',
+                            '**/*.d.ts',
+                            '!<%= pkgcomp_build_dir %>/**/*.d.ts',
+                        ],
+                    },
+                ]
+            },
+        },
     });
 
 
@@ -240,7 +263,7 @@ module.exports = function (grunt) {
         grunt.config.set('lower_enable', false);
         grunt.config.set('tmpdir', path.join(grunt.config.get('pkgcomp_tmpdir_backup'), grunt.config.get('pkgcomp_work_root'), grunt.config.get('pkgcomp_tmpdir_backup')));
         grunt.config.set('pkgdir', path.join(grunt.config.get('pkgcomp_tmpdir_backup'), grunt.config.get('pkgcomp_work_root'), grunt.config.get('pkgcomp_pkgdir_backup')));
-        grunt.config.set('app_plugins_pkgdir', path.join(grunt.config.get('pkgcomp_tmpdir_backup'), grunt.config.get('pkgcomp_work_pkg_dir'), grunt.config.get('pkgcomp_app_plugins_pkgdir_backup')));
+        grunt.config.set('app_plugins_pkgdir', path.join(grunt.config.get('pkgcomp_tmpdir_backup'), grunt.config.get('pkgcomp_src_root'), grunt.config.get('pkgcomp_app_plugins_pkgdir_backup')));
     });
 
     // custom task: rollback package directory for default.
@@ -404,6 +427,16 @@ module.exports = function (grunt) {
         }
     });
 
+    // custom task: command line parse.
+    grunt.registerMultiTask('pkgcomp_add_bom', function () {
+        if (!grunt.option('no-bom')) {
+            this.filesSrc.forEach(function (file) {
+                fs.writeFileSync(file, '\ufeff' + fs.readFileSync(file), 'utf8');
+            });
+        }
+    });
+
+
     //__________________________________________________________________________________________________________________________________________________________________________________________//
 
     // Helper API
@@ -496,25 +529,47 @@ module.exports = function (grunt) {
     grunt.registerTask('pkgcomp_versioning',    ['pkgcomp_versioning_preprocess', 'glue_ts_cordova_set_env', 'lib_extract_module_info', 'glue_ts_cordova_restore_env', 'pkgcomp_set_work_package_targets', 'pkgcomp_module_versioning', 'pkgcomp_versioning_postprocess']);
     grunt.registerTask('pkgcomp_minify',        ['uglify:pkgcomp_plugins', 'pkgcomp_set_work_package_targets', 'pkgcomp_module_minify']);
 
-    grunt.registerTask('pkgcomp_preprocess',   ['pkgcomp_prepare', 'pkgcomp_compile', 'pkgcomp_revise', 'pkgcomp_versioning', 'pkgcomp_minify', 'cleanempty:pkgcomp']);
-    grunt.registerTask('pkgcomp_postprocess',  ['clean:pkgcomp', 'pkgcomp_restore_env']);
-
     grunt.registerTask('pkgcomp_package_app_plugins', [
         'copy:app_plugins_plugin_package',
         'app_plugins_set_work_plugins', 'app_plugins_set_native_src',
         'app_plugins_copy_native_src'
     ]);
 
-    // for module release task.
-    grunt.registerTask('module', ['pkgcomp_cmdline_parse', 'pkgcomp_preprocess', 'pkgcomp_package_app_plugins', 'copy:pkgcomp_module_release', 'pkgcomp_postprocess']);
+    grunt.registerTask('pkgcomp_preprocess', [
+        'pkgcomp_cmdline_parse',
+        'pkgcomp_prepare',
+        'pkgcomp_compile',
+        'pkgcomp_revise',
+        'pkgcomp_versioning',
+        'pkgcomp_minify',
+        'cleanempty:pkgcomp',
+        'pkgcomp_package_app_plugins',
+        'pkgcomp_add_bom'
+    ]);
 
-    // for plugin package entry
-    grunt.registerTask('plugin', [
+    grunt.registerTask('pkgcomp_preprocess_plugin', [
+        'pkgcomp_cmdline_parse',
         'pkgcomp_set_env', 'glue_ts_cordova_set_env', 'app_plugins_prepare_release', 'copy:pkgcomp_prepare', 'glue_ts_cordova_restore_env',
         'pkgcomp_compile_app_plugins',
         'pkgcomp_remove_src_special_words',
         'uglify:pkgcomp_plugins',
         'pkgcomp_package_app_plugins',
+        'pkgcomp_add_bom',
+    ]);
+
+    grunt.registerTask('pkgcomp_postprocess', ['clean:pkgcomp', 'pkgcomp_restore_env']);
+
+    // for module release task.
+    grunt.registerTask('module', [
+        'pkgcomp_preprocess',
+        'copy:pkgcomp_module_release',
+        'pkgcomp_postprocess'
+    ]);
+
+    // for plugin package entry
+    grunt.registerTask('plugin', [
+        'pkgcomp_preprocess_plugin',
+        'copy:pkgcomp_module_release',
         'pkgcomp_postprocess'
     ]);
 };
