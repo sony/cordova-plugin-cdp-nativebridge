@@ -367,6 +367,8 @@ module.exports = function (grunt) {
                 refPathInfo.forEach(function (target) {
                     rev = rev.replace(target.refpath, '<reference path="' + target.file + '"');
                 });
+                // remove '_dev.dependencies.d.ts' reference.
+                rev = rev.replace(/\/\/\/ <reference path="_dev.dependencies.d.ts"[\s\S]*?\n/g, '');
                 fs.writeFileSync(file, rev);
             }
         });
@@ -376,11 +378,12 @@ module.exports = function (grunt) {
     grunt.registerMultiTask('pkgcomp_remove_src_special_words', 'Remove "reference path" and "sourceURL" comments from js files.', function () {
         this.filesSrc.forEach(function (file) {
             var src = grunt.file.read(file);
-            var rev = src;
-            rev = rev.replace(/\/\/\/ <reference path="[\s\S]*?>/g, '');
-            rev = rev.replace(/\/\/@ sourceURL=[\s\S]*?\n/g, '');
-            rev = rev.replace(/\/\/# sourceURL=[\s\S]*?\n/g, '');
-            rev = rev.replace(/declare var module: any;[\s\S]*?\n/g, '');
+            var rev = src
+                .replace(/\/\/\/ <reference path="[\s\S]*?>/g, '')
+                .replace(/\/\/@ sourceURL=[\s\S]*?\n/g, '')
+                .replace(/\/\/# sourceURL=[\s\S]*?\n/g, '')
+                .replace(/declare var module: any;[\s\S]*?\n/g, '')
+            ;
             fs.writeFileSync(file, rev);
         });
     });
