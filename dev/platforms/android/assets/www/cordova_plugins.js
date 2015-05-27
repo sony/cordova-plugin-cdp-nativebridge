@@ -31,9 +31,9 @@ module.exports = [
 module.exports.metadata = 
 // TOP OF METADATA
 {
-    "com.sony.cdp.plugin.nativebridge.tests": "0.0.1",
+    "com.sony.cdp.plugin.nativebridge.tests": "1.0.0",
     "org.apache.cordova.test-framework": "0.0.2-dev",
-    "com.sony.cdp.plugin.nativebridge": "0.0.1"
+    "com.sony.cdp.plugin.nativebridge": "1.0.0"
 }
 // BOTTOM OF METADATA
 });
