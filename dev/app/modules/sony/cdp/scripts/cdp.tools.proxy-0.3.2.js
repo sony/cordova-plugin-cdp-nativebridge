@@ -1,4 +1,4 @@
-
+﻿
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -15,7 +15,6 @@
 }(this, function (CDP) {
     CDP.Tools = CDP.Tools || {};
     
-
 
 /* tslint:disable:max-line-length */
 // TODO: butter.js (sylvester.js) があるときは使い、ない場合はfallbackするように修正する

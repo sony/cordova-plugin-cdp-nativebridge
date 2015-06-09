@@ -1,4 +1,4 @@
-/// <reference path="jquery.d.ts" />
+﻿/// <reference path="jquery.d.ts" />
 /// <reference path="jquery.mobile.d.ts" />
 /// <reference path="cdp.framework.jqm.d.ts" />
 /// <reference path="cdp.tools.d.ts" />

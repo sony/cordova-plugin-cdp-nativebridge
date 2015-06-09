@@ -1,5 +1,4 @@
-/// <reference path="jquery.d.ts" />
-/// <reference path="flipsnap.d.ts" />
+﻿/// <reference path="jquery.d.ts" />
 /// <reference path="cdp.ui.jqm.d.ts" />
 declare module CDP {
     module UI {

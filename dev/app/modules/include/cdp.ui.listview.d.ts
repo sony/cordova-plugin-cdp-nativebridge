@@ -1,6 +1,5 @@
-/// <reference path="jquery.d.ts" />
+﻿/// <reference path="jquery.d.ts" />
 /// <reference path="backbone.d.ts" />
-/// <reference path="iscroll.d.ts" />
 declare module CDP {
     module UI {
         /**
@@ -759,6 +758,8 @@ declare module CDP {
             static getFactory(): (element: any, options: ListViewOptions) => IScroller;
         }
     }
+}
+interface IScrollOptions {
 }
 declare module CDP {
     module UI {

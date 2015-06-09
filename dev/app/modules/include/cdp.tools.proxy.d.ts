@@ -1,6 +1,4 @@
-/// <reference path="jquery.d.ts" />
-/// <reference path="modernizr.custom.d.ts" />
-/// <reference path="sylvester.d.ts" />
+﻿/// <reference path="jquery.d.ts" />
 declare module CDP {
     module Tools {
         /**

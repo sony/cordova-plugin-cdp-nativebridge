@@ -69,16 +69,10 @@ module.exports = function (grunt) {
                         src: ['jquery-*.js', 'jquery.js'],
                         dest: '../dist/external',
                     },
-                    {// external: underscore
-                        expand: true,
-                        cwd: '<%= orgsrc %>/<%= modules %>/underscore/<%= scripts %>',
-                        src: ['underscore-*.js', 'underscore.js'],
-                        dest: '../dist/external',
-                    },
-                    {// external: cdp.tools
+                    {// external: cdp.promise
                         expand: true,
                         cwd: '<%= orgsrc %>/<%= modules %>/sony/cdp/<%= scripts %>',
-                        src: ['cdp.tools-*.js', 'cdp.tools.js'],
+                        src: ['cdp.promise-*.js', 'cdp.promise.js'],
                         dest: '../dist/external',
                     },
                     {// external: cdp.plugin.nativebridge.d.ts
@@ -90,7 +84,7 @@ module.exports = function (grunt) {
                     {// external: d.ts
                         expand: true,
                         cwd: '<%= orgsrc %>/<%= modules %>/include',
-                        src: ['jquery.d.ts', 'underscore.d.ts', 'cdp.tools.d.ts', 'require.d.ts', 'cordova.d.ts', 'hogan.d.ts', 'plugins/*.d.ts'],
+                        src: ['jquery.d.ts', 'cdp.promsie.d.ts', 'require.d.ts', 'cordova.d.ts', 'plugins/*.d.ts'],
                         dest: '../dist/external/include',
                     },
                 ],
@@ -143,16 +137,10 @@ module.exports = function (grunt) {
                         src: ['jquery*.js'],
                         dest: '../release/modules/jquery/scripts',
                     },
-                    {// underscore
+                    {// cdp.promise
                         expand: true,
                         cwd: '../dist/external',
-                        src: ['underscore*.js'],
-                        dest: '../release/modules/underscore/scripts',
-                    },
-                    {// cdp.tools
-                        expand: true,
-                        cwd: '../dist/external',
-                        src: ['cdp.tools*.js'],
+                        src: ['cdp.promise*.js'],
                         dest: '../release/modules/sony/cdp/scripts',
                     },
                     {// d.ts

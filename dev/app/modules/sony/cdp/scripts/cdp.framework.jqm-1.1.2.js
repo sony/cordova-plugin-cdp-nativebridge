@@ -1,4 +1,4 @@
-
+﻿
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -156,7 +156,6 @@ var CDP;
         Framework.getOrientation = getOrientation;
     })(Framework = CDP.Framework || (CDP.Framework = {}));
 })(CDP || (CDP = {}));
-
 
 
 
@@ -1431,7 +1430,6 @@ var CDP;
         Framework.Router = Router;
     })(Framework = CDP.Framework || (CDP.Framework = {}));
 })(CDP || (CDP = {}));
-
 
 
 

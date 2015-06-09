@@ -1,4 +1,4 @@
-/// <reference path="jquery.d.ts" />
+﻿/// <reference path="jquery.d.ts" />
 
 declare module CDP {
 	/**

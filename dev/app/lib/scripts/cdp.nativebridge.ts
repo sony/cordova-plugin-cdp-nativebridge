@@ -4,7 +4,7 @@
 (function (root, factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD
-		define(["cdp.tools"], function () {
+		define(["cdp.promise"], function () {
 			return factory(root.CDP || (root.CDP = {}));
 		});
 	} else {

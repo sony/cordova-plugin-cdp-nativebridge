@@ -76,7 +76,7 @@ module CDP {
 			 * @return   {Promise} NativeBridge.Promise オブジェクト
 			 */
 			public static makePromise(df: JQueryDeferred<IResult>): Promise {
-				return <Promise>Tools.makePromise(df, {
+				return <Promise>CDP.makePromise(df, {
 					_bridge: null,
 					_taskId: null,
 					abort: function (info?: any): void {

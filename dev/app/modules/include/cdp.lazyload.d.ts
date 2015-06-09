@@ -1,4 +1,4 @@
-﻿declare module CDP {
+﻿﻿declare module CDP {
 	/**
 	* \~english
 	* Script lazy loading.

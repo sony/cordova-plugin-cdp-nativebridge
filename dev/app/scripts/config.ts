@@ -36,6 +36,7 @@ module Config {
 			"cdp.framework.jqm": "modules/sony/cdp/scripts/cdp.framework.jqm",
 
 			// cdp optional modules
+			"cdp.promise": "modules/sony/cdp/scripts/cdp.promise",
 			"cdp.tools": "modules/sony/cdp/scripts/cdp.tools",
 			"cdp.tools.proxy": "modules/sony/cdp/scripts/cdp.tools.proxy",
 			"cdp.ui.listview": "modules/sony/cdp/scripts/cdp.ui.listview",
