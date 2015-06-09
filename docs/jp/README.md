@@ -49,8 +49,7 @@
 |:-----------------------------------|:---------------------------------|:------------------------------------------------------------------------|
 | cordova.js                         | 3rd js module                    | cordova 本体                                                            |
 | jquery.js                          | 3rd js module                    | jQuery. 非同期ユーティリティ Deferred を使用                            |
-| underscore.js                      | 3rd js module                    | js ユーティリティ. cdp.tools.js が使用                                  |
-| cdp.tools.js                       | CDP js module                    | CDP のユーティリティライブラリ cancel 可能な Promise オブジェクトを提供 |
+| cdp.promise.js                     | CDP js module                    | CDP のユーティリティライブラリ cancel 可能な Promise オブジェクトを提供 |
 | `cdp.nativebridge.js`              | CDP js module                    | cordova-plugin-nativebridge のラッパー                                  |
 | `cdp.plugin.nativebridge.js`       | CDP cordova plugin module        | 汎用 Native Bridge を実現する cordova plugin js module                  |
 | `com.sony.cdp.plugin.nativebridge` | CDP cordova plugin native source | 汎用 Native Bridge を実現する cordova plugin pakage (Android)           |
@@ -58,7 +57,7 @@
 | client_source.js(.ts)              | client source                    | クライアントが用意する JS 側のソース                                    |
 
 - `cordova-plugin-nativebridge` はその名のとおり cordova plugin です。他のライブラリには依存しておらず、単体で成立する plugin です。
-- `cdp.nativebridge.js` は JS-Native の対象性を実現するためのJS モジュールです。このモジュールは cdp.tools.js, jqury.js, underscore.js に依存します。
+- `cdp.nativebridge.js` は JS-Native の対象性を実現するためのJS モジュールです。このモジュールは cdp.promise.js, jqury.js に依存します。
 
 
 ## 2-2:クラス構成

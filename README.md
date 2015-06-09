@@ -46,12 +46,11 @@ If you want to use newest version, you can build the modules yourself as follow 
                 modules/                            js bower moudle here.
                      include/                       d.ts files here.
                      jquery/                        jquery here.
-                     underscore/                    underscore here.
                      sony/
                         cdp/                        cdp modules here.
                             scripts/
                                 cdp.nativebridge.js *: nativebridge module.
-                                cdp.tools.js           dependency module.
+                                cdp.promise.js         dependency module.
                 plugins/
                     com.sony.cdp.plugin.nativebridge/  cordova plugin
                         src/

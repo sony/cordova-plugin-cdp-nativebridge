@@ -49,8 +49,7 @@ Before explaining how to use, We describe fundamental design of `cordova-plugin-
 |:-----------------------------------|:---------------------------------|:------------------------------------------------------------------------|
 | cordova.js                         | 3rd js module                    | cordova framework                                                       |
 | jquery.js                          | 3rd js module                    | jQuery. Asynchronous utility  Deferred object is used.                  |
-| underscore.js                      | 3rd js module                    | js utility. cdp.tools.js uses.                                          |
-| cdp.tools.js                       | CDP js module                    | CDP utility library. The module provides cancelable Promise object.     |
+| cdp.promise.js                     | CDP js module                    | CDP utility library. The module provides cancelable Promise object.     |
 | `cdp.nativebridge.js`              | CDP js module                    | Wrapper library for cordova-plugin-nativebridge.                        |
 | `cdp.plugin.nativebridge.js`       | CDP cordova plugin module        | General-purpose of the cordova plugin which achieves Native Bridge.     |
 | `com.sony.cdp.plugin.nativebridge` | CDP cordova plugin native source | Anroid native sources package of general-purpose of the cordova plugin. |
@@ -58,7 +57,7 @@ Before explaining how to use, We describe fundamental design of `cordova-plugin-
 | client_source.js(.ts)              | client source                    | JavaScript implementation of client side.                               |
 
 - `cordova-plugin-nativebridge` as its name suggests is cordova plugin. This module is not depend on the other libraries.
-- `cdp.nativebridge.js` is the JS module to which a symmetrical relation of JS-native is offered. This module is depend on the cdp.tools.js, jquery.js and underscore.js.
+- `cdp.nativebridge.js` is the JS module to which a symmetrical relation of JS-native is offered. This module is depend on the cdp.promise.js and jquery.js.
 
 
 ## 2-2:Class Structure
