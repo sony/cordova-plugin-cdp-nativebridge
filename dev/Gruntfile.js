@@ -52,12 +52,9 @@ module.exports = function (grunt) {
     // load cdp build task(s)
     grunt.loadTasks('build/tasks');
 
+    // load project build task(s)
+    grunt.loadTasks('build');
+
     // initialize config
     grunt.initConfig(config);
-
-    //__________________________________________________________________________________________________________________________________________________________________________________________//
-
-    // grunt: default behavior is creating release package
-    //
-    grunt.registerTask('default', ['release']);
 };

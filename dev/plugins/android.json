@@ -21,9 +21,6 @@
         "com.sony.cdp.plugin.nativebridge.tests": {
             "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
         },
-        "org.apache.cordova.test-framework": {
-            "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
-        },
         "com.sony.cdp.plugin.nativebridge": {
             "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
         }
