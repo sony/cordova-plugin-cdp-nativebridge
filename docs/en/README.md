@@ -536,7 +536,7 @@ An example of Objective-C class definition of a Native layer is indicated below.
 
 ```objc
 #import "Plugins/CDPNativeBridge/CDPGate.h"
-#import "Plugins/CDPNativeBridge/CDPMessageUtils.h"
+#import "Plugins/CDPNativeBridge/CDPNativeBridgeMsgUtils.h"
 
 #define TAG @"[Sample][Native][SMPSimpleGate]"
 
@@ -791,7 +791,7 @@ If you want to treat the implemented method with cordova official way, you can u
 
 - `Plugins/CDPNativeBridge/CDPGate` class provides the methods as follows.
 
- ※To operate call back more freely, please refer to a javadoc comment of `CDPMessageUtils`.
+ ※To operate call back more freely, please refer to a javadoc comment of `CDPNativeBridgeMsgUtils`.
 
 | method                                                                                                                                         | description                                                                                                                                                                                                                           |
 |:-----------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

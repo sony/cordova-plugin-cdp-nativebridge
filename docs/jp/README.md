@@ -532,7 +532,7 @@ Nativeレイヤの Objective-C クラス定義の例を以下に示します。
 
 ```objc
 #import "Plugins/CDPNativeBridge/CDPGate.h"
-#import "Plugins/CDPNativeBridge/CDPMessageUtils.h"
+#import "Plugins/CDPNativeBridge/CDPNativeBridgeMsgUtils.h"
 
 #define TAG @"[Sample][Native][SMPSimpleGate]"
 
@@ -787,7 +787,7 @@ cordova 公式準拠のやり方を踏襲したい場合があります。この
 ### 3-3-4:Nativeレイヤ で使用可能なメソッド一覧
 
 - Plugins/CDPNativeBridge/CDPGate クラスが提供するメソッドは以下です。
- ※より自由にコールバックを操作するためには、CDPMessageUtils の javadoc コメントを参照してください。
+ ※より自由にコールバックを操作するためには、CDPNativeBridgeMsgUtils の javadoc コメントを参照してください。
 
 | method                                                                                                                                         | description                                                                                                                                                                                                 |
 |:-----------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
