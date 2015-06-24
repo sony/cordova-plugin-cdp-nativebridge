@@ -1,0 +1,20 @@
+{
+  "name": "cordova-plugin-test-framework",
+  "version": "1.0.1-cdp-dev",
+  "description": "Cordova Test Framework Plugin modified by Sony CDP",
+  "cordova": {
+    "id": "com.sony.cdp.plugin.test-framework",
+    "platforms": []
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "cordova",
+    "test",
+    "ecosystem:cordova"
+  ],
+  "author": "Apache Software Foundation",
+  "license": "Apache 2.0"
+}
