@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativeBridgeDevBed", "NativeBridgeDevBed.csproj", "{A99E5012-CB6D-413F-9776-15F5E4B0B4B6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GruntBuild", "build\GruntBuild.csproj", "{ABCA8825-65A0-4F6C-97CB-822B479FE7A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,9 +18,6 @@ Global
 		{A99E5012-CB6D-413F-9776-15F5E4B0B4B6}.Dev|Any CPU.Build.0 = Dev|Any CPU
 		{A99E5012-CB6D-413F-9776-15F5E4B0B4B6}.Release|Any CPU.ActiveCfg = Dev|Any CPU
 		{A99E5012-CB6D-413F-9776-15F5E4B0B4B6}.Release|Any CPU.Build.0 = Dev|Any CPU
-		{ABCA8825-65A0-4F6C-97CB-822B479FE7A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABCA8825-65A0-4F6C-97CB-822B479FE7A1}.Dev|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABCA8825-65A0-4F6C-97CB-822B479FE7A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

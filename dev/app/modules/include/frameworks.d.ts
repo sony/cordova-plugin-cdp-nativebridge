@@ -7,9 +7,7 @@
 /// <reference path="cdp.framework.jqm.d.ts" />
 /// <reference path="cdp.promise.d.ts" />
 /// <reference path="cdp.tools.d.ts" />
-/// <reference path="cdp.tools.proxy.d.ts" />
 /// <reference path="cdp.ui.listview.d.ts" />
 /// <reference path="cdp.ui.jqm.d.ts" />
-/// <reference path="cdp.ui.fs.d.ts" />
 
 /// <reference path="../../lib/scripts/cdp.nativebridge.d.ts" />

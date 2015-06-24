@@ -1,5 +1,4 @@
-﻿/// <reference path="../../../../modules/include/require.d.ts" />
-/// <reference path="../../../../modules/include/cordova.d.ts" />
+﻿/// <reference path="_dev.dependencies.d.ts" />
 /// <reference path="Interfaces.ts" />
 
 module CDP {
@@ -48,17 +47,15 @@ module CDP {
 				}
 
 				try {
-					require(["cordova"], () => {
-						var channel = cordova.require("cordova/channel");
-						channel.onCordovaReady.subscribe(() => {
-							if (null != CDP.Plugin.NativeBridge) {
-								Utils.s_pluginReady = true;
-								df.resolve();
-							} else {
-								console.error(TAG + "'com.sony.cdp.plugin.nativebridge' cordova plugin required.");
-								df.reject();
-							}
-						});
+					var channel = cordova.require("cordova/channel");
+					channel.onCordovaReady.subscribe(() => {
+						if (null != CDP.Plugin.NativeBridge) {
+							Utils.s_pluginReady = true;
+							df.resolve();
+						} else {
+							console.error(TAG + "'com.sony.cdp.plugin.nativebridge' cordova plugin required.");
+							df.reject();
+						}
 					});
 				} catch (error) {
 					console.error(TAG + "cordova required.");

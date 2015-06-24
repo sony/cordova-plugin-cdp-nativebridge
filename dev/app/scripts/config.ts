@@ -4,14 +4,12 @@ module Config {
 
 	var global = global || window;
 
-	var baseUrl = /(.+\/)[^/]*#[^/]+/.exec(location.href); // "#" がある場合
+	var baseUrl = /(.+\/)[^/]*#[^/]+/.exec(location.href);
 	if (!baseUrl) {
-		baseUrl = /(.+\/)/.exec(location.href); // "#" がない場合。 query parametersは使用不可
+		baseUrl = /(.+\/)/.exec(location.href);
 	}
 
-	/**
-	 * require.js 用設定値
-	 */
+	// require.js configration
 	var requireConfig = {
 		baseUrl: baseUrl[1],
 
@@ -25,20 +23,13 @@ module Config {
 			"backbone": "modules/backbone/scripts/backbone",
 			"i18n": "modules/i18next/scripts/i18next",
 			"hogan": "modules/hogan/scripts/hogan",
-			"modernizr.custom": "modules/sony/cdp/scripts/modernizr.custom",
-			"sylvester": "modules/sylvester/scripts/sylvester",
 
 			// cdp modules
 			"cdp.core": "modules/sony/cdp/scripts/cdp.core",
 			"cdp.lazyload": "modules/sony/cdp/scripts/cdp.lazyload",
-
-			// cdp framework modules
 			"cdp.framework.jqm": "modules/sony/cdp/scripts/cdp.framework.jqm",
-
-			// cdp optional modules
 			"cdp.promise": "modules/sony/cdp/scripts/cdp.promise",
 			"cdp.tools": "modules/sony/cdp/scripts/cdp.tools",
-			"cdp.tools.proxy": "modules/sony/cdp/scripts/cdp.tools.proxy",
 			"cdp.ui.listview": "modules/sony/cdp/scripts/cdp.ui.listview",
 			"cdp.ui.jqm": "modules/sony/cdp/scripts/cdp.ui.jqm",
 
@@ -52,55 +43,36 @@ module Config {
 	// global export
 	global.requirejs = requireConfig;
 
-	/**
-	 * jQuery の設定
-	 */
+	// jQuery settings
 	export function jquery(): void {
-		$.support.cors = true;			// cross domain request を許可
-		$.ajaxSetup({ cache: false });	// ajax の cache を無効化
+		$.support.cors = true;			// allow cross domain request
+		$.ajaxSetup({ cache: false });	// disable ajax request cache
 	}
 
-	/**
-	 * jQuery Mobile の設定
-	 */
+	// jQuery Mobile settings
 	export function jquerymobile(): void {
 		$.mobile.allowCrossDomainPages = true;
 		$.mobile.defaultPageTransition = "none";
-		$.mobile.hashListeningEnabled = false;				// backbone.js の Router を使用
+		$.mobile.hashListeningEnabled = false;
 		$.mobile.pushStateEnabled = false;
-		// 以下は既定値
-		$.mobile.autoInitializePage = true;					// $.mobile.initializePage() を明示的に指定する場合 false
-		$.mobile.phonegapNavigationEnabled = false;			// jqm 内では cordova.app.back は使用しない
 	}
 
-	/**
-	 * ローカライズ用データパスの設定
-	 */
+	// localize resource data path
 	export function i18nDataPath(): string {
 		return "res/locales/__ns__-__lng__.json";
 	}
 
 	/**
-	 * CDP.lazyLoad() の sourceURL 自動挿入時に、
-	 * domain を指定しない場合には false を指定
-	 * .ts ファイルの debug をメインにするときには有用
+	 * When not specifying domain information on a chrome inspector at sourceURL automatic insertion,
+	 * please set it as a false.
 	 */
 	export var autoDomainAssign = true;
 
-	/**
-	 * コンフリクトを避けるために使用される文字列
-	 * CDP.Tools.Touche の touch event 定義に使用される
-	 */
+	// The string which is used to avoid a conflict
 	export var namespace = "cdp";
 
-	/**
-	 * ビルド設定判定
-	 *
-	 * リリース版では '%% buildsetting %%' を '' (空文字列) に置換することにより
-	 *   !!("") (== false)
-	 * の設定が反映される
-	 */
-	export var DEBUG = ():boolean => {
-		return !!("%% buildsetting %%");	//! リリース時には false が返る
-	}
+	// build configuration symbol
+	export var DEBUG = ((): boolean => {
+		return !!("%% buildsetting %%");	//! returns "false" on release build
+	})();
 }
