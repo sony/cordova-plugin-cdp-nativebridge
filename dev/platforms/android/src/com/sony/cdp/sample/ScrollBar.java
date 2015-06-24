@@ -1,5 +1,7 @@
 package com.sony.cdp.sample;
 
+import java.lang.reflect.InvocationTargetException;
+
 import android.util.Log;
 
 import com.sony.cdp.plugin.nativebridge.Gate;
@@ -20,7 +22,17 @@ public class ScrollBar extends Gate {
      * Vertical ScrollBar の 表示
      */
     public void showVertical() {
-        webView.setVerticalScrollBarEnabled(true);
+        try {
+            Utils.getViewFromCordovaWebView(webView).setVerticalScrollBarEnabled(true);
+        } catch (NoSuchMethodException e) {
+            Log.e(TAG, "NoSuchMethodException", e);
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, "IllegalAccessException", e);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "IllegalArgumentException", e);
+        } catch (InvocationTargetException e) {
+            Log.e(TAG, "InvocationTargetException", e);
+        }
         Log.d(TAG, "showVertical() called.");
     }
 
@@ -28,7 +40,17 @@ public class ScrollBar extends Gate {
      * Vertical ScrollBar を非表示
      */
     public void hideVertical() {
-        webView.setVerticalScrollBarEnabled(false);
+        try {
+            Utils.getViewFromCordovaWebView(webView).setVerticalScrollBarEnabled(false);
+        } catch (NoSuchMethodException e) {
+            Log.e(TAG, "NoSuchMethodException", e);
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, "IllegalAccessException", e);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "IllegalArgumentException", e);
+        } catch (InvocationTargetException e) {
+            Log.e(TAG, "InvocationTargetException", e);
+        }
         Log.d(TAG, "hideVertical() called.");
     }
 }

@@ -19,13 +19,21 @@
 
 package com.sony.cdp.plugin.nativebridge.testbed;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.cordova.CordovaActivity;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.webkit.WebView;
+
+import com.sony.cdp.sample.Utils;
 
 public class CordovaApp extends CordovaActivity
 {
+    private static final String TAG = "[com.sony.cdp.sample][Native][CordovaApp] ";
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -33,9 +41,20 @@ public class CordovaApp extends CordovaActivity
         super.init();
         loadUrl(launchUrl);
 
-        // default scroll bar setting.
-        appView.setHorizontalScrollBarEnabled(false);
-        appView.setVerticalScrollBarEnabled(false);
-        appView.setScrollBarStyle(WebView.SCROLLBARS_INSIDE_OVERLAY);
+        try {
+            // default scroll bar setting.
+            View webView = Utils.getViewFromCordovaWebView(appView);
+            webView.setHorizontalScrollBarEnabled(false);
+            webView.setVerticalScrollBarEnabled(false);
+            webView.setScrollBarStyle(WebView.SCROLLBARS_INSIDE_OVERLAY);
+        } catch (NoSuchMethodException e) {
+            Log.e(TAG, "NoSuchMethodException", e);
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, "IllegalAccessException", e);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "IllegalArgumentException", e);
+        } catch (InvocationTargetException e) {
+            Log.e(TAG, "InvocationTargetException", e);
+        }
     }
 }
