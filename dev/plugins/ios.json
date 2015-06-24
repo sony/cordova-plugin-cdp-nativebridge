@@ -23,6 +23,9 @@
         },
         "com.sony.cdp.plugin.nativebridge.tests": {
             "PACKAGE_NAME": "jp.co.sony.cdp.nativebridge.testbed"
+        },
+        "com.sony.cdp.plugin.test-framework": {
+            "PACKAGE_NAME": "jp.co.sony.cdp.nativebridge.testbed"
         }
     },
     "dependent_plugins": {}
