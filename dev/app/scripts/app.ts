@@ -3,11 +3,25 @@
 
 module NativeBridgeDevBed {
 
-	export function onStart(info?: any): void {
+	import global = CDP.global;
+
+	function onStart(): void {
 		var router = CDP.Framework.Router;
-		// set first page.
 		router.register("", "/templates/main.html", true);
-		// start Router.
 		router.start();
 	}
+
+	define("app", [
+		"cdp.nativebridge",
+		"hogan",
+		"cdp.ui.jqm",
+	], () => {
+		var CordovaSampleDevBed = global.CordovaSampleDevBed;
+
+		//<<
+		CDP.lazyLoad("lazy");
+		//>>
+
+		return { main: onStart };
+	});
 }

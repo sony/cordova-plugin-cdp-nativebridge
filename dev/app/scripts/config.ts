@@ -35,6 +35,9 @@ module Config {
 
 			// internal lib modules
 			"cdp.nativebridge": "lib/scripts/cdp.nativebridge",
+
+			// application
+			"app": "scripts/app",
 		},
 
 		shim: {
