@@ -224,9 +224,9 @@
     <Content Include="platforms\android\src\com\sony\cdp\sample\ScrollBar.java" />
     <Content Include="platforms\android\src\com\sony\cdp\sample\SimpleGate.java" />
     <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPGate.h" />
-    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPMessageUtils.h" />
     <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPMethodContext.h" />
     <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPNativeBridge.h" />
+    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPNativeBridgeMsgUtils.h" />
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\plugin.xml" />
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\www\assets\index.html" />
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\www\assets\jasmine-2.2.0\boot.js" />
@@ -360,7 +360,6 @@
     <Content Include="platforms\ios\NativeBridgeDevBed\Samples\SMPSimpleGate.m" />
     <Content Include="README.md" />
     <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPGate.m" />
-    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPMessageUtils.m" />
     <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPMethodContext.m" />
     <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPNativeBridge.m" />
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\.fetch.json" />
@@ -391,6 +390,7 @@
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\www\assets\topcoat-0.7.5\NOTICE" />
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\www\assets\topcoat-0.7.5\package.json" />
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\www\assets\topcoat-0.7.5\README.md" />
+    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPNativeBridgeMsgUtils.m" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

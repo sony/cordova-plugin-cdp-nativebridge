@@ -28,7 +28,7 @@
     <source-file src="src/ios/CDPMethodContext.m" />
     <header-file src="src/ios/CDPGate.h" />
     <source-file src="src/ios/CDPGate.m" />
-    <header-file src="src/ios/CDPMessageUtils.h" />
-    <source-file src="src/ios/CDPMessageUtils.m" />
+    <header-file src="src/ios/CDPNativeBridgeMsgUtils.h" />
+    <source-file src="src/ios/CDPNativeBridgeMsgUtils.m" />
   </platform>
 </plugin>
