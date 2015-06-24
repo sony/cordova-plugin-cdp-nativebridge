@@ -6,7 +6,7 @@
 #import "CDPNativeBridge.h"
 #import "CDPMethodContext.h"
 #import "CDPGate.h"
-#import "CDPMessageUtils.h"
+#import "CDPNativeBridgeMsgUtils.h"
 
 @implementation CDPNativeBridge {
     NSMutableDictionary* _gates;
@@ -35,16 +35,16 @@
     
     if (!context.className) {
         NSString* errorMsg = [NSString stringWithFormat:@"%@ the function is not supported on ios.", TAG];
-        [CDPMessageUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_NOT_SUPPORT andMessage:errorMsg];
+        [CDPNativeBridgeMsgUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_NOT_SUPPORT andMessage:errorMsg];
     } else {
         CDPGate* gate = [self getGateClassFromObjectId:context.objectId andClassName:context.className];
         if (!gate) {
             NSString* errorMsg = [NSString stringWithFormat:@"%@ class not found. class: %@", TAG, context.class];
-            [CDPMessageUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_CLASS_NOT_FOUND andMessage:errorMsg];
+            [CDPNativeBridgeMsgUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_CLASS_NOT_FOUND andMessage:errorMsg];
         } else {
             NSDictionary* errorResult = [gate invokeWithContext:context];
             if (errorResult) {
-                [CDPMessageUtils sendErrorResultWithContext:context andResult:errorResult];
+                [CDPNativeBridgeMsgUtils sendErrorResultWithContext:context andResult:errorResult];
             }
         }
     }
@@ -100,15 +100,15 @@
     
     if (!context.className) {
         NSString* errorMsg = [NSString stringWithFormat:@"%@ the function is not supported on ios.", TAG];
-        [CDPMessageUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_NOT_SUPPORT andMessage:errorMsg];
+        [CDPNativeBridgeMsgUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_NOT_SUPPORT andMessage:errorMsg];
     } else {
         CDPGate* gate = [self getGateClassFromObjectId:context.objectId andClassName:context.className];
         if (!gate) {
             NSString* errorMsg = [NSString stringWithFormat:@"%@ class not found. class: %@", TAG, context.class];
-            [CDPMessageUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_CLASS_NOT_FOUND andMessage:errorMsg];
+            [CDPNativeBridgeMsgUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_CLASS_NOT_FOUND andMessage:errorMsg];
         } else {
             [gate cancel:context];
-            [CDPMessageUtils sendSuccessResultWithContext:context andResult:[CDPMessageUtils makeMessaggeWithTaskId:nil]];
+            [CDPNativeBridgeMsgUtils sendSuccessResultWithContext:context andResult:[CDPNativeBridgeMsgUtils makeMessaggeWithTaskId:nil]];
             objectId = context.objectId;
         }
     }

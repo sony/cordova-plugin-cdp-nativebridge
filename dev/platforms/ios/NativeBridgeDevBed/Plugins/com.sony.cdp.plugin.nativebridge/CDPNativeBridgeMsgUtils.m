@@ -1,15 +1,15 @@
 /**
- * @file CDPMessageUtils.m
+ * @file CDPNativeBridgeMsgUtils.m
  * @brief Implementation file for CDP NativeBridge plugin message utility class.
  */
 
-#import "CDPMessageUtils.h"
+#import "CDPNativeBridgeMsgUtils.h"
 
 #if !defined(_countof) && !defined(__cplusplus)
 #define _countof(a) (sizeof(a) / sizeof(a[0]))
 #endif
 
-@implementation CDPMessageUtils
+@implementation CDPNativeBridgeMsgUtils
 
 //////////////////////////////////////////////////////
 // class methods
@@ -56,7 +56,7 @@
 {
     NSMutableDictionary* result = [@{} mutableCopy];
     
-    NSString* name = [CDPMessageUtils resultCode2String:code]
+    NSString* name = [CDPNativeBridgeMsgUtils resultCode2String:code]
     ? [self resultCode2String:code] : [NSString stringWithFormat:@"ERROR_CUSTOM:0x%x", (int)code];
     
     result[@"code"] = [NSNumber numberWithInt:code];

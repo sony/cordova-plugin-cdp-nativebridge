@@ -1,5 +1,5 @@
 /**
- * @file CDPMessageUtils.h
+ * @file CDPNativeBridgeMsgUtils.h
  * @brief Interface definition file for CDP NativeBridge message utility class.
  */
 
@@ -17,7 +17,7 @@ static const NSInteger CDP_NATIVEBRIDGE_ERROR_INVALID_OPERATION   = 0x0007;
 static const NSInteger CDP_NATIVEBRIDGE_ERROR_CLASS_NOT_FOUND     = 0x0008;
 static const NSInteger CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND    = 0x0009;
 
-@interface CDPMessageUtils : NSObject
+@interface CDPNativeBridgeMsgUtils : NSObject
 
 //////////////////////////////////////////////////////
 // class methods

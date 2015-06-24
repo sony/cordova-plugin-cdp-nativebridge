@@ -4,7 +4,7 @@
  */
 
 #import "CDPGate.h"
-#import "CDPMessageUtils.h"
+#import "CDPNativeBridgeMsgUtils.h"
 
 @implementation CDPGate {
     CDPMethodContext* _currentContext;
@@ -96,8 +96,8 @@
     @synchronized (self) {
         if (_currentContext && [[self getCurrentThreadId] isEqualToString:_currentContext.threadId]) {
             _currentContext.needSendResult = NO;
-            [CDPMessageUtils sendSuccessResultWithContext:_currentContext
-                                                andResult:[CDPMessageUtils makeMessaggeWithTaskId:_currentContext.taskId andParams:@[params]]];
+            [CDPNativeBridgeMsgUtils sendSuccessResultWithContext:_currentContext
+                                                andResult:[CDPNativeBridgeMsgUtils makeMessaggeWithTaskId:_currentContext.taskId andParams:@[params]]];
         } else {
             NSLog(@"%@ Calling returnParams is permitted only from method entry thread.", TAG);
         }
@@ -144,7 +144,7 @@
     }
     
     NSInteger resultCode = keepCallback ? CDP_NATIVEBRIDGE_SUCCESS_PROGRESS : CDP_NATIVEBRIDGE_SUCCESS_OK;
-    NSDictionary* message = [CDPMessageUtils makeMessaggeWithCode:resultCode andMessage:nil andTaskId:context.taskId andParams:params];
+    NSDictionary* message = [CDPNativeBridgeMsgUtils makeMessaggeWithCode:resultCode andMessage:nil andTaskId:context.taskId andParams:params];
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
     [result setKeepCallbackAsBool:keepCallback];
     [self.commandDelegate sendPluginResult:result callbackId:context.callbackId];
@@ -174,8 +174,8 @@
         return;
     }
 
-    NSDictionary* message = [CDPMessageUtils makeMessaggeWithTaskId:context.taskId andParams:params];
-    [CDPMessageUtils sendSuccessResultWithContext:context andResult:message];
+    NSDictionary* message = [CDPNativeBridgeMsgUtils makeMessaggeWithTaskId:context.taskId andParams:params];
+    [CDPNativeBridgeMsgUtils sendSuccessResultWithContext:context andResult:message];
 }
 
 /**
@@ -219,8 +219,8 @@
         return;
     }
     
-    NSDictionary* message = [CDPMessageUtils makeMessaggeWithCode:errorCode andMessage:errorMsg andTaskId:context.taskId andParams:params];
-    [CDPMessageUtils sendErrorResultWithContext:context andResult:message];
+    NSDictionary* message = [CDPNativeBridgeMsgUtils makeMessaggeWithCode:errorCode andMessage:errorMsg andTaskId:context.taskId andParams:params];
+    [CDPNativeBridgeMsgUtils sendErrorResultWithContext:context andResult:message];
 }
 
 //////////////////////////////////////////////////////
@@ -321,7 +321,7 @@
 #pragma clang diagnostic pop
         return nil;
     } else {
-        return [CDPMessageUtils makeMessaggeWithCode:CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND
+        return [CDPNativeBridgeMsgUtils makeMessaggeWithCode:CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND
                                           andMessage:[NSString stringWithFormat:@"%@ method not found. method: %@", TAG, context.methodName]
                                            andTaskId:context.taskId];
     }
@@ -358,13 +358,13 @@
             _currentContext = context;
             [invocation invokeWithTarget:self];
             if (_currentContext.needSendResult) {
-                [CDPMessageUtils sendSuccessResultWithContext:context andTaskId:context.taskId];
+                [CDPNativeBridgeMsgUtils sendSuccessResultWithContext:context andTaskId:context.taskId];
             }
             _currentContext = nil;
         }
         return nil;
     } else {
-        return [CDPMessageUtils makeMessaggeWithCode:CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND
+        return [CDPNativeBridgeMsgUtils makeMessaggeWithCode:CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND
                                           andMessage:[NSString stringWithFormat:@"%@ method not found. method: %@", TAG, context.methodName]
                                            andTaskId:context.taskId];
     }

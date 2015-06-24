@@ -4,7 +4,7 @@
  */
 
 #import "../Plugins/com.sony.cdp.plugin.nativebridge/CDPGate.h"
-#import "../Plugins/com.sony.cdp.plugin.nativebridge/CDPMessageUtils.h"
+#import "../Plugins/com.sony.cdp.plugin.nativebridge/CDPNativeBridgeMsgUtils.h"
 
 #define TAG @"[Sample][Native][SMPSimpleGate]"
 
