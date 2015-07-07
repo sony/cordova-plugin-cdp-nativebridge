@@ -5,7 +5,7 @@
 ::
 
 :: product's code
-call jshint "app/lib/scripts" "app/scripts" -c "tests/jshint/jshintrc.json"
+call jshint "app/plugins" "app/lib/scripts" "app/scripts" -c "tests/jshint/jshintrc.json"
 
 :: test's code
 rem call jshint "tests/jasmine" -c "tests/jshint/jshintrc.json"
@@ -15,7 +15,7 @@ rem call jshint "tests/jasmine" -c "tests/jshint/jshintrc.json"
 ::
 
 :: standard test
-testem -f "tests/jasmine/testem.json"
+rem testem -f "tests/jasmine/testem.json"
 
 :: with ci command
 rem testem ci -f "tests/jasmine/testem.json"
