@@ -415,7 +415,17 @@ module.exports = function (grunt) {
     // custom task: minify.
     grunt.registerTask('pkgcomp_module_minify', function () {
         doPackageTask(this, function () {
-            // update banner
+            // TODO: test update banner. build.bannar.js ‚Éˆø‰z‚µ
+            var license_txt = path.join(process.cwd(), 'LICENSE-INFO.min.txt');
+            console.log('license.txt: ' + license_txt);
+            var license_info;
+            if (fs.existsSync(license_txt)) {
+                license_info = fs.readFileSync(license_txt);
+                console.log(license_info);
+                console.log('\n: package_src: ' + grunt.config.get('pkgcomp_package_src'));
+                console.log('\n: package_dst: ' + grunt.config.get('pkgcomp_package_dst'));
+
+            }
             grunt.config.set('pkgcomp_script_banner', grunt.config.get('minify_banner') + (grunt.config.get('pkgcomp_srcmap_enable') ? '' : '\n'));
             grunt.task.run('uglify:pkgcomp');
             grunt.task.run('cssmin:pkgcomp');
@@ -566,7 +576,7 @@ module.exports = function (grunt) {
     grunt.registerTask('module', [
         'pkgcomp_preprocess',
         'copy:pkgcomp_module_release',
-        'pkgcomp_postprocess'
+//        'pkgcomp_postprocess'
     ]);
 
     // for plugin package entry

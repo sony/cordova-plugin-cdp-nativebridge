@@ -27,6 +27,7 @@ module.exports = function (grunt) {
         app_plugins_work_scripts_info: [],  // work script files for build
         app_plugins_work_id: '',            // work plugin id
         app_plugins_work_script_name: '',   // work script file name
+        app_plugins_work_version: '',       // work plugin version, for banner
 
         app_plugins_native_src: {},
 
@@ -187,6 +188,7 @@ module.exports = function (grunt) {
                 if (fs.statSync(pluginDir).isDirectory() && fs.statSync(srcDir).isDirectory()) {
                     plugin.id = id;
                     plugin.scripts = queryTargetScripts(srcDir);
+                    plugin.version = queryPluginVersion(pluginDir);
                     targetPlugins.push(plugin);
                 }
             });
@@ -216,6 +218,7 @@ module.exports = function (grunt) {
             // update variable.
             grunt.config.set('app_plugins_work_scripts_info', plugin.scripts.slice(0));
             grunt.config.set('app_plugins_work_id', plugin.id);
+            grunt.config.set('app_plugins_work_version', plugin.version);
 
             // schedule next tasks.
             grunt.task.run('app_plugins_build_scripts');
@@ -228,7 +231,7 @@ module.exports = function (grunt) {
         var script;
 
         // special case: the system assumes auto-test script when plugin's id is finished ".tests".
-        var isTests = function (scripts) {
+        var isTests = function () {
             return !!grunt.config.get('app_plugins_work_id').match(/\.tests$/i);
         };
 
@@ -239,11 +242,15 @@ module.exports = function (grunt) {
             grunt.config.set('app_plugins_work_script_name', script);
 
             // schedule next tasks.
-            if (isTests(script)) {
+            if (isTests()) {
                 grunt.task.run('typescript:app_plugins_tests');
+                if (grunt.config.get('app_plugins_mode_release')) {
+                    // TODO: build.banner.js で更新
+                }
                 grunt.task.run('copy:app_plugins_tests');
             } else if (grunt.config.get('app_plugins_mode_release')) {
                 grunt.task.run('typescript:app_plugins_release');
+                    // TODO: build.banner.js で更新
             } else {
                 grunt.task.run('typescript:app_plugins_debug');
             }
@@ -361,6 +368,14 @@ module.exports = function (grunt) {
             }
         });
         return scripts;
+    }
+
+    // query plugin version.
+    function queryPluginVersion(pluginDir) {
+        var pluginXml = path.join(pluginDir, 'plugin.xml');
+
+        var domPluginXml = jsdom.jsdom(fs.readFileSync(pluginXml).toString());
+        return $(domPluginXml).find('plugin').attr('version');
     }
 
     //__________________________________________________________________________________________________________________________________________________________________________________________//
