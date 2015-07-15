@@ -33,9 +33,20 @@ module.exports = function (grunt) {
 
         // clean for plugin directory
         clean: {
+            app_plugins_src: {
+                files: {
+                    src: [
+                        '<%= orgsrc %>/<%= plugins %>/**/*.js',
+                        '<%= orgsrc %>/<%= plugins %>/**/*.map',
+                    ],
+                },
+            },
             app_plugins: {
                 files: {
-                    src: ['<%= app_plugins_pkgdir %>/<%= app_plugins_work_id %>/<%= plugins_www %>/**', '<%= app_plugins_pkgdir %>/<%= app_plugins_work_id %>/plugin.xml'],
+                    src: [
+                        '<%= app_plugins_pkgdir %>/<%= app_plugins_work_id %>/<%= plugins_www %>/**',
+                        '<%= app_plugins_pkgdir %>/<%= app_plugins_work_id %>/plugin.xml',
+                    ],
                 },
             },
         },
@@ -244,13 +255,11 @@ module.exports = function (grunt) {
             // schedule next tasks.
             if (isTests()) {
                 grunt.task.run('typescript:app_plugins_tests');
-                if (grunt.config.get('app_plugins_mode_release')) {
-                    // TODO: build.banner.js で更新
-                }
+                setBanner();
                 grunt.task.run('copy:app_plugins_tests');
             } else if (grunt.config.get('app_plugins_mode_release')) {
                 grunt.task.run('typescript:app_plugins_release');
-                    // TODO: build.banner.js で更新
+                setBanner();
             } else {
                 grunt.task.run('typescript:app_plugins_debug');
             }
@@ -376,6 +385,29 @@ module.exports = function (grunt) {
 
         var domPluginXml = jsdom.jsdom(fs.readFileSync(pluginXml).toString());
         return $(domPluginXml).find('plugin').attr('version');
+    }
+
+    // set banner if needed.
+    function setBanner() {
+        if (grunt.config.get('app_plugins_mode_release')) {
+            var moduleName = grunt.config.get('app_plugins_work_script_name') + '.js';
+            var version = grunt.config.get('app_plugins_work_version');
+            var src = path.join(
+                grunt.config.get('app_plugins_root_dir'),
+                grunt.config.get('app_plugins_work_id'),
+                grunt.config.get('plugins_www'),
+                grunt.config.get('app_plugins_work_script_name') + '.js'
+            );
+
+            var info = {
+                src: src,
+                moduleName: moduleName,
+                version: version,
+            };
+
+            grunt.config.set('banner_info', info);
+            grunt.task.run('banner_setup');
+        }
     }
 
     //__________________________________________________________________________________________________________________________________________________________________________________________//
