@@ -264,7 +264,6 @@ module.exports = function (grunt) {
     // task unit
     grunt.registerTask('app_revise_index_file_release',     ['remove_lazy_scripts_info',    'lower_path_in_html:app']);
     grunt.registerTask('app_revise_index_file_debug',       ['copy:app_index_file',         'lower_path_in_html:app']);
-//    grunt.registerTask('app_minify',                        ['uglify:app', 'cssmin:app', 'htmlmin:app']);
 
     grunt.registerTask('app_prepare_release',               ['clean:general', 'copy:app_prepare', 'copy:lib_prepare']);
     grunt.registerTask('app_prepare_debug',                 ['clean:general'                                        ]);

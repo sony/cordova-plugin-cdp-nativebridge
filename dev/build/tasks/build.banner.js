@@ -8,6 +8,9 @@ module.exports = function (grunt) {
         path = require('path');
 
     grunt.extendConfig({
+        banner_file_name: 'LICENSE-INFO.txt',
+        banner_build_date_time: '<%= grunt.template.today("isoDateTime") %>',
+
         // internal variable
         banner_info: {
             src: '',
@@ -23,7 +26,7 @@ module.exports = function (grunt) {
     // custom task: set banner
     grunt.registerTask('banner_setup', function () {
         var info = grunt.config.get('banner_info');
-        grunt.cdp.setupBannar(info.src, info.moduleName, info.version);
+        grunt.cdp.setupBanner(info.src, info.moduleName, info.version);
     });
 
     // Helper API
@@ -31,20 +34,33 @@ module.exports = function (grunt) {
 
     // check 'LICENSE-INFO.txt' existence
     grunt.cdp.hasLicenseInfo = function () {
-        return fs.existsSync(path.join(process.cwd(), 'LICENSE-INFO.txt'));
+        return fs.existsSync(path.join(process.cwd(), grunt.config.get('banner_file_name')));
     }
 
     // setup bannar core function
-    grunt.cdp.setupBannar = function (src, moduleName, version) {
-        var licenseInfo = path.join(process.cwd(), 'LICENSE-INFO.txt');
+    grunt.cdp.getBannerString = function (moduleName, version) {
+        var licenseInfo = path.join(process.cwd(), grunt.config.get('banner_file_name'));
         if (fs.existsSync(licenseInfo)) {
             var banner = fs.readFileSync(licenseInfo).toString()
                 .replace('@MODULE_NAME', moduleName)
-                .replace('@VERSION', version)
+                .replace('@VERSION', version || '')
+                .replace('@DATE', grunt.config.get('banner_build_date_time'))
                 .replace(/\r\n/gm, '\n')    // normalize line feed
             ;
-            var script = banner + fs.readFileSync(src).toString();
-            fs.writeFileSync(src, script);
+            return banner;
+        } else {
+            return '';
+        }
+    }
+
+    // setup bannar core function
+    grunt.cdp.setupBanner = function (src, moduleName, version) {
+        var banner = grunt.cdp.getBannerString(moduleName, version);
+        if (banner) {
+            var bom = grunt.option('no-bom') ? '' : '\ufeff';
+            var format = bom ? 'utf8' : undefined;
+            var script = bom + banner + fs.readFileSync(src).toString().replace(/\ufeff/gm, '');
+            fs.writeFileSync(src, script, format);
             return true;
         } else {
             return false;

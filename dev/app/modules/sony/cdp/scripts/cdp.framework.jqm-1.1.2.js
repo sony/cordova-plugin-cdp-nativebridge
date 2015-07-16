@@ -1,4 +1,12 @@
-﻿
+﻿/*!
+ * cdp.framework.jqm.js 1.1.2
+ *
+ * Copyright 2015 Sony Corporation
+ * Released under the MIT license
+ *
+ * Date: 2015-07-16T20:01:02
+ */
+
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -1844,13 +1852,13 @@ var CDP;
             });
             //////////////////////////////////////////
             // public Event Handler
-            //! Orientation の変更を受信
+            // Orientation の変更を受信
             Page.prototype.onOrientationChanged = function (newOrientation) {
                 if (this._owner) {
                     this._owner.onOrientationChanged(newOrientation);
                 }
             };
-            //! H/W Back Button ハンドラ
+            // H/W Back Button ハンドラ
             Page.prototype.onHardwareBackButton = function (event) {
                 if (this._owner) {
                     return this._owner.onHardwareBackButton(event);
@@ -1859,7 +1867,7 @@ var CDP;
                     return false;
                 }
             };
-            //! Router "before route change" ハンドラ
+            // Router "before route change" ハンドラ
             Page.prototype.onBeforeRouteChange = function () {
                 if (this._owner) {
                     return this._owner.onBeforeRouteChange();
@@ -1868,55 +1876,55 @@ var CDP;
                     return $.Deferred().resolve().promise();
                 }
             };
-            //! 汎用コマンドを受信
+            // 汎用コマンドを受信
             Page.prototype.onCommand = function (event, kind) {
                 if (this._owner) {
                     this._owner.onCommand(event, kind);
                 }
             };
-            //! 最初の OnPageInit() のときにのみコールされる
+            // 最初の OnPageInit() のときにのみコールされる
             Page.prototype.onInitialize = function (event) {
                 if (this._owner) {
                     this._owner.onInitialize(event);
                 }
             };
-            //! jQM event: "pagebeforecreate" に対応
+            // jQM event: "pagebeforecreate" に対応
             Page.prototype.onPageBeforeCreate = function (event) {
                 if (this._owner) {
                     this._owner.onPageBeforeCreate(event);
                 }
             };
-            //! jQM event: "pagecreate" (旧:"pageinit") に対応
+            // jQM event: "pagecreate" (旧:"pageinit") に対応
             Page.prototype.onPageInit = function (event) {
                 if (this._owner) {
                     this._owner.onPageInit(event);
                 }
             };
-            //! jQM event: "pagebeforeshow" に対応
+            // jQM event: "pagebeforeshow" に対応
             Page.prototype.onPageBeforeShow = function (event, data) {
                 if (this._owner) {
                     this._owner.onPageBeforeShow(event, data);
                 }
             };
-            //! jQM event: "pagecontainershow" (旧:"pageshow") に対応
+            // jQM event: "pagecontainershow" (旧:"pageshow") に対応
             Page.prototype.onPageShow = function (event, data) {
                 if (this._owner) {
                     this._owner.onPageShow(event, data);
                 }
             };
-            //! jQM event: "pagebeforehide" に対応
+            // jQM event: "pagebeforehide" に対応
             Page.prototype.onPageBeforeHide = function (event, data) {
                 if (this._owner) {
                     this._owner.onPageBeforeHide(event, data);
                 }
             };
-            //! jQM event: "pagecontainerhide" (旧:"pagehide") に対応
+            // jQM event: "pagecontainerhide" (旧:"pagehide") に対応
             Page.prototype.onPageHide = function (event, data) {
                 if (this._owner) {
                     this._owner.onPageHide(event, data);
                 }
             };
-            //! jQM event: "pageremove" に対応
+            // jQM event: "pageremove" に対応
             Page.prototype.onPageRemove = function (event) {
                 if (this._owner) {
                     this._owner.onPageRemove(event);
@@ -1924,7 +1932,7 @@ var CDP;
             };
             //////////////////////////////////////////
             // private methods
-            //! mixin 用疑似コンストラクタ
+            // mixin 用疑似コンストラクタ
             Page.prototype.setup = function (options) {
                 var _this = this;
                 // mixin destination 用の再初期化

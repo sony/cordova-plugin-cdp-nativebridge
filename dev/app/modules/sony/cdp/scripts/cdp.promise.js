@@ -1,4 +1,12 @@
-﻿
+﻿/*!
+ * cdp.promise.js 0.9.0
+ *
+ * Copyright 2015 Sony Corporation
+ * Released under the MIT license
+ *
+ * Date: 2015-07-16T20:01:02
+ */
+
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
         // AMD
@@ -8,13 +16,13 @@
     }
     else if (typeof exports === "object") {
         // CommonJS
-        module.exports = factory(root.CDP, require("jquery"));
+        module.exports = factory(root.CDP || (root.CDP = {}), require("jquery"));
     }
     else {
         // Browser globals
         factory(root.CDP || (root.CDP = {}), root.jQuery || root.$);
     }
-}(this, function (CDP, $) {
+}(((this || 0).self || global), function (CDP, $) {
     
 /* tslint:disable:max-line-length */
 var CDP;

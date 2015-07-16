@@ -1,4 +1,12 @@
-﻿/*
+﻿/*!
+ * cdp.core.js 1.1.1
+ *
+ * Copyright 2015 Sony Corporation
+ * Released under the MIT license
+ *
+ * Date: 2015-07-16T20:01:02
+ */
+/*
  * cdp.core.js
  */
 
@@ -12,7 +20,7 @@
         // Browser globals
         factory(root, root.jQuery || root.$, root.CDP || (root.CDP = {}));
     }
-})(this, function (root, $, CDP) {
+})(((this || 0).self || global), function (root, $, CDP) {
 
     /**
      * \~english

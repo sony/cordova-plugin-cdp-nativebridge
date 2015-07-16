@@ -1,4 +1,12 @@
-﻿
+﻿/*!
+ * cdp.ui.jqm.js 0.3.0
+ *
+ * Copyright 2015 Sony Corporation
+ * Released under the MIT license
+ *
+ * Date: 2015-07-16T20:01:02
+ */
+
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -30,16 +38,16 @@ var CDP;
         var Toast;
         (function (Toast) {
             // 表示時間の定義
-            Toast.LENGTH_SHORT = 1500; //!< 短い:1500 msec
-            Toast.LENGTH_LONG = 4000; //!< 長い:4000 msec
-            //! @enum オフセットの基準
+            Toast.LENGTH_SHORT = 1500; //< 短い:1500 msec
+            Toast.LENGTH_LONG = 4000; //< 長い:4000 msec
+            // @enum オフセットの基準
             (function (OffsetX) {
                 OffsetX[OffsetX["LEFT"] = 0x0001] = "LEFT";
                 OffsetX[OffsetX["RIGHT"] = 0x0002] = "RIGHT";
                 OffsetX[OffsetX["CENTER"] = 0x0004] = "CENTER";
             })(Toast.OffsetX || (Toast.OffsetX = {}));
             var OffsetX = Toast.OffsetX;
-            //! @enum オフセットの基準
+            // @enum オフセットの基準
             (function (OffsetY) {
                 OffsetY[OffsetY["TOP"] = 0x0010] = "TOP";
                 OffsetY[OffsetY["BOTTOM"] = 0x0020] = "BOTTOM";
@@ -53,11 +61,11 @@ var CDP;
             var StyleBuilderDefault = (function () {
                 function StyleBuilderDefault() {
                 }
-                //! class attribute に設定する文字列を取得
+                // class attribute に設定する文字列を取得
                 StyleBuilderDefault.prototype.getClass = function () {
                     return "ui-loader ui-overlay-shadow ui-corner-all ui-body-b";
                 };
-                //! style attribute に設定する JSON オブジェクトを取得
+                // style attribute に設定する JSON オブジェクトを取得
                 StyleBuilderDefault.prototype.getStyle = function () {
                     var style = {
                         "padding": "7px 25px 7px 25px",
@@ -66,15 +74,15 @@ var CDP;
                     };
                     return style;
                 };
-                //! オフセットの基準位置を取得
+                // オフセットの基準位置を取得
                 StyleBuilderDefault.prototype.getOffsetPoint = function () {
                     return 4 /* CENTER */ | 32 /* BOTTOM */;
                 };
-                //! X 座標のオフセット値を取得
+                // X 座標のオフセット値を取得
                 StyleBuilderDefault.prototype.getOffsetX = function () {
                     return 0;
                 };
-                //! Y 座標のオフセット値を取得
+                // Y 座標のオフセット値を取得
                 StyleBuilderDefault.prototype.getOffsetY = function () {
                     return -75;
                 };
@@ -273,7 +281,7 @@ var CDP;
                 }
             };
             Object.defineProperty(Dialog.prototype, "$el", {
-                //! ダイアログ element を取得
+                // ダイアログ element を取得
                 get: function () {
                     return this._$dialog;
                 },
@@ -295,7 +303,7 @@ var CDP;
             };
             ///////////////////////////////////////////////////////////////////////
             // private methods
-            //! 現在 active なダイアログとして登録する
+            // 現在 active なダイアログとして登録する
             Dialog.register = function (dialog) {
                 if (null != dialog && null != Dialog.s_activeDialog) {
                     console.warn(TAG + "new dialog proc is called in the past dialog's one. use setTimeout() for post process.");
@@ -389,7 +397,7 @@ var CDP;
             Object.defineProperty(PageContainerView.prototype, "owner", {
                 ///////////////////////////////////////////////////////////////////////
                 // short cut methods
-                //! Owner 取得
+                // Owner 取得
                 get: function () {
                     return this._owner;
                 },
@@ -648,33 +656,33 @@ var CDP;
                 _super.call(this, url, id, $.extend({}, {
                     autoDestoryElement: false,
                 }, options));
-                this._scrollMgr = null; //!< scroll コアロジック
-                this._needRebuild = false; //!< ページ表示時に rebuild() をコールするための内部変数
+                this._scrollMgr = null; //< scroll コアロジック
+                this._needRebuild = false; //< ページ表示時に rebuild() をコールするための内部変数
                 this._scrollMgr = new UI.ScrollManager(options);
             }
-            //! rebuild() のスケジューリング
+            // rebuild() のスケジューリング
             PageListView.prototype.reserveRebuild = function () {
                 this._needRebuild = true;
             };
             ///////////////////////////////////////////////////////////////////////
             // Override: PageView
-            //! Orientation の変更検知
+            // Orientation の変更検知
             PageListView.prototype.onOrientationChanged = function (newOrientation) {
                 this._scrollMgr.setBaseHeight(this.getPageBaseHeight());
             };
-            //! ページ遷移直前イベント処理
+            // ページ遷移直前イベント処理
             PageListView.prototype.onBeforeRouteChange = function () {
                 if (this._pageOptions.autoDestoryElement) {
                     this._scrollMgr.destroy();
                 }
                 return _super.prototype.onBeforeRouteChange.call(this);
             };
-            //! jQM event: "pagebeforeshow" に対応
+            // jQM event: "pagebeforeshow" に対応
             PageListView.prototype.onPageBeforeShow = function (event, data) {
                 _super.prototype.onPageBeforeShow.call(this, event, data);
                 this._scrollMgr.initialize(this.$page, this.getPageBaseHeight());
             };
-            //! jQM event: "pagecontainershow" (旧:"pageshow") に対応
+            // jQM event: "pagecontainershow" (旧:"pageshow") に対応
             PageListView.prototype.onPageShow = function (event, data) {
                 _super.prototype.onPageShow.call(this, event, data);
                 this._scrollMgr.setBaseHeight(this.getPageBaseHeight());
@@ -683,55 +691,55 @@ var CDP;
                     this._needRebuild = false;
                 }
             };
-            //! jQM event: "pageremove" に対応
+            // jQM event: "pageremove" に対応
             PageListView.prototype.onPageRemove = function (event) {
                 _super.prototype.onPageRemove.call(this, event);
                 this.release();
             };
             ///////////////////////////////////////////////////////////////////////
             // Implements: IListView Profile 管理
-            //! 初期化済みか判定
+            // 初期化済みか判定
             PageListView.prototype.isInitialized = function () {
                 return this._scrollMgr.isInitialized();
             };
-            //! プロパティを指定して、ListItem を管理
+            // プロパティを指定して、ListItem を管理
             PageListView.prototype.addItem = function (height, initializer, info, insertTo) {
                 this._addLine(new UI.LineProfile(this, Math.floor(height), initializer, info), insertTo);
             };
-            //! 登録 framework が使用する
+            // 登録 framework が使用する
             PageListView.prototype._addLine = function (_line, insertTo) {
                 this._scrollMgr._addLine(_line, insertTo);
             };
-            //! 指定した Item を削除
+            // 指定した Item を削除
             PageListView.prototype.removeItem = function (index, size, delay) {
                 this._scrollMgr.removeItem(index, size, delay);
             };
             PageListView.prototype.getItemInfo = function (target) {
                 return this._scrollMgr.getItemInfo(target);
             };
-            //! アクティブページを更新
+            // アクティブページを更新
             PageListView.prototype.refresh = function () {
                 this._scrollMgr.refresh();
             };
-            //! 未アサインページを構築
+            // 未アサインページを構築
             PageListView.prototype.update = function () {
                 this._scrollMgr.update();
             };
-            //! ページアサインを再構成
+            // ページアサインを再構成
             PageListView.prototype.rebuild = function () {
                 this._scrollMgr.rebuild();
             };
-            //! 管轄データを破棄
+            // 管轄データを破棄
             PageListView.prototype.release = function () {
                 this._scrollMgr.release();
             };
             ///////////////////////////////////////////////////////////////////////
             // Implements: IListView Profile Backup / Restore
-            //! 内部データをバックアップ
+            // 内部データをバックアップ
             PageListView.prototype.backup = function (key) {
                 return this._scrollMgr.backup(key);
             };
-            //! 内部データをリストア
+            // 内部データをリストア
             PageListView.prototype.restore = function (key, rebuild) {
                 if (rebuild === void 0) { rebuild = true; }
                 var retval = this._scrollMgr.restore(key, rebuild);
@@ -740,16 +748,16 @@ var CDP;
                 }
                 return retval;
             };
-            //! バックアップデータの有無
+            // バックアップデータの有無
             PageListView.prototype.hasBackup = function (key) {
                 return this._scrollMgr.hasBackup(key);
             };
-            //! バックアップデータの破棄
+            // バックアップデータの破棄
             PageListView.prototype.clearBackup = function (key) {
                 return this._scrollMgr.clearBackup(key);
             };
             Object.defineProperty(PageListView.prototype, "backupData", {
-                //! バックアップデータにアクセス
+                // バックアップデータにアクセス
                 get: function () {
                     return this._scrollMgr.backupData;
                 },
@@ -758,59 +766,59 @@ var CDP;
             });
             ///////////////////////////////////////////////////////////////////////
             // Implements: IListView Scroll
-            //! スクロールイベントハンドラ設定/解除
+            // スクロールイベントハンドラ設定/解除
             PageListView.prototype.setScrollHandler = function (handler, on) {
                 this._scrollMgr.setScrollHandler(handler, on);
             };
-            //! スクロール終了イベントハンドラ設定/解除
+            // スクロール終了イベントハンドラ設定/解除
             PageListView.prototype.setScrollStopHandler = function (handler, on) {
                 this._scrollMgr.setScrollStopHandler(handler, on);
             };
-            //! スクロール位置を取得
+            // スクロール位置を取得
             PageListView.prototype.getScrollPos = function () {
                 return this._scrollMgr.getScrollPos();
             };
-            //! スクロール位置の最大値を取得
+            // スクロール位置の最大値を取得
             PageListView.prototype.getScrollPosMax = function () {
                 return this._scrollMgr.getScrollPosMax();
             };
-            //! スクロール位置を指定
+            // スクロール位置を指定
             PageListView.prototype.scrollTo = function (pos, animate, time) {
                 this._scrollMgr.scrollTo(pos, animate, time);
             };
-            //! 指定された ListItemView の表示を保証
+            // 指定された ListItemView の表示を保証
             PageListView.prototype.ensureVisible = function (index, options) {
                 this._scrollMgr.ensureVisible(index, options);
             };
             ///////////////////////////////////////////////////////////////////////
             // implements: IListViewFramework:
-            //! Scroll Map の高さを取得
+            // Scroll Map の高さを取得
             PageListView.prototype.getScrollMapHeight = function () {
                 return this._scrollMgr.getScrollMapHeight();
             };
-            //! Scroll Map の高さを更新. framework が使用する.
+            // Scroll Map の高さを更新. framework が使用する.
             PageListView.prototype.updateScrollMapHeight = function (delta) {
                 this._scrollMgr.updateScrollMapHeight(delta);
             };
-            //! 内部 Profile の更新. framework が使用する.
+            // 内部 Profile の更新. framework が使用する.
             PageListView.prototype.updateProfiles = function (from) {
                 this._scrollMgr.updateProfiles(from);
             };
-            //! Scroll Map Element を取得. framework が使用する.
+            // Scroll Map Element を取得. framework が使用する.
             PageListView.prototype.getScrollMapElement = function () {
                 return this._scrollMgr.getScrollMapElement();
             };
-            //! リサイクル可能な Element を取得. framework が使用する.
+            // リサイクル可能な Element を取得. framework が使用する.
             PageListView.prototype.findRecycleElements = function () {
                 return this._scrollMgr.findRecycleElements();
             };
-            //! ListViewOptions を取得. framework が使用する.
+            // ListViewOptions を取得. framework が使用する.
             PageListView.prototype.getListViewOptions = function () {
                 return this._scrollMgr.getListViewOptions();
             };
             ///////////////////////////////////////////////////////////////////////
             // private method:
-            //! ページの基準値を取得
+            // ページの基準値を取得
             PageListView.prototype.getPageBaseHeight = function () {
                 return $(window).height() - parseInt(this.$page.css("padding-top"), 10);
             };
@@ -845,48 +853,48 @@ var CDP;
             }
             ///////////////////////////////////////////////////////////////////////
             // Implements: IExpandableListView
-            //! 新規 GroupProfile を作成
+            // 新規 GroupProfile を作成
             PageExpandableListView.prototype.newGroup = function (id) {
                 return this._expandManager.newGroup(id);
             };
-            //! 登録済み Group を取得
+            // 登録済み Group を取得
             PageExpandableListView.prototype.getGroup = function (id) {
                 return this._expandManager.getGroup(id);
             };
-            //! 第1階層の Group 登録
+            // 第1階層の Group 登録
             PageExpandableListView.prototype.registerTopGroup = function (topGroup) {
                 this._expandManager.registerTopGroup(topGroup);
             };
-            //! 第1階層の Group を取得
+            // 第1階層の Group を取得
             PageExpandableListView.prototype.getTopGroups = function () {
                 return this._expandManager.getTopGroups();
             };
-            //! すべてのグループを展開 (1階層)
+            // すべてのグループを展開 (1階層)
             PageExpandableListView.prototype.expandAll = function () {
                 this._expandManager.expandAll();
             };
-            //! すべてのグループを収束 (1階層)
+            // すべてのグループを収束 (1階層)
             PageExpandableListView.prototype.collapseAll = function (delay) {
                 this._expandManager.collapseAll(delay);
             };
-            //! 展開中か判定
+            // 展開中か判定
             PageExpandableListView.prototype.isExpanding = function () {
                 return this._expandManager.isExpanding();
             };
-            //! 収束中か判定
+            // 収束中か判定
             PageExpandableListView.prototype.isCollapsing = function () {
                 return this._expandManager.isCollapsing();
             };
-            //! 開閉中か判定
+            // 開閉中か判定
             PageExpandableListView.prototype.isSwitching = function () {
                 return this._expandManager.isSwitching();
             };
             Object.defineProperty(PageExpandableListView.prototype, "layoutKey", {
-                //! layout key を取得
+                // layout key を取得
                 get: function () {
                     return this._expandManager.layoutKey;
                 },
-                //! layout key を設定
+                // layout key を設定
                 set: function (key) {
                     this._expandManager.layoutKey = key;
                 },
@@ -895,16 +903,16 @@ var CDP;
             });
             ///////////////////////////////////////////////////////////////////////
             // Override: PageListView
-            //! データを破棄
+            // データを破棄
             PageExpandableListView.prototype.release = function () {
                 _super.prototype.release.call(this);
                 this._expandManager.release();
             };
-            //! 内部データをバックアップ
+            // 内部データをバックアップ
             PageExpandableListView.prototype.backup = function (key) {
                 return this._expandManager.backup(key);
             };
-            //! 内部データをリストア
+            // 内部データをリストア
             PageExpandableListView.prototype.restore = function (key, rebuild) {
                 if (rebuild === void 0) { rebuild = true; }
                 return this._expandManager.restore(key, rebuild);

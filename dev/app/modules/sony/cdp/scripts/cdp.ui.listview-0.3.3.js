@@ -1,17 +1,28 @@
-﻿
+﻿/*!
+ * cdp.ui.listview.js 0.3.3
+ *
+ * Copyright 2015 Sony Corporation
+ * Released under the MIT license
+ *
+ * Date: 2015-07-16T20:01:02
+ */
 
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
         // AMD
-        define(["jquery", "backbone"], function () {
-            return factory(root.CDP || (root.CDP = {}));
+        define(["jquery", "underscore", "backbone"], function ($, _, Backbone) {
+            return factory(root.CDP || (root.CDP = {}), $, _, Backbone);
         });
+    }
+    else if (typeof exports === "object") {
+        // CommonJS
+        module.exports = factory(root.CDP || (root.CDP = {}), require("jquery"), require("underscore"), require("backbone"));
     }
     else {
         // Browser globals
-        factory(root.CDP || (root.CDP = {}));
+        factory(root.CDP || (root.CDP = {}), root.$, root._, root.Backbone);
     }
-}(this, function (CDP) {
+}(((this || 0).self || global), function (CDP, $, _, Backbone) {
     CDP.UI = CDP.UI || {};
     var CDP;
 (function (CDP) {
@@ -177,15 +188,15 @@ var CDP;
                 this._height = _height;
                 this._initializer = _initializer;
                 this._info = _info;
-                this._index = null; //!< global index
-                this._pageIndex = null; //!< 所属する page index
-                this._offset = null; //!< global offset
-                this._$base = null; //!< 土台となる DOM インスタンスを格納
-                this._instance = null; //!< ListItemView インスタンスを格納
+                this._index = null; //< global index
+                this._pageIndex = null; //< 所属する page index
+                this._offset = null; //< global offset
+                this._$base = null; //< 土台となる DOM インスタンスを格納
+                this._instance = null; //< ListItemView インスタンスを格納
             }
             ///////////////////////////////////////////////////////////////////////
             // public methods
-            //! 有効化
+            // 有効化
             LineProfile.prototype.activate = function () {
                 if (null == this._instance) {
                     var options;
@@ -203,7 +214,7 @@ var CDP;
                     this._$base.css("visibility", "visible");
                 }
             };
-            //! 不可視化
+            // 不可視化
             LineProfile.prototype.hide = function () {
                 if (null == this._instance) {
                     this.activate();
@@ -212,7 +223,7 @@ var CDP;
                     this._$base.css("visibility", "hidden");
                 }
             };
-            //! 無効化
+            // 無効化
             LineProfile.prototype.inactivate = function () {
                 if (null != this._instance) {
                     // xperia AX Jelly Bean (4.1.2)にて、 hidden element の削除でメモリーリークするため可視化する。
@@ -226,17 +237,17 @@ var CDP;
                     this._$base = null;
                 }
             };
-            //! 更新
+            // 更新
             LineProfile.prototype.refresh = function () {
                 if (null != this._instance) {
                     this._instance.render();
                 }
             };
-            //! 有効無効判定
+            // 有効無効判定
             LineProfile.prototype.isActive = function () {
                 return null != this._instance;
             };
-            //! 高さ情報の更新. ListItemView からコールされる。
+            // 高さ情報の更新. ListItemView からコールされる。
             LineProfile.prototype.updateHeight = function (newHeight, options) {
                 var delta = newHeight - this._height;
                 this._height = newHeight;
@@ -245,7 +256,7 @@ var CDP;
                     this._owner.updateProfiles(this._index);
                 }
             };
-            //! z-index のリセット. ScrollManager.removeItem() からコールされる。
+            // z-index のリセット. ScrollManager.removeItem() からコールされる。
             LineProfile.prototype.resetDepth = function () {
                 if (null != this._instance) {
                     this._$base.css("z-index", this._owner.getListViewOptions().baseDepth);
@@ -254,7 +265,7 @@ var CDP;
             Object.defineProperty(LineProfile.prototype, "height", {
                 ///////////////////////////////////////////////////////////////////////
                 // getter/setter methods
-                //! getter: ラインの高さ
+                // getter: ラインの高さ
                 get: function () {
                     return this._height;
                 },
@@ -262,11 +273,11 @@ var CDP;
                 configurable: true
             });
             Object.defineProperty(LineProfile.prototype, "index", {
-                //! getter: global index
+                // getter: global index
                 get: function () {
                     return this._index;
                 },
-                //! setter: global index
+                // setter: global index
                 set: function (index) {
                     this._index = index;
                     if (null != this._$base) {
@@ -277,11 +288,11 @@ var CDP;
                 configurable: true
             });
             Object.defineProperty(LineProfile.prototype, "pageIndex", {
-                //! getter: 所属ページ index
+                // getter: 所属ページ index
                 get: function () {
                     return this._pageIndex;
                 },
-                //! setter: 所属ページ index
+                // setter: 所属ページ index
                 set: function (index) {
                     this._pageIndex = index;
                     if (null != this._$base) {
@@ -292,11 +303,11 @@ var CDP;
                 configurable: true
             });
             Object.defineProperty(LineProfile.prototype, "offset", {
-                //! getter: line offset
+                // getter: line offset
                 get: function () {
                     return this._offset;
                 },
-                //! setter: line offset
+                // setter: line offset
                 set: function (offset) {
                     this._offset = offset;
                     if (null != this._$base) {
@@ -307,7 +318,7 @@ var CDP;
                 configurable: true
             });
             Object.defineProperty(LineProfile.prototype, "info", {
-                //! getter: info
+                // getter: info
                 get: function () {
                     return this._info;
                 },
@@ -316,7 +327,7 @@ var CDP;
             });
             ///////////////////////////////////////////////////////////////////////
             // private methods
-            //! Base jQuery オブジェクトの生成
+            // Base jQuery オブジェクトの生成
             LineProfile.prototype.prepareBaseElement = function () {
                 var $base;
                 var $map = this._owner.getScrollMapElement();
@@ -345,19 +356,19 @@ var CDP;
                 this.updateOffset($base);
                 return $base;
             };
-            //! global index の更新
+            // global index の更新
             LineProfile.prototype.updateIndex = function ($base) {
                 if ($base.attr(_Config.DATA_CONTAINER_INDEX) !== this._index.toString()) {
                     $base.attr(_Config.DATA_CONTAINER_INDEX, this._index.toString());
                 }
             };
-            //! page index の更新
+            // page index の更新
             LineProfile.prototype.updatePageIndex = function ($base) {
                 if ($base.attr(_Config.DATA_PAGE_INDEX) !== this._pageIndex.toString()) {
                     $base.attr(_Config.DATA_PAGE_INDEX, this._pageIndex.toString());
                 }
             };
-            //! offset の更新
+            // offset の更新
             LineProfile.prototype.updateOffset = function ($base) {
                 var transform = {};
                 if (this._owner.getListViewOptions().enableTransformOffset) {
@@ -400,11 +411,11 @@ var CDP;
             function GroupProfile(_id, _owner) {
                 this._id = _id;
                 this._owner = _owner;
-                this._parent = null; //!< 親 GroupProfile インスタンス
-                this._children = []; //!< 子 GroupProfile インスタンス
-                this._expanded = false; //!< 開閉情報
-                this._status = "unregistered"; //!< _owner への登録状態 [ unregistered | registered ]
-                this._mapLines = {}; //!< 自身が管轄する LineProfile を key とともに格納
+                this._parent = null; //< 親 GroupProfile インスタンス
+                this._children = []; //< 子 GroupProfile インスタンス
+                this._expanded = false; //< 開閉情報
+                this._status = "unregistered"; //< _owner への登録状態 [ unregistered | registered ]
+                this._mapLines = {}; //< 自身が管轄する LineProfile を key とともに格納
             }
             ///////////////////////////////////////////////////////////////////////
             // public method
@@ -768,11 +779,11 @@ var CDP;
          */
         var StatusManager = (function () {
             function StatusManager() {
-                this._status = {}; //!< statusScope() に使用される状態管理オブジェクト
+                this._status = {}; //< statusScope() に使用される状態管理オブジェクト
             }
             ///////////////////////////////////////////////////////////////////////
             // Implements: IStatusManager
-            //! 状態変数の参照カウントのインクリメント
+            // 状態変数の参照カウントのインクリメント
             StatusManager.prototype.statusAddRef = function (status) {
                 if (!this._status[status]) {
                     this._status[status] = 1;
@@ -782,7 +793,7 @@ var CDP;
                 }
                 return this._status[status];
             };
-            //! 状態変数の参照カウントのデクリメント
+            // 状態変数の参照カウントのデクリメント
             StatusManager.prototype.statusRelease = function (status) {
                 var retval;
                 if (!this._status[status]) {
@@ -797,13 +808,13 @@ var CDP;
                 }
                 return retval;
             };
-            //! 処理スコープ毎に状態変数を設定
+            // 処理スコープ毎に状態変数を設定
             StatusManager.prototype.statusScope = function (status, callback) {
                 this.statusAddRef(status);
                 callback();
                 this.statusRelease(status);
             };
-            //! 指定した状態中であるか確認
+            // 指定した状態中であるか確認
             StatusManager.prototype.isStatusIn = function (status) {
                 return !!this._status[status];
             };
@@ -826,15 +837,15 @@ var CDP;
          */
         var PageProfile = (function () {
             function PageProfile() {
-                this._index = 0; //!< page index
-                this._offset = 0; //!< page の Top からのオフセット
-                this._height = 0; //!< page の高さ
-                this._lines = []; //!< page 内で管理される LineProfile
-                this._status = "inactive"; //!< page の状態 [ inactive | hidden | active ]
+                this._index = 0; //< page index
+                this._offset = 0; //< page の Top からのオフセット
+                this._height = 0; //< page の高さ
+                this._lines = []; //< page 内で管理される LineProfile
+                this._status = "inactive"; //< page の状態 [ inactive | hidden | active ]
             }
             ///////////////////////////////////////////////////////////////////////
             // public methods
-            //! 有効化
+            // 有効化
             PageProfile.prototype.activate = function () {
                 if ("active" !== this._status) {
                     this._lines.forEach(function (line) {
@@ -843,7 +854,7 @@ var CDP;
                 }
                 this._status = "active";
             };
-            //! 無可視化
+            // 無可視化
             PageProfile.prototype.hide = function () {
                 if ("hidden" !== this._status) {
                     this._lines.forEach(function (line) {
@@ -852,7 +863,7 @@ var CDP;
                 }
                 this._status = "hidden";
             };
-            //! 無効化
+            // 無効化
             PageProfile.prototype.inactivate = function () {
                 if ("inactive" !== this._status) {
                     this._lines.forEach(function (line) {
@@ -861,12 +872,12 @@ var CDP;
                 }
                 this._status = "inactive";
             };
-            //! LineProfile を設定
+            // LineProfile を設定
             PageProfile.prototype.push = function (line) {
                 this._lines.push(line);
                 this._height += line.height;
             };
-            //! 配下の LineProfile すべてが有効でない場合、Page ステータスを無効にする
+            // 配下の LineProfile すべてが有効でない場合、Page ステータスを無効にする
             PageProfile.prototype.normalize = function () {
                 var enableAll = _.every(this._lines, function (line) {
                     return line.isActive();
@@ -875,7 +886,7 @@ var CDP;
                     this._status = "inactive";
                 }
             };
-            //! LineProfile を取得
+            // LineProfile を取得
             PageProfile.prototype.getLineProfile = function (index) {
                 if (0 <= index && index < this._lines.length) {
                     return this._lines[index];
@@ -884,22 +895,22 @@ var CDP;
                     return null;
                 }
             };
-            //! 最初の LineProfile を取得
+            // 最初の LineProfile を取得
             PageProfile.prototype.getLineProfileFirst = function () {
                 return this.getLineProfile(0);
             };
-            //! 最後の LineProfile を取得
+            // 最後の LineProfile を取得
             PageProfile.prototype.getLineProfileLast = function () {
                 return this.getLineProfile(this._lines.length - 1);
             };
             Object.defineProperty(PageProfile.prototype, "index", {
                 ///////////////////////////////////////////////////////////////////////
                 // getter/setter methods
-                //! getter: page index
+                // getter: page index
                 get: function () {
                     return this._index;
                 },
-                //! setter: page index
+                // setter: page index
                 set: function (index) {
                     this._index = index;
                 },
@@ -907,11 +918,11 @@ var CDP;
                 configurable: true
             });
             Object.defineProperty(PageProfile.prototype, "offset", {
-                //! getter: page offset
+                // getter: page offset
                 get: function () {
                     return this._offset;
                 },
-                //! setter: page offset
+                // setter: page offset
                 set: function (offset) {
                     this._offset = offset;
                 },
@@ -919,7 +930,7 @@ var CDP;
                 configurable: true
             });
             Object.defineProperty(PageProfile.prototype, "height", {
-                //! getter: 実際にページに割り当てられている高さ
+                // getter: 実際にページに割り当てられている高さ
                 get: function () {
                     return this._height;
                 },
@@ -927,7 +938,7 @@ var CDP;
                 configurable: true
             });
             Object.defineProperty(PageProfile.prototype, "status", {
-                //! getter: 状態取得
+                // getter: 状態取得
                 get: function () {
                     return this._status;
                 },
@@ -959,22 +970,22 @@ var CDP;
                 this._$target = $(element);
                 this._listviewOptions = options;
             }
-            //! Scroller の型を取得
+            // Scroller の型を取得
             ScrollerElement.prototype.getType = function () {
                 return "element-overflow";
             };
-            //! position 取得
+            // position 取得
             ScrollerElement.prototype.getPos = function () {
                 return this._$target.scrollTop();
             };
-            //! position の最大値を取得
+            // position の最大値を取得
             ScrollerElement.prototype.getPosMax = function () {
                 if (null == this._$scrollMap) {
                     this._$scrollMap = this._$target.children().first();
                 }
                 return _Utils.max(this._$scrollMap.height() - this._$target.height(), 0);
             };
-            //! イベント登録
+            // イベント登録
             ScrollerElement.prototype.on = function (type, func) {
                 switch (type) {
                     case "scroll":
@@ -988,7 +999,7 @@ var CDP;
                         break;
                 }
             };
-            //! イベント登録解除
+            // イベント登録解除
             ScrollerElement.prototype.off = function (type, func) {
                 switch (type) {
                     case "scroll":
@@ -1002,7 +1013,7 @@ var CDP;
                         break;
                 }
             };
-            //! スクロール位置を指定
+            // スクロール位置を指定
             ScrollerElement.prototype.scrollTo = function (pos, animate, time) {
                 if (!this._listviewOptions.enableAnimation || !animate) {
                     this._$target.scrollTop(pos);
@@ -1016,16 +1027,16 @@ var CDP;
                     }, time);
                 }
             };
-            //! Scroller の状態更新
+            // Scroller の状態更新
             ScrollerElement.prototype.update = function () {
                 // noop.
             };
-            //! Scroller の破棄
+            // Scroller の破棄
             ScrollerElement.prototype.destroy = function () {
                 this._$scrollMap = null;
                 this._$target = null;
             };
-            //! factory 取得
+            // factory 取得
             ScrollerElement.getFactory = function () {
                 var factory = function (element, options) {
                     return new ScrollerElement(element, options);
@@ -1050,7 +1061,7 @@ var CDP;
          * @brief Browser Native の Scroller クラス
          */
         var ScrollerNative = (function () {
-            //! constructor
+            // constructor
             function ScrollerNative(options) {
                 this._$body = null;
                 this._$target = null;
@@ -1060,19 +1071,19 @@ var CDP;
                 this._$body = $("body");
                 this._listviewOptions = options;
             }
-            //! Scroller の型を取得
+            // Scroller の型を取得
             ScrollerNative.prototype.getType = function () {
                 return "native-scroll";
             };
-            //! position 取得
+            // position 取得
             ScrollerNative.prototype.getPos = function () {
                 return this._$target.scrollTop();
             };
-            //! position の最大値を取得
+            // position の最大値を取得
             ScrollerNative.prototype.getPosMax = function () {
                 return _Utils.max(this._$target.height() - window.innerHeight, 0);
             };
-            //! イベント登録
+            // イベント登録
             ScrollerNative.prototype.on = function (type, func) {
                 switch (type) {
                     case "scroll":
@@ -1086,7 +1097,7 @@ var CDP;
                         break;
                 }
             };
-            //! イベント登録解除
+            // イベント登録解除
             ScrollerNative.prototype.off = function (type, func) {
                 switch (type) {
                     case "scroll":
@@ -1100,7 +1111,7 @@ var CDP;
                         break;
                 }
             };
-            //! スクロール位置を指定
+            // スクロール位置を指定
             ScrollerNative.prototype.scrollTo = function (pos, animate, time) {
                 if (!this._listviewOptions.enableAnimation || !animate) {
                     this._$body.scrollTop(pos);
@@ -1114,16 +1125,16 @@ var CDP;
                     }, time);
                 }
             };
-            //! Scroller の状態更新
+            // Scroller の状態更新
             ScrollerNative.prototype.update = function () {
                 // noop.
             };
-            //! Scroller の破棄
+            // Scroller の破棄
             ScrollerNative.prototype.destroy = function () {
                 this._$scrollMap = null;
                 this._$target = null;
             };
-            //! factory 取得
+            // factory 取得
             ScrollerNative.getFactory = function () {
                 var factory = function (element, options) {
                     return new ScrollerNative(options);
@@ -1168,11 +1179,11 @@ var CDP;
                     console.error(TAG + "iscroll module doesn't load.");
                 }
             }
-            //! Scroller の型を取得
+            // Scroller の型を取得
             ScrollerIScroll.prototype.getType = function () {
                 return "iscroll";
             };
-            //! position 取得
+            // position 取得
             ScrollerIScroll.prototype.getPos = function () {
                 var pos = this._iscroll.getComputedPosition().y;
                 if (_.isNaN(pos)) {
@@ -1183,11 +1194,11 @@ var CDP;
                 }
                 return pos;
             };
-            //! position の最大値を取得
+            // position の最大値を取得
             ScrollerIScroll.prototype.getPosMax = function () {
                 return _Utils.max(-this._iscroll.maxScrollY, 0);
             };
-            //! イベント登録
+            // イベント登録
             ScrollerIScroll.prototype.on = function (type, func) {
                 switch (type) {
                     case "scroll":
@@ -1201,7 +1212,7 @@ var CDP;
                         break;
                 }
             };
-            //! イベント登録解除
+            // イベント登録解除
             ScrollerIScroll.prototype.off = function (type, func) {
                 switch (type) {
                     case "scroll":
@@ -1215,7 +1226,7 @@ var CDP;
                         break;
                 }
             };
-            //! スクロール位置を指定
+            // スクロール位置を指定
             ScrollerIScroll.prototype.scrollTo = function (pos, animate, time) {
                 var time = 0;
                 if (this._listviewOptions.enableAnimation && animate) {
@@ -1223,7 +1234,7 @@ var CDP;
                 }
                 this._iscroll.scrollTo(0, -pos, time);
             };
-            //! Scroller の状態更新
+            // Scroller の状態更新
             ScrollerIScroll.prototype.update = function () {
                 var _this = this;
                 if (this._$owner) {
@@ -1250,14 +1261,14 @@ var CDP;
                     this._refreshTimerId = setTimeout(proc, this._listviewOptions.scrollMapRefreshInterval);
                 }
             };
-            //! Scroller の破棄
+            // Scroller の破棄
             ScrollerIScroll.prototype.destroy = function () {
                 this._$scroller = null;
                 this._$wrapper = null;
                 this._iscroll.destroy();
                 this._$owner = null;
             };
-            //! factory 取得
+            // factory 取得
             ScrollerIScroll.getFactory = function (options) {
                 var defaultOpt = {
                     scrollX: false,
@@ -1323,20 +1334,20 @@ var CDP;
             }
             ///////////////////////////////////////////////////////////////////////
             // Override: ListItemView
-            //! 描画: framework から呼び出されるため、オーバーライド必須
+            // 描画: framework から呼び出されるため、オーバーライド必須
             ListItemView.prototype.render = function () {
                 console.warn(TAG + "need override 'render()' method.");
                 return this;
             };
-            //! 自身の Line インデックスを取得
+            // 自身の Line インデックスを取得
             ListItemView.prototype.getIndex = function () {
                 return this._lineProfile.index;
             };
-            //! 自身に指定された高さを取得
+            // 自身に指定された高さを取得
             ListItemView.prototype.getSpecifiedHeight = function () {
                 return this._lineProfile.height;
             };
-            //! child node が存在するか判定
+            // child node が存在するか判定
             ListItemView.prototype.hasChildNode = function () {
                 if (!this.$el) {
                     return false;
@@ -1363,7 +1374,7 @@ var CDP;
             };
             ///////////////////////////////////////////////////////////////////////
             // Override: Backbone.View
-            //! 開放
+            // 開放
             ListItemView.prototype.remove = function () {
                 // xperia AX Jelly Bean (4.1.2)にて、メモリーリークを軽減させる効果
                 this.$el.find("figure").css("background-image", "none");
@@ -1378,7 +1389,7 @@ var CDP;
             Object.defineProperty(ListItemView.prototype, "owner", {
                 ///////////////////////////////////////////////////////////////////////
                 // short cut methods
-                //! Owner 取得
+                // Owner 取得
                 get: function () {
                     return this._owner;
                 },
@@ -1415,25 +1426,25 @@ var CDP;
              */
             function ScrollManager(options) {
                 var _this = this;
-                this._$root = null; //!< Scroll 対象のルートオブジェクト
-                this._$map = null; //!< Scroll Map element を格納
-                this._mapHeight = 0; //!< Scroll Map の高さを格納 (_$map の状態に依存させない)
-                this._scroller = null; //!< Scroll に使用する IScroller インスタンス
-                this._settings = null; //!< ScrollManager オプションを格納
-                this._active = true; //!< UI 表示中は true に指定
-                this._scrollEventHandler = null; //!< Scroll Event Handler
-                this._scrollStopEventHandler = null; //!< Scroll Stop Event Handler
-                this._baseHeight = 0; //!< 高さの基準値
-                this._lines = []; //!< 管理下にある LineProfile 配列
-                this._pages = []; //!< 管理下にある PageProfile 配列
-                //! 最新の表示領域情報を格納 (Scroll 中の更新処理に使用)
+                this._$root = null; //< Scroll 対象のルートオブジェクト
+                this._$map = null; //< Scroll Map element を格納
+                this._mapHeight = 0; //< Scroll Map の高さを格納 (_$map の状態に依存させない)
+                this._scroller = null; //< Scroll に使用する IScroller インスタンス
+                this._settings = null; //< ScrollManager オプションを格納
+                this._active = true; //< UI 表示中は true に指定
+                this._scrollEventHandler = null; //< Scroll Event Handler
+                this._scrollStopEventHandler = null; //< Scroll Stop Event Handler
+                this._baseHeight = 0; //< 高さの基準値
+                this._lines = []; //< 管理下にある LineProfile 配列
+                this._pages = []; //< 管理下にある PageProfile 配列
+                // 最新の表示領域情報を格納 (Scroll 中の更新処理に使用)
                 this._lastActivePageContext = {
                     index: 0,
                     from: 0,
                     to: 0,
                     pos: 0,
                 };
-                this._backup = {}; //!< データの backup 領域. key と _lines を格納。派生クラスで拡張可能。
+                this._backup = {}; //< データの backup 領域. key と _lines を格納。派生クラスで拡張可能。
                 // ListViewOptions 既定値
                 var defOptions = {
                     scrollerFactory: UI.ScrollerNative.getFactory(),
@@ -1462,7 +1473,7 @@ var CDP;
             }
             ///////////////////////////////////////////////////////////////////////
             // public method
-            //! 内部オブジェクトの初期化
+            // 内部オブジェクトの初期化
             ScrollManager.prototype.initialize = function ($root, height) {
                 this._$root = $root;
                 this._$map = $root.hasClass(_Config.SCROLL_MAP_CLASS) ? $root : $root.find(_Config.SCROLL_MAP_SELECTOR);
@@ -1470,7 +1481,7 @@ var CDP;
                 this.setBaseHeight(height);
                 this.setScrollerCondition();
             };
-            //! 内部オブジェクトの破棄
+            // 内部オブジェクトの破棄
             ScrollManager.prototype.destroy = function () {
                 if (this._scroller) {
                     this.resetScrollerCondition();
@@ -1481,19 +1492,22 @@ var CDP;
                 this._$map = null;
                 this._$root = null;
             };
-            //! ページの基準値を取得
+            // ページの基準値を取得
             ScrollManager.prototype.setBaseHeight = function (height) {
                 this._baseHeight = height;
+                if (this._baseHeight <= 0) {
+                    console.warn(TAG + "invalid base height: " + this._baseHeight);
+                }
                 if (this._scroller) {
                     this._scroller.update();
                 }
             };
-            //! active 状態設定
+            // active 状態設定
             ScrollManager.prototype.setActiveState = function (active) {
                 this._active = active;
                 this.treatScrollPosition();
             };
-            //! active 状態判定
+            // active 状態判定
             ScrollManager.prototype.isActive = function () {
                 return this._active;
             };
@@ -1544,7 +1558,7 @@ var CDP;
                     }
                 }
             };
-            //! inactive 用 Map の生成
+            // inactive 用 Map の生成
             ScrollManager.prototype.prepareInactiveMap = function () {
                 var $parent = this._$map.parent();
                 var $inactiveMap = $parent.find(_Config.INACTIVE_CLASS_SELECTOR);
@@ -1567,15 +1581,15 @@ var CDP;
             };
             ///////////////////////////////////////////////////////////////////////
             // Implements: IListView プロファイル管理
-            //! 初期化済みか判定
+            // 初期化済みか判定
             ScrollManager.prototype.isInitialized = function () {
                 return !!this._$root;
             };
-            //! プロパティを指定して、LineProfile を管理
+            // プロパティを指定して、LineProfile を管理
             ScrollManager.prototype.addItem = function (height, initializer, info, insertTo) {
                 this._addLine(new UI.LineProfile(this, Math.floor(height), initializer, info), insertTo);
             };
-            //! プロパティを指定して、LineProfile を管理. 登録 framework が使用する
+            // プロパティを指定して、LineProfile を管理. 登録 framework が使用する
             ScrollManager.prototype._addLine = function (_line, insertTo) {
                 var i, n;
                 var deltaHeight = 0;
@@ -1606,7 +1620,7 @@ var CDP;
                 // offset の再計算
                 this.updateProfiles(insertTo);
             };
-            //! 指定した Item を削除
+            // 指定した Item を削除
             ScrollManager.prototype.removeItem = function (index, size, delay) {
                 var _this = this;
                 if (null == size) {
@@ -1699,7 +1713,7 @@ var CDP;
                 }
                 return this._lines[index].info;
             };
-            //! アクティブページを更新
+            // アクティブページを更新
             ScrollManager.prototype.refresh = function () {
                 var _this = this;
                 var targets = {};
@@ -1821,19 +1835,19 @@ var CDP;
                 this._lastActivePageContext.to = this._pages[currentPageIndex].getLineProfileLast().index;
                 this._lastActivePageContext.index = currentPageIndex;
             };
-            //! 未アサインページを構築
+            // 未アサインページを構築
             ScrollManager.prototype.update = function () {
                 var index = this._pages.length;
                 this.assignPage(index);
                 this.refresh();
             };
-            //! ページアサインを再構成
+            // ページアサインを再構成
             ScrollManager.prototype.rebuild = function () {
                 this.clearPage();
                 this.assignPage();
                 this.refresh();
             };
-            //! 管轄データを破棄
+            // 管轄データを破棄
             ScrollManager.prototype.release = function () {
                 this._lines.forEach(function (line) {
                     line.inactivate();
@@ -1847,7 +1861,7 @@ var CDP;
             };
             ///////////////////////////////////////////////////////////////////////
             // Implements: IListView Backup / Restore
-            //! 内部データをバックアップ
+            // 内部データをバックアップ
             ScrollManager.prototype.backup = function (key) {
                 if (null == this._backup[key]) {
                     this._backup[key] = {
@@ -1856,7 +1870,7 @@ var CDP;
                 }
                 return true;
             };
-            //! 内部データをリストア
+            // 内部データをリストア
             ScrollManager.prototype.restore = function (key, rebuild) {
                 if (rebuild === void 0) { rebuild = true; }
                 if (null == this._backup[key]) {
@@ -1871,7 +1885,7 @@ var CDP;
                 }
                 return true;
             };
-            //! バックアップデータの有無
+            // バックアップデータの有無
             ScrollManager.prototype.hasBackup = function (key) {
                 if (null != this._backup[key]) {
                     return true;
@@ -1880,7 +1894,7 @@ var CDP;
                     return false;
                 }
             };
-            //! バックアップデータの破棄
+            // バックアップデータの破棄
             ScrollManager.prototype.clearBackup = function (key) {
                 if (null == key) {
                     this._backup = {};
@@ -1895,7 +1909,7 @@ var CDP;
                 }
             };
             Object.defineProperty(ScrollManager.prototype, "backupData", {
-                //! バックアップデータにアクセス
+                // バックアップデータにアクセス
                 get: function () {
                     return this._backup;
                 },
@@ -1904,7 +1918,7 @@ var CDP;
             });
             ///////////////////////////////////////////////////////////////////////
             // Implements: IListView Scroll
-            //! スクロールイベントハンドラ設定/解除
+            // スクロールイベントハンドラ設定/解除
             ScrollManager.prototype.setScrollHandler = function (handler, on) {
                 if (this._scroller) {
                     if (on) {
@@ -1915,7 +1929,7 @@ var CDP;
                     }
                 }
             };
-            //! スクロール終了イベントハンドラ設定/解除
+            // スクロール終了イベントハンドラ設定/解除
             ScrollManager.prototype.setScrollStopHandler = function (handler, on) {
                 if (this._scroller) {
                     if (on) {
@@ -1926,15 +1940,15 @@ var CDP;
                     }
                 }
             };
-            //! スクロール位置を取得
+            // スクロール位置を取得
             ScrollManager.prototype.getScrollPos = function () {
                 return this._scroller ? this._scroller.getPos() : 0;
             };
-            //! スクロール位置の最大値を取得
+            // スクロール位置の最大値を取得
             ScrollManager.prototype.getScrollPosMax = function () {
                 return this._scroller ? this._scroller.getPosMax() : 0;
             };
-            //! スクロール位置を指定
+            // スクロール位置を指定
             ScrollManager.prototype.scrollTo = function (pos, animate, time) {
                 if (this._scroller) {
                     if (pos < 0) {
@@ -1952,7 +1966,7 @@ var CDP;
                     }
                 }
             };
-            //! 指定された ListItemView の表示を保証
+            // 指定された ListItemView の表示を保証
             ScrollManager.prototype.ensureVisible = function (index, options) {
                 var _this = this;
                 if (index < 0 || this._lines.length <= index) {
@@ -2047,11 +2061,11 @@ var CDP;
             };
             ///////////////////////////////////////////////////////////////////////
             // implements: IListViewFramework:
-            //! Scroll Map の高さを取得
+            // Scroll Map の高さを取得
             ScrollManager.prototype.getScrollMapHeight = function () {
                 return this._$map ? this._mapHeight : 0;
             };
-            //! Scroll Map の高さを更新. framework が使用する.
+            // Scroll Map の高さを更新. framework が使用する.
             ScrollManager.prototype.updateScrollMapHeight = function (delta) {
                 if (this._$map) {
                     this._mapHeight += delta;
@@ -2062,7 +2076,7 @@ var CDP;
                     this._$map.height(this._mapHeight);
                 }
             };
-            //! 内部 Profile の更新. framework が使用する.
+            // 内部 Profile の更新. framework が使用する.
             ScrollManager.prototype.updateProfiles = function (from) {
                 var i, n;
                 var last;
@@ -2078,39 +2092,40 @@ var CDP;
                     }
                 }
             };
-            //! Scroll Map Element を取得. framework が使用する.
+            // Scroll Map Element を取得. framework が使用する.
             ScrollManager.prototype.getScrollMapElement = function () {
                 return this._$map || $("");
             };
-            //! リサイクル可能な Element を取得. framework が使用する.
+            // リサイクル可能な Element を取得. framework が使用する.
             ScrollManager.prototype.findRecycleElements = function () {
                 return this._$map ? this._$map.find(_Config.RECYCLE_CLASS_SELECTOR) : $("");
             };
-            //! ListViewOptions を取得. framework が使用する.
+            // ListViewOptions を取得. framework が使用する.
             ScrollManager.prototype.getListViewOptions = function () {
                 return this._settings;
             };
             ///////////////////////////////////////////////////////////////////////
             // private method:
-            //! Scroller 用環境設定
+            // Scroller 用環境設定
             ScrollManager.prototype.setScrollerCondition = function () {
                 this._scroller.on("scroll", this._scrollEventHandler);
                 this._scroller.on("scrollstop", this._scrollStopEventHandler);
             };
-            //! Scroller 用環境破棄
+            // Scroller 用環境破棄
             ScrollManager.prototype.resetScrollerCondition = function () {
                 this._scroller.off("scrollstop", this._scrollStopEventHandler);
                 this._scroller.off("scroll", this._scrollEventHandler);
             };
-            //! 既定の Scroller オブジェクトの作成
+            // 既定の Scroller オブジェクトの作成
             ScrollManager.prototype.createScroller = function () {
                 return this._settings.scrollerFactory(this._$root[0], this._settings);
             };
-            //! 現在の Page Index を取得
+            // 現在の Page Index を取得
             ScrollManager.prototype.getPageIndex = function () {
                 var _this = this;
                 var i, n;
                 var page;
+                var candidate;
                 var scrollPos = this._scroller ? this._scroller.getPos() : 0;
                 var scrollPosMax = this._scroller ? this._scroller.getPosMax() : 0;
                 var scrollMapSize = (function () {
@@ -2130,7 +2145,6 @@ var CDP;
                         return scrollPos * scrollMapSize / scrollPosMax;
                     }
                 })();
-                var candidate = Math.floor(pos / this._baseHeight);
                 var validRange = function (page) {
                     if (null == page) {
                         return false;
@@ -2142,6 +2156,11 @@ var CDP;
                         return false;
                     }
                 };
+                if (this._baseHeight <= 0) {
+                    console.error(TAG + "invalid base height: " + this._baseHeight);
+                    return 0;
+                }
+                candidate = Math.floor(pos / this._baseHeight);
                 if (this._pages.length <= candidate) {
                     candidate = this._pages.length - 1;
                 }
@@ -2201,7 +2220,7 @@ var CDP;
                     this._lastActivePageContext.pos = pos;
                 }
             };
-            //! 最後のページを取得
+            // 最後のページを取得
             ScrollManager.prototype.getLastPage = function () {
                 if (0 < this._pages.length) {
                     return this._pages[this._pages.length - 1];
@@ -2295,7 +2314,7 @@ var CDP;
              */
             function ListView(options) {
                 _super.call(this, options);
-                this._scrollMgr = null; //!< scroll コアロジック
+                this._scrollMgr = null; //< scroll コアロジック
                 this._scrollMgr = new UI.ScrollManager(options);
                 if (options.$el) {
                     var delegates = this.events ? true : false;
@@ -2310,69 +2329,69 @@ var CDP;
                 }
                 return _super.prototype.setElement.call(this, element, delegate);
             };
-            //! 破棄
+            // 破棄
             ListView.prototype.remove = function () {
                 this._scrollMgr.destroy();
                 return _super.prototype.remove.call(this);
             };
             ///////////////////////////////////////////////////////////////////////
             // Implements: IListView Profile 管理
-            //! 初期化済みか判定
+            // 初期化済みか判定
             ListView.prototype.isInitialized = function () {
                 return this._scrollMgr.isInitialized();
             };
-            //! プロパティを指定して、LineProfile を管理
+            // プロパティを指定して、LineProfile を管理
             ListView.prototype.addItem = function (height, initializer, info, insertTo) {
                 this._addLine(new UI.LineProfile(this, Math.floor(height), initializer, info), insertTo);
             };
-            //! 登録 framework が使用する
+            // 登録 framework が使用する
             ListView.prototype._addLine = function (_line, insertTo) {
                 this._scrollMgr._addLine(_line, insertTo);
             };
-            //! 指定した Item を削除
+            // 指定した Item を削除
             ListView.prototype.removeItem = function (index, size, delay) {
                 this._scrollMgr.removeItem(index, size, delay);
             };
             ListView.prototype.getItemInfo = function (target) {
                 return this._scrollMgr.getItemInfo(target);
             };
-            //! アクティブページを更新
+            // アクティブページを更新
             ListView.prototype.refresh = function () {
                 this._scrollMgr.refresh();
             };
-            //! 未アサインページを構築
+            // 未アサインページを構築
             ListView.prototype.update = function () {
                 this._scrollMgr.update();
             };
-            //! ページアサインを再構成
+            // ページアサインを再構成
             ListView.prototype.rebuild = function () {
                 this._scrollMgr.rebuild();
             };
-            //! 管轄データを破棄
+            // 管轄データを破棄
             ListView.prototype.release = function () {
                 this._scrollMgr.release();
             };
             ///////////////////////////////////////////////////////////////////////
             // Implements: IListView Profile Backup / Restore
-            //! 内部データをバックアップ
+            // 内部データをバックアップ
             ListView.prototype.backup = function (key) {
                 return this._scrollMgr.backup(key);
             };
-            //! 内部データをリストア
+            // 内部データをリストア
             ListView.prototype.restore = function (key, rebuild) {
                 if (rebuild === void 0) { rebuild = true; }
                 return this._scrollMgr.restore(key, rebuild);
             };
-            //! バックアップデータの有無
+            // バックアップデータの有無
             ListView.prototype.hasBackup = function (key) {
                 return this._scrollMgr.hasBackup(key);
             };
-            //! バックアップデータの破棄
+            // バックアップデータの破棄
             ListView.prototype.clearBackup = function (key) {
                 return this._scrollMgr.clearBackup(key);
             };
             Object.defineProperty(ListView.prototype, "backupData", {
-                //! バックアップデータにアクセス
+                // バックアップデータにアクセス
                 get: function () {
                     return this._scrollMgr.backupData;
                 },
@@ -2381,53 +2400,53 @@ var CDP;
             });
             ///////////////////////////////////////////////////////////////////////
             // Implements: IListView Scroll
-            //! スクロールイベントハンドラ設定/解除
+            // スクロールイベントハンドラ設定/解除
             ListView.prototype.setScrollHandler = function (handler, on) {
                 this._scrollMgr.setScrollHandler(handler, on);
             };
-            //! スクロール終了イベントハンドラ設定/解除
+            // スクロール終了イベントハンドラ設定/解除
             ListView.prototype.setScrollStopHandler = function (handler, on) {
                 this._scrollMgr.setScrollStopHandler(handler, on);
             };
-            //! スクロール位置を取得
+            // スクロール位置を取得
             ListView.prototype.getScrollPos = function () {
                 return this._scrollMgr.getScrollPos();
             };
-            //! スクロール位置の最大値を取得
+            // スクロール位置の最大値を取得
             ListView.prototype.getScrollPosMax = function () {
                 return this._scrollMgr.getScrollPosMax();
             };
-            //! スクロール位置を指定
+            // スクロール位置を指定
             ListView.prototype.scrollTo = function (pos, animate, time) {
                 this._scrollMgr.scrollTo(pos, animate, time);
             };
-            //! 指定された ListItemView の表示を保証
+            // 指定された ListItemView の表示を保証
             ListView.prototype.ensureVisible = function (index, options) {
                 this._scrollMgr.ensureVisible(index, options);
             };
             ///////////////////////////////////////////////////////////////////////
             // implements: IListViewFramework:
-            //! Scroll Map の高さを取得
+            // Scroll Map の高さを取得
             ListView.prototype.getScrollMapHeight = function () {
                 return this._scrollMgr.getScrollMapHeight();
             };
-            //! Scroll Map の高さを更新. framework が使用する.
+            // Scroll Map の高さを更新. framework が使用する.
             ListView.prototype.updateScrollMapHeight = function (delta) {
                 this._scrollMgr.updateScrollMapHeight(delta);
             };
-            //! 内部 Profile の更新. framework が使用する.
+            // 内部 Profile の更新. framework が使用する.
             ListView.prototype.updateProfiles = function (from) {
                 this._scrollMgr.updateProfiles(from);
             };
-            //! Scroll Map Element を取得. framework が使用する.
+            // Scroll Map Element を取得. framework が使用する.
             ListView.prototype.getScrollMapElement = function () {
                 return this._scrollMgr.getScrollMapElement();
             };
-            //! リサイクル可能な Element を取得. framework が使用する.
+            // リサイクル可能な Element を取得. framework が使用する.
             ListView.prototype.findRecycleElements = function () {
                 return this._scrollMgr.findRecycleElements();
             };
-            //! ListViewOptions を取得. framework が使用する.
+            // ListViewOptions を取得. framework が使用する.
             ListView.prototype.getListViewOptions = function () {
                 return this._scrollMgr.getListViewOptions();
             };
@@ -2456,7 +2475,7 @@ var CDP;
              */
             function GroupListItemView(options) {
                 _super.call(this, options);
-                this._groupProfile = null; //!< 管轄の GroupProfile
+                this._groupProfile = null; //< 管轄の GroupProfile
                 this._groupProfile = options.groupProfile;
             }
             ///////////////////////////////////////////////////////////////////////
@@ -2469,19 +2488,19 @@ var CDP;
             GroupListItemView.prototype.isExpanded = function () {
                 return this._groupProfile.isExpanded();
             };
-            //! 展開中か判定
+            // 展開中か判定
             GroupListItemView.prototype.isExpanding = function () {
                 return this.owner.isExpanding();
             };
-            //! 収束中か判定
+            // 収束中か判定
             GroupListItemView.prototype.isCollapsing = function () {
                 return this.owner.isCollapsing();
             };
-            //! 開閉中か判定
+            // 開閉中か判定
             GroupListItemView.prototype.isSwitching = function () {
                 return this.owner.isSwitching();
             };
-            //! 子 Group を持っているか判定
+            // 子 Group を持っているか判定
             GroupListItemView.prototype.hasChildren = function (layoutKey) {
                 return this._groupProfile.hasChildren(layoutKey);
             };
@@ -2510,8 +2529,8 @@ var CDP;
              */
             function ExpandManager(owner) {
                 this._owner = null;
-                this._mapGroups = {}; //!< {id, GroupProfile} の map
-                this._aryTopGroups = []; //!< 第1階層 GroupProfile を格納
+                this._mapGroups = {}; //< {id, GroupProfile} の map
+                this._aryTopGroups = []; //< 第1階層 GroupProfile を格納
                 this._layoutKey = null;
                 this._owner = owner;
             }
@@ -2582,7 +2601,7 @@ var CDP;
             ExpandManager.prototype.getTopGroups = function () {
                 return this._aryTopGroups.slice(0);
             };
-            //! すべてのグループを展開 (1階層)
+            // すべてのグループを展開 (1階層)
             ExpandManager.prototype.expandAll = function () {
                 this._aryTopGroups.forEach(function (group) {
                     if (group.hasChildren()) {
@@ -2590,7 +2609,7 @@ var CDP;
                     }
                 });
             };
-            //! すべてのグループを収束 (1階層)
+            // すべてのグループを収束 (1階層)
             ExpandManager.prototype.collapseAll = function (delay) {
                 this._aryTopGroups.forEach(function (group) {
                     if (group.hasChildren()) {
@@ -2598,47 +2617,47 @@ var CDP;
                     }
                 });
             };
-            //! 展開中か判定
+            // 展開中か判定
             ExpandManager.prototype.isExpanding = function () {
                 return this._owner.isStatusIn("expanding");
             };
-            //! 収束中か判定
+            // 収束中か判定
             ExpandManager.prototype.isCollapsing = function () {
                 return this._owner.isStatusIn("collapsing");
             };
-            //! 開閉中か判定
+            // 開閉中か判定
             ExpandManager.prototype.isSwitching = function () {
                 return this.isExpanding() || this.isCollapsing();
             };
-            //! 状態変数の参照カウントのインクリメント
+            // 状態変数の参照カウントのインクリメント
             ExpandManager.prototype.statusAddRef = function (status) {
                 return this._owner.statusAddRef(status);
             };
-            //! 状態変数の参照カウントのデクリメント
+            // 状態変数の参照カウントのデクリメント
             ExpandManager.prototype.statusRelease = function (status) {
                 return this._owner.statusRelease(status);
             };
-            //! 処理スコープ毎に状態変数を設定
+            // 処理スコープ毎に状態変数を設定
             ExpandManager.prototype.statusScope = function (status, callback) {
                 this._owner.statusScope(status, callback);
             };
-            //! 指定した状態中であるか確認
+            // 指定した状態中であるか確認
             ExpandManager.prototype.isStatusIn = function (status) {
                 return this._owner.isStatusIn(status);
             };
             Object.defineProperty(ExpandManager.prototype, "layoutKey", {
-                //! layout key を取得
+                // layout key を取得
                 get: function () {
                     return this._layoutKey;
                 },
-                //! layout key を設定
+                // layout key を設定
                 set: function (key) {
                     this._layoutKey = key;
                 },
                 enumerable: true,
                 configurable: true
             });
-            //! データを破棄
+            // データを破棄
             ExpandManager.prototype.release = function () {
                 this._mapGroups = {};
                 this._aryTopGroups = [];
@@ -2693,16 +2712,16 @@ var CDP;
                 }
                 return true;
             };
-            //! バックアップデータの有無
+            // バックアップデータの有無
             ExpandManager.prototype.hasBackup = function (key) {
                 return this._owner.hasBackup(key);
             };
-            //! バックアップデータの破棄
+            // バックアップデータの破棄
             ExpandManager.prototype.clearBackup = function (key) {
                 return this._owner.clearBackup(key);
             };
             Object.defineProperty(ExpandManager.prototype, "backupData", {
-                //! バックアップデータにアクセス
+                // バックアップデータにアクセス
                 get: function () {
                     return this._owner.backupData;
                 },
@@ -2741,64 +2760,64 @@ var CDP;
             }
             ///////////////////////////////////////////////////////////////////////
             // Implements: IExpandableListView
-            //! 新規 GroupProfile を作成
+            // 新規 GroupProfile を作成
             ExpandableListView.prototype.newGroup = function (id) {
                 return this._expandManager.newGroup(id);
             };
-            //! 登録済み Group を取得
+            // 登録済み Group を取得
             ExpandableListView.prototype.getGroup = function (id) {
                 return this._expandManager.getGroup(id);
             };
-            //! 第1階層の Group 登録
+            // 第1階層の Group 登録
             ExpandableListView.prototype.registerTopGroup = function (topGroup) {
                 this._expandManager.registerTopGroup(topGroup);
             };
-            //! 第1階層の Group を取得
+            // 第1階層の Group を取得
             ExpandableListView.prototype.getTopGroups = function () {
                 return this._expandManager.getTopGroups();
             };
-            //! すべてのグループを展開 (1階層)
+            // すべてのグループを展開 (1階層)
             ExpandableListView.prototype.expandAll = function () {
                 this._expandManager.expandAll();
             };
-            //! すべてのグループを収束 (1階層)
+            // すべてのグループを収束 (1階層)
             ExpandableListView.prototype.collapseAll = function (delay) {
                 this._expandManager.collapseAll(delay);
             };
-            //! 展開中か判定
+            // 展開中か判定
             ExpandableListView.prototype.isExpanding = function () {
                 return this._expandManager.isExpanding();
             };
-            //! 収束中か判定
+            // 収束中か判定
             ExpandableListView.prototype.isCollapsing = function () {
                 return this._expandManager.isCollapsing();
             };
-            //! 開閉中か判定
+            // 開閉中か判定
             ExpandableListView.prototype.isSwitching = function () {
                 return this._expandManager.isSwitching();
             };
-            //! 状態変数の参照カウントのインクリメント
+            // 状態変数の参照カウントのインクリメント
             ExpandableListView.prototype.statusAddRef = function (status) {
                 return this._statusMgr.statusAddRef(status);
             };
-            //! 状態変数の参照カウントのデクリメント
+            // 状態変数の参照カウントのデクリメント
             ExpandableListView.prototype.statusRelease = function (status) {
                 return this._statusMgr.statusRelease(status);
             };
-            //! 処理スコープ毎に状態変数を設定
+            // 処理スコープ毎に状態変数を設定
             ExpandableListView.prototype.statusScope = function (status, callback) {
                 this._statusMgr.statusScope(status, callback);
             };
-            //! 指定した状態中であるか確認
+            // 指定した状態中であるか確認
             ExpandableListView.prototype.isStatusIn = function (status) {
                 return this._statusMgr.isStatusIn(status);
             };
             Object.defineProperty(ExpandableListView.prototype, "layoutKey", {
-                //! layout key を取得
+                // layout key を取得
                 get: function () {
                     return this._expandManager.layoutKey;
                 },
-                //! layout key を設定
+                // layout key を設定
                 set: function (key) {
                     this._expandManager.layoutKey = key;
                 },
@@ -2807,16 +2826,16 @@ var CDP;
             });
             ///////////////////////////////////////////////////////////////////////
             // Override: ListView
-            //! データを破棄
+            // データを破棄
             ExpandableListView.prototype.release = function () {
                 _super.prototype.release.call(this);
                 this._expandManager.release();
             };
-            //! 内部データをバックアップ
+            // 内部データをバックアップ
             ExpandableListView.prototype.backup = function (key) {
                 return this._expandManager.backup(key);
             };
-            //! 内部データをリストア
+            // 内部データをリストア
             ExpandableListView.prototype.restore = function (key, rebuild) {
                 if (rebuild === void 0) { rebuild = true; }
                 return this._expandManager.restore(key, rebuild);
