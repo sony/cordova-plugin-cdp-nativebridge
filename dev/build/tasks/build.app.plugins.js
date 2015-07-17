@@ -1,12 +1,12 @@
-﻿/**
-    build.app.plugins.js
-    app/plugins build script.
-*/
+﻿/*
+ * build.app.plugins.js
+ * app/plugins build script.
+ */
 
 module.exports = function (grunt) {
 
     var fs = require('fs'),
-        path = require('path')
+        path = require('path'),
         jsdom = require('jsdom'),
         window = jsdom.jsdom().parentWindow,
         $ = require('jquery')(window);
@@ -326,7 +326,7 @@ module.exports = function (grunt) {
                     fs.mkdirSync(root);
                 }
                 return !dirs.length || mkdir(dirs.join('/'), root);
-            }
+            };
 
             if (fs.existsSync(src)) {
                 mkdir(path.dirname(dst));
@@ -334,13 +334,16 @@ module.exports = function (grunt) {
             }
         };
 
-        for (key in nativeSrc) {
-            if (nativeSrc.hasOwnProperty(key)) {
-                nativeSrc[key].forEach(function (file) {
-                    safeCopy(file.packageSrc, path.join(packageDir, file.packageDst));
-                });
+        (function () {
+            for (var key in nativeSrc) {
+                if (nativeSrc.hasOwnProperty(key)) {
+                    for (var i = 0, n = nativeSrc[key].length; i < n; i++) {
+                        var file = nativeSrc[key][i];
+                        safeCopy(file.packageSrc, path.join(packageDir, file.packageDst));
+                    }
+                }
             }
-        }
+        })();
     });
 
     // custom task: mifnify if needed.

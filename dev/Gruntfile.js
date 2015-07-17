@@ -42,7 +42,7 @@ module.exports = function (grunt) {
                     config[prop] = $.extend(true, config[prop], additionalConfig[prop]);
                 } else {
                     var tmpConfig = {};
-                    tmpConfig[prop] = additionalConfig[prop]
+                    tmpConfig[prop] = additionalConfig[prop];
                     config = $.extend(true, config, tmpConfig);
                 }
             }

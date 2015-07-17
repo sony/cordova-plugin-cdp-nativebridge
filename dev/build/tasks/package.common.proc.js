@@ -36,12 +36,11 @@ module.exports = function (grunt) {
         pkgcomp_work_platfrom_porting_dir: "<%= pkgcomp_work_tmpdir %>/<%= cordova_platform_porting %>",
 
         pkgcomp_revise_d_ts_targets: ['<%= pkgcomp_work_appdir %>/<%= libraries %>/<%= scripts %>/*.d.ts'],
-        // TODO: move to pkgcomp_inter_revise task.
         pkgcomp_revise_src_contents_targets: [
             '<%= pkgcomp_work_appdir %>/<%= libraries %>/<%= scripts %>/*.js',
             '<%= pkgcomp_work_appdir %>/<%= plugins %>/**/*.js',
             '<%= pkgcomp_work_appdir %>/<%= plugins %>/**/*.d.ts',  // only app/plugins/**/d.ts
-    ],
+        ],
         pkgcomp_package_targets: [{ src: '<%= pkgcomp_work_appdir %>/<%= libraries %>', dst: '<%= pkgcomp_src_root_dir %>/<%= libraries %>' }],
 
         pkgcomp_work_package_targets: [],
@@ -100,7 +99,7 @@ module.exports = function (grunt) {
                     },
                 ],
             },
-            pkgcomp_package_src: {
+            pkgcomp_module_debug: {
                 files: [
                     {// css
                         expand: true,
@@ -225,16 +224,12 @@ module.exports = function (grunt) {
             },
         },
 
-        // custom task: revise d.ts reference path. TODO: move to pkgcomp_inter_revise task.
-        pkgcomp_revise_d_ts_reference_path: {
-            build: {
+        // custom task: interproc revise.
+        pkgcomp_inter_revise: {
+            d_ts_reference_path: {
                 src: '<%= pkgcomp_revise_d_ts_targets %>',
             },
-        },
-
-        // custom task: remove "reference path" and "sourceURL" comments and "declare var module: any" from js files. TODO: move to pkgcomp_inter_revise task.
-        pkgcomp_revise_src_contents: {
-            build: {
+            src_contents: {
                 src: '<%= pkgcomp_revise_src_contents_targets %>',
             },
         },
@@ -410,63 +405,10 @@ module.exports = function (grunt) {
         grunt.config.set('pkgcomp_work_package_targets', grunt.config.get('pkgcomp_package_targets').slice(0));
     });
 
-    // custom task: revise d.ts reference path. TODO: move to pkgcomp_inter_revise task.
-    grunt.registerMultiTask('pkgcomp_revise_d_ts_reference_path', 'Revise d.ts reference path', function () {
-        this.filesSrc.forEach(function (file) {
-            var src = fs.readFileSync(file).toString();
-            var rev = src;
-            var refPathInfo = [];
-            var refPathDefs = src.match(/<reference path="[\s\S]*?"/g);
-
-            if (null != refPathDefs) {
-                refPathDefs.forEach(function (refpath) {
-                    var filePath = refpath.match(/("|')[\s\S]*?("|')/)[0].replace(/("|')/g, '');
-                    var fileName = path.basename(filePath);
-                    refPathInfo.push({
-                        refpath: refpath,
-                        path: filePath,
-                        file: fileName,
-                    });
-                });
-                refPathInfo.forEach(function (target) {
-                    rev = rev.replace(target.refpath, '<reference path="' + target.file + '"');
-                });
-                // remove '_dev.dependencies.d.ts' reference.
-                rev = rev.replace(/\/\/\/ <reference path="_dev.dependencies.d.ts"[\s\S]*?\n/g, '');
-                fs.writeFileSync(file, rev);
-            }
-        });
-    });
-
-    // custom task: remove "reference path" and "sourceURL" comments and "declare var module: any" from js files. TODO: move to pkgcomp_inter_revise task.
-    grunt.registerMultiTask('pkgcomp_revise_src_contents', 'Remove "reference path" and "sourceURL" comments from js files.', function () {
-        this.filesSrc.forEach(function (file) {
-            var ext = path.extname(file);
-            var src = fs.readFileSync(file).toString();
-            var rev = src
-                // trim special comment line
-                .replace(/\/\/\/ <reference path="[\s\S]*?>/g, '')
-                .replace(/\/\/@ sourceURL=[\s\S]*?\n/g, '')
-                .replace(/\/\/# sourceURL=[\s\S]*?\n/g, '')
-            ;
-            if ('.js' === ext) {
-                rev = rev
-                    .replace(/\ufeff/gm, '')    // remove bom
-                    .replace(/\t/gm, '    ')
-                    .replace(/\r\n/gm, '\n')
-                    .replace(/\/\/!/gm, '//')   // for minify preserve comment
-                ;
-            } else if ('.ts' === ext) {
-                rev = rev.replace(/declare var module: any;[\s\S]*?\n/g, '');
-            }
-            fs.writeFileSync(file, rev);
-        });
-    });
-
-    // custom task: copy package files.
-    grunt.registerTask('pkgcomp_copy_package_src', function () {
+    // custom task: copy package module files.
+    grunt.registerTask('pkgcomp_copy_module_src', function () {
         doPackageTask(this, function () {
-            grunt.task.run('copy:pkgcomp_package_src');
+            grunt.task.run('copy:pkgcomp_module_debug');
         });
     });
 
@@ -505,6 +447,66 @@ module.exports = function (grunt) {
         if (grunt.option('no-srcmap')) {
             grunt.config.set('pkgcomp_srcmap_enable', false);
         }
+    });
+
+    // custom task: interproc revise.
+    grunt.registerMultiTask('pkgcomp_inter_revise', function () {
+        var target = this.target;
+        this.filesSrc.forEach(function (file) {
+            var write;
+            var src = fs.readFileSync(file).toString();
+            var rev = src;
+
+            if ('d_ts_reference_path' === target) {
+                (function () {
+                    var refPathInfo = [];
+                    var refPathDefs = src.match(/<reference path="[\s\S]*?"/g);
+
+                    if (null != refPathDefs) {
+                        refPathDefs.forEach(function (refpath) {
+                            var filePath = refpath.match(/("|')[\s\S]*?("|')/)[0].replace(/("|')/g, '');
+                            var fileName = path.basename(filePath);
+                            refPathInfo.push({
+                                refpath: refpath,
+                                path: filePath,
+                                file: fileName,
+                            });
+                        });
+                        refPathInfo.forEach(function (target) {
+                            rev = rev.replace(target.refpath, '<reference path="' + target.file + '"');
+                        });
+                        // remove '_dev.dependencies.d.ts' reference.
+                        rev = rev.replace(/\/\/\/ <reference path="_dev.dependencies.d.ts"[\s\S]*?\n/g, '');
+                        write = true;
+                    }
+                })();
+            } else if ('src_contents' === target) {
+                (function () {
+                    var ext = path.extname(file);
+                    // trim special comment line
+                    rev = rev
+                        .replace(/\/\/\/ <reference path="[\s\S]*?>/g, '')
+                        .replace(/\/\/@ sourceURL=[\s\S]*?\n/g, '')
+                        .replace(/\/\/# sourceURL=[\s\S]*?\n/g, '')
+                    ;
+                    if ('.js' === ext) {
+                        rev = rev
+                            .replace(/\ufeff/gm, '')    // remove bom
+                            .replace(/\t/gm, '    ')
+                            .replace(/\r\n/gm, '\n')
+                            .replace(/\/\/!/gm, '//')   // for minify preserve comment
+                        ;
+                    } else if ('.ts' === ext) {
+                        rev = rev.replace(/declare var module: any;[\s\S]*?\n/g, '');
+                    }
+                    write = true;
+                })();
+            }
+
+            if (write) {
+                fs.writeFileSync(file, rev);
+            }
+        });
     });
 
     // custom task: final revise for avoiding some plugin bugs.
@@ -636,10 +638,9 @@ module.exports = function (grunt) {
     grunt.registerTask('pkgcomp_compile_dev_modules',   ['glue_ts_cordova_set_env', 'legacy_command_set_pkgdst:development', 'pkgcomp_build_dev_poritng', 'glue_ts_cordova_restore_env']);
     grunt.registerTask('pkgcomp_compile',               ['pkgcomp_compile_app_plugins', 'pkgcomp_compile_modules', 'pkgcomp_compile_dev_modules']);
 
-    grunt.registerTask('pkgcomp_inter_revise',  ['pkgcomp_revise_d_ts_reference_path', 'pkgcomp_revise_src_contents']);
-    grunt.registerTask('pkgcomp_package_src',   ['pkgcomp_set_work_package_targets', 'pkgcomp_copy_package_src']);
-    grunt.registerTask('pkgcomp_versioning',    ['pkgcomp_versioning_preprocess', 'glue_ts_cordova_set_env', 'lib_extract_module_info', 'glue_ts_cordova_restore_env', 'pkgcomp_set_work_package_targets', 'pkgcomp_module_versioning', 'pkgcomp_versioning_postprocess']);
-    grunt.registerTask('pkgcomp_minify',        ['uglify:pkgcomp_plugins', 'pkgcomp_set_work_package_targets', 'pkgcomp_module_minify']);
+    grunt.registerTask('pkgcomp_package_modules',       ['pkgcomp_set_work_package_targets', 'pkgcomp_copy_module_src']);
+    grunt.registerTask('pkgcomp_versioning',            ['pkgcomp_versioning_preprocess', 'glue_ts_cordova_set_env', 'lib_extract_module_info', 'glue_ts_cordova_restore_env', 'pkgcomp_set_work_package_targets', 'pkgcomp_module_versioning', 'pkgcomp_versioning_postprocess']);
+    grunt.registerTask('pkgcomp_minify',                ['uglify:pkgcomp_plugins', 'pkgcomp_set_work_package_targets', 'pkgcomp_module_minify']);
 
     grunt.registerTask('pkgcomp_package_app_plugins', [
         'copy:app_plugins_plugin_package',
@@ -652,7 +653,7 @@ module.exports = function (grunt) {
         'pkgcomp_prepare',
         'pkgcomp_compile',
         'pkgcomp_inter_revise',
-        'pkgcomp_package_src',
+        'pkgcomp_package_modules',
         'pkgcomp_versioning',
         'pkgcomp_minify',
         'cleanempty:pkgcomp',

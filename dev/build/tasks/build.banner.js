@@ -35,7 +35,7 @@ module.exports = function (grunt) {
     // check 'LICENSE-INFO.txt' existence
     grunt.cdp.hasLicenseInfo = function () {
         return fs.existsSync(path.join(process.cwd(), grunt.config.get('banner_file_name')));
-    }
+    };
 
     // setup bannar core function
     grunt.cdp.getBannerString = function (moduleName, version) {
@@ -51,7 +51,7 @@ module.exports = function (grunt) {
         } else {
             return '';
         }
-    }
+    };
 
     // setup bannar core function
     grunt.cdp.setupBanner = function (src, moduleName, version) {
@@ -65,5 +65,5 @@ module.exports = function (grunt) {
         } else {
             return false;
         }
-    }
+    };
 };

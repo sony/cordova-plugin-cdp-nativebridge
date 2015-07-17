@@ -96,5 +96,5 @@ module.exports = function (grunt) {
         fs.writeFileSync(target + '.js', jsModule);
         //grunt.file.delete(target + '-all.js');
         fs.renameSync(target + '-all.js', target + '-all.js.txt');
-    }
+    };
 };
