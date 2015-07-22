@@ -666,7 +666,7 @@ module.exports = function (grunt) {
         'pkgcomp_cmdline_parse',
         'pkgcomp_set_env', 'glue_ts_cordova_set_env', 'app_plugins_prepare_release', 'copy:pkgcomp_prepare', 'glue_ts_cordova_restore_env',
         'pkgcomp_compile_app_plugins',
-        'pkgcomp_revise_src_contents',
+        'pkgcomp_inter_revise:src_contents',
         'uglify:pkgcomp_plugins',
         'pkgcomp_package_app_plugins',
         'pkgcomp_final_revise',
