@@ -1,7 +1,15 @@
 {
   "name": "NativeBridgeDevBed",
   "version": "1.0.0",
-  "license": "MIT",
+  "license": "Apache 2.0",
+  "author": {
+    "name": "Shin Ogata",
+    "email": "Shin.Ogata@jp.sony.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sony/cordova-plugin-cdp-nativebridge.git"
+  },
   "keywords": [
     "CDP",
     "TypeScript",

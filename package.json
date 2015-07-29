@@ -1,0 +1,33 @@
+{
+  "name": "cordova-plugin-cdp-nativebridge",
+  "version": "1.0.0",
+  "description": "Cordova Generic Native Bridge Plugin.",
+  "cordova": {
+    "id": "cordova-plugin-cdp-nativebridge",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sony/cordova-plugin-cdp-nativebridge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sony/cordova-plugin-cdp-nativebridge/issues"
+  },
+  "keywords": [
+    "CDP",
+    "cordova",
+    "native",
+    "bridge",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "author": {
+    "name": "Shin Ogata",
+    "email": "Shin.Ogata@jp.sony.com"
+  },
+  "license": "Apache 2.0"
+}
