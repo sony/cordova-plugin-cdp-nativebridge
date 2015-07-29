@@ -1,10 +1,7 @@
 ﻿/*!
  * cdp.ui.jqm.js 0.3.0
  *
- * Copyright 2015 Sony Corporation
- * Released under the MIT license
- *
- * Date: 2015-07-16T20:01:02
+ * Date: 2015-07-29T13:50:23
  */
 
 
@@ -42,16 +39,16 @@ var CDP;
             Toast.LENGTH_LONG = 4000; //< 長い:4000 msec
             // @enum オフセットの基準
             (function (OffsetX) {
-                OffsetX[OffsetX["LEFT"] = 0x0001] = "LEFT";
-                OffsetX[OffsetX["RIGHT"] = 0x0002] = "RIGHT";
-                OffsetX[OffsetX["CENTER"] = 0x0004] = "CENTER";
+                OffsetX[OffsetX["LEFT"] = 1] = "LEFT";
+                OffsetX[OffsetX["RIGHT"] = 2] = "RIGHT";
+                OffsetX[OffsetX["CENTER"] = 4] = "CENTER";
             })(Toast.OffsetX || (Toast.OffsetX = {}));
             var OffsetX = Toast.OffsetX;
             // @enum オフセットの基準
             (function (OffsetY) {
-                OffsetY[OffsetY["TOP"] = 0x0010] = "TOP";
-                OffsetY[OffsetY["BOTTOM"] = 0x0020] = "BOTTOM";
-                OffsetY[OffsetY["CENTER"] = 0x0040] = "CENTER";
+                OffsetY[OffsetY["TOP"] = 16] = "TOP";
+                OffsetY[OffsetY["BOTTOM"] = 32] = "BOTTOM";
+                OffsetY[OffsetY["CENTER"] = 64] = "CENTER";
             })(Toast.OffsetY || (Toast.OffsetY = {}));
             var OffsetY = Toast.OffsetY;
             /**
@@ -76,7 +73,7 @@ var CDP;
                 };
                 // オフセットの基準位置を取得
                 StyleBuilderDefault.prototype.getOffsetPoint = function () {
-                    return 4 /* CENTER */ | 32 /* BOTTOM */;
+                    return OffsetX.CENTER | OffsetY.BOTTOM;
                 };
                 // X 座標のオフセット値を取得
                 StyleBuilderDefault.prototype.getOffsetX = function () {
@@ -121,13 +118,13 @@ var CDP;
                 var box_width = box.width() + parseInt(box.css("padding-left"), 10) + parseInt(box.css("padding-right"), 10);
                 var box_height = box.height() + parseInt(box.css("padding-top"), 10) + parseInt(box.css("padding-bottom"), 10);
                 switch (offsetPoint & 0x000F) {
-                    case 1 /* LEFT */:
+                    case OffsetX.LEFT:
                         posX = 0 + info.getOffsetX();
                         break;
-                    case 2 /* RIGHT */:
+                    case OffsetX.RIGHT:
                         posX = $window.width() - box_width + info.getOffsetX();
                         break;
-                    case 4 /* CENTER */:
+                    case OffsetX.CENTER:
                         posX = ($window.width() / 2) - (box_width / 2) + info.getOffsetX();
                         break;
                     default:
@@ -136,13 +133,13 @@ var CDP;
                         break;
                 }
                 switch (offsetPoint & 0x00F0) {
-                    case 16 /* TOP */:
+                    case OffsetY.TOP:
                         posY = 0 + info.getOffsetY();
                         break;
-                    case 32 /* BOTTOM */:
+                    case OffsetY.BOTTOM:
                         posY = $window.height() - box_height + info.getOffsetY();
                         break;
-                    case 64 /* CENTER */:
+                    case OffsetY.CENTER:
                         posY = ($window.height() / 2) - (box_height / 2) + info.getOffsetY();
                         break;
                     default:
@@ -154,7 +151,9 @@ var CDP;
                 box.css({
                     "top": posY,
                     "left": posX,
-                }).delay(duration).fadeOut(400, function () {
+                })
+                    .delay(duration)
+                    .fadeOut(400, function () {
                     $(this).remove();
                 });
             }
@@ -260,7 +259,8 @@ var CDP;
                         _this._$dialog.remove();
                         _this._$dialog = null;
                     },
-                }).popup("open").on(this._settings.event, function (event) {
+                })
+                    .popup("open").on(this._settings.event, function (event) {
                     event.preventDefault();
                     // "data-auto-close='false'" が指定されている要素は dialog を閉じない
                     if ("false" === $(event.target).attr("data-auto-close")) {
@@ -363,7 +363,7 @@ var CDP;
 })(CDP || (CDP = {}));
 
 
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
@@ -474,54 +474,38 @@ var CDP;
             Object.defineProperty(PageView.prototype, "active", {
                 ///////////////////////////////////////////////////////////////////////
                 // IPage stub stuff.
-                get: function () {
-                    return this._basePage.active;
-                },
+                get: function () { return this._basePage.active; },
                 enumerable: true,
                 configurable: true
             });
             Object.defineProperty(PageView.prototype, "url", {
-                get: function () {
-                    return this._basePage.url;
-                },
+                get: function () { return this._basePage.url; },
                 enumerable: true,
                 configurable: true
             });
             Object.defineProperty(PageView.prototype, "id", {
-                get: function () {
-                    return this._basePage ? this._basePage.id : null;
-                },
+                get: function () { return this._basePage ? this._basePage.id : null; },
                 enumerable: true,
                 configurable: true
             });
             Object.defineProperty(PageView.prototype, "$page", {
-                get: function () {
-                    return this._basePage.$page;
-                },
+                get: function () { return this._basePage.$page; },
                 enumerable: true,
                 configurable: true
             });
             Object.defineProperty(PageView.prototype, "$header", {
-                get: function () {
-                    return this._basePage.$header;
-                },
+                get: function () { return this._basePage.$header; },
                 enumerable: true,
                 configurable: true
             });
             Object.defineProperty(PageView.prototype, "$footer", {
-                get: function () {
-                    return this._basePage.$footer;
-                },
+                get: function () { return this._basePage.$footer; },
                 enumerable: true,
                 configurable: true
             });
             Object.defineProperty(PageView.prototype, "intent", {
-                get: function () {
-                    return this._basePage.intent;
-                },
-                set: function (newIntent) {
-                    this._basePage.intent = newIntent;
-                },
+                get: function () { return this._basePage.intent; },
+                set: function (newIntent) { this._basePage.intent = newIntent; },
                 enumerable: true,
                 configurable: true
             });

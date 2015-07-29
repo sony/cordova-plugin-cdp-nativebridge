@@ -1,10 +1,7 @@
 ﻿/*!
  * cdp.lazyload.js 1.1.0
  *
- * Copyright 2015 Sony Corporation
- * Released under the MIT license
- *
- * Date: 2015-07-16T20:01:02
+ * Date: 2015-07-29T13:50:23
  */
 /*
  * cdp.lazyload.js

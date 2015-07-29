@@ -1,8 +1,0 @@
-/*!
- * @MODULE_NAME @VERSION
- *
- * Copyright 2015 Sony Corporation
- * Released under the MIT license
- *
- * Date: @DATE
- */

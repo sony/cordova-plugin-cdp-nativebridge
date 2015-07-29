@@ -8,7 +8,7 @@ module.exports = function (grunt) {
         path = require('path');
 
     grunt.extendConfig({
-        banner_file_name: 'LICENSE-INFO.txt',
+        banner_file_name: 'BANNER.txt',
         banner_build_date_time: '<%= grunt.template.today("isoDateTime") %>',
 
         // internal variable

@@ -199,6 +199,7 @@
     <Content Include="app\templates\main.html" />
     <Content Include="app\templates\menu.html" />
     <Content Include="app\templates\native-scrollbar.html" />
+    <Content Include="BANNER.txt" />
     <Content Include="build\grunt-nativebridge.js" />
     <Content Include="build\tasks\build.app.plugins.js" />
     <Content Include="build\tasks\build.application.js" />
@@ -217,7 +218,6 @@
     <Content Include="config.xml" />
     <Content Include="Gruntfile.js" />
     <Content Include="hooks\before_prepare\kick_grunt.js" />
-    <Content Include="LICENSE-INFO.txt" />
     <Content Include="platforms\android\src\com\sony\cdp\plugin\nativebridge\Gate.java" />
     <Content Include="platforms\android\src\com\sony\cdp\plugin\nativebridge\MessageUtils.java" />
     <Content Include="platforms\android\src\com\sony\cdp\plugin\nativebridge\MethodContext.java" />

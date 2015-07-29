@@ -1,10 +1,7 @@
 ﻿/*!
- * cdp.framework.jqm.js 1.1.2
+ * cdp.framework.jqm.js 1.1.3
  *
- * Copyright 2015 Sony Corporation
- * Released under the MIT license
- *
- * Date: 2015-07-16T20:01:02
+ * Date: 2015-07-29T13:50:23
  */
 
 
@@ -159,7 +156,7 @@ var CDP;
          */
         function getOrientation() {
             var $window = $(window);
-            return ($window.width() < $window.height()) ? 0 /* PORTRAIT */ : 1 /* LANDSCAPE */;
+            return ($window.width() < $window.height()) ? Orientation.PORTRAIT : Orientation.LANDSCAPE;
         }
         Framework.getOrientation = getOrientation;
     })(Framework = CDP.Framework || (CDP.Framework = {}));
@@ -356,13 +353,10 @@ var CDP;
                     regexp: Router.s_router._routeToRegExp(route),
                     page: page,
                     top: top,
-                    callback: callback || function () {
-                        return false;
-                    }
+                    callback: callback || function () { return false; }
                 };
                 if (Router.pushContext(name, context)) {
-                    Router.s_router.route(route, name, function () {
-                    });
+                    Router.s_router.route(route, name, function () { });
                 }
                 if (restart) {
                     // 再開時は再読み込みしない。
@@ -461,10 +455,12 @@ var CDP;
                     inNavigation: true,
                 };
                 // ページ遷移開始通知
-                notifyBeforeRouteChange().fail(function () {
+                notifyBeforeRouteChange()
+                    .fail(function () {
                     // beforeRouteChange() が失敗した場合、致命的な不具合となるため、error 記録のみにして先に進む。
                     console.error("before route change call, failed.");
-                }).always(function () {
+                })
+                    .always(function () {
                     if (Router.isRouting() && !Router.s_lastNavigateInfo.noHashChange) {
                         if (navOptions.subFlow) {
                             switch (navOptions.subFlow.operation) {
@@ -473,7 +469,7 @@ var CDP;
                                     break;
                                 case "end":
                                     Router.endSubFlow(navOptions);
-                                    return;
+                                    return; // navigation は呼ばない
                                 default:
                                     console.warn("unknown subFlow.operation. operation: " + navOptions.subFlow.operation);
                                     break;
@@ -533,9 +529,11 @@ var CDP;
                     calledBeforeRouteChange: true,
                 };
                 // ページ遷移開始通知
-                _beforeRouteChange().then(function () {
+                _beforeRouteChange()
+                    .then(function () {
                     $.mobile.back();
-                }).fail(function () {
+                })
+                    .fail(function () {
                     console.error("before route change call, failed.");
                     Router.s_lastNavigateInfo = {};
                 });
@@ -738,25 +736,29 @@ var CDP;
              * @private
              */
             Router.bindEvents = function () {
-                $(document).one("pagechange", function () {
+                $(document)
+                    .one("pagechange", function () {
                     if (Router.s_initOptions.anchorVclick) {
                         // anchor vclick
                         $(document).on("vclick", "[href]", function (event) {
                             Router.onAnchorVclicked(event);
                         });
                     }
-                }).on("pagebeforeshow", function (event) {
+                })
+                    .on("pagebeforeshow", function (event) {
                     // "data-back-dst" を page に設定
                     if (null != Router.s_lastNavigateInfo.backDestination) {
                         var active = Router.getJqmHistory().getActive();
                         active[Router.BACK_DESTINATION_URL] = Router.s_lastNavigateInfo.backDestination;
                     }
-                }).on("pageshow", function (event) {
+                })
+                    .on("pageshow", function (event) {
                     var active = Router.getJqmHistory().getActive();
                     if (active[Router.SUBFLOW_PARAM]) {
                         delete active[Router.SUBFLOW_PARAM];
                     }
-                }).on("pagechange pagecontainerloadfailed", function (event) {
+                })
+                    .on("pagechange pagecontainerloadfailed", function (event) {
                     Router.s_lastNavigateInfo = {};
                 });
                 // back key assign
@@ -868,8 +870,10 @@ var CDP;
                 var transition = $target.jqmData("transition");
                 var direction = $target.jqmData("direction");
                 var backDst = $target.attr(Router.DATA_BACK_DESTINATION);
-                var noHashChange = $target.attr(Router.DATA_NO_HASH_CHANGE) ? $target.attr(Router.DATA_NO_HASH_CHANGE) === "true" : false;
-                var noHrefHandle = $target.attr(Router.DATA_NO_VCLICK_HANDLE) ? $target.attr(Router.DATA_NO_VCLICK_HANDLE) === "true" : false;
+                var noHashChange = $target.attr(Router.DATA_NO_HASH_CHANGE) ?
+                    $target.attr(Router.DATA_NO_HASH_CHANGE) === "true" : false;
+                var noHrefHandle = $target.attr(Router.DATA_NO_VCLICK_HANDLE) ?
+                    $target.attr(Router.DATA_NO_VCLICK_HANDLE) === "true" : false;
                 /*
                  * - 明示的にハンドルしない指定がある場合
                  * - jQM のフラグメントの場合
@@ -1087,7 +1091,8 @@ var CDP;
                 }
                 // ページ遷移開始通知. すでにコールされている場合は既定の何もしないコールバックを使用する.
                 notifyBeforeRouteChange = Router.s_lastNavigateInfo.calledBeforeRouteChange ? _defaultBeforeRouteChange : _beforeRouteChange;
-                notifyBeforeRouteChange().then(function () {
+                notifyBeforeRouteChange()
+                    .then(function () {
                     // 付加情報
                     if (Router.s_lastNavigateInfo.intent) {
                         Router.pushIntent(Router.s_lastNavigateInfo.intent);
@@ -1101,7 +1106,8 @@ var CDP;
                         fromHashChange: !Router.s_lastNavigateInfo.positiveNavigate,
                         changeHash: !Router.s_lastNavigateInfo.noHashChange,
                     });
-                }).fail(function () {
+                })
+                    .fail(function () {
                     console.error("before route change call, failed.");
                     Router.s_lastNavigateInfo = {};
                 });
@@ -1552,10 +1558,13 @@ var CDP;
                 }
                 require(["jquery.mobile"], function () {
                     // i18next の初期化
-                    $.i18n.init({ resGetPath: config.i18nDataPath() }).done(function () {
-                        $(document).one("pagebeforechange", function (event, data) {
+                    $.i18n.init({ resGetPath: config.i18nDataPath() })
+                        .done(function () {
+                        $(document)
+                            .one("pagebeforechange", function (event, data) {
                             data.options.showLoadMsg = false;
-                        }).on("pagebeforecreate", function (event) {
+                        })
+                            .on("pagebeforecreate", function (event) {
                             // i18nextライブラリによるhtml fragmentの翻訳処理
                             $(event.target).i18n();
                         });
@@ -1568,7 +1577,8 @@ var CDP;
                             console.error("error. CDP.Framework.Router.initialize() failed.");
                             df.reject();
                         }
-                    }).fail(function () {
+                    })
+                        .fail(function () {
                         console.error("error. $.i18n.init() failed.");
                         df.reject();
                     });
@@ -1798,55 +1808,38 @@ var CDP;
             Object.defineProperty(Page.prototype, "active", {
                 //////////////////////////////////////////
                 // public accessor 
-                get: function () {
-                    return !!this._$page && this._$page.hasClass("ui-page-active");
-                },
+                get: function () { return !!this._$page && this._$page.hasClass("ui-page-active"); },
                 enumerable: true,
                 configurable: true
             });
             Object.defineProperty(Page.prototype, "url", {
-                get: function () {
-                    return this._url;
-                },
+                get: function () { return this._url; },
                 enumerable: true,
                 configurable: true
             });
             Object.defineProperty(Page.prototype, "id", {
-                get: function () {
-                    return this._id;
-                },
+                get: function () { return this._id; },
                 enumerable: true,
                 configurable: true
             });
             Object.defineProperty(Page.prototype, "$page", {
-                get: function () {
-                    return this._$page;
-                },
+                get: function () { return this._$page; },
                 enumerable: true,
                 configurable: true
             });
             Object.defineProperty(Page.prototype, "$header", {
-                get: function () {
-                    return this._$header;
-                },
+                get: function () { return this._$header; },
                 enumerable: true,
                 configurable: true
             });
             Object.defineProperty(Page.prototype, "$footer", {
-                get: function () {
-                    return this._$footer;
-                },
+                get: function () { return this._$footer; },
                 enumerable: true,
                 configurable: true
             });
             Object.defineProperty(Page.prototype, "intent", {
-                get: function () {
-                    return this._intent;
-                },
-                set: function (newIntent) {
-                    this._intent = newIntent;
-                    this._intent._update = true;
-                },
+                get: function () { return this._intent; },
+                set: function (newIntent) { this._intent = newIntent; this._intent._update = true; },
                 enumerable: true,
                 configurable: true
             });
@@ -1940,21 +1933,29 @@ var CDP;
                 this._intent = null;
                 // イベントバインド
                 var selector = "#" + this._id;
-                $(document).off("pagebeforecreate", selector).on("pagebeforecreate", selector, function (event) {
+                $(document)
+                    .off("pagebeforecreate", selector)
+                    .on("pagebeforecreate", selector, function (event) {
                     _this._$page = $(selector).first();
                     _this._$header = _this._$page.children(":jqmData(role=header)").first();
                     _this._$footer = _this._$page.children(":jqmData(role=footer)").first();
-                    _this._$page.on("pagecreate", function (event) {
+                    _this._$page
+                        .on("pagecreate", function (event) {
                         _this.pageInit(event);
-                    }).on("pagebeforeshow", function (event, data) {
+                    })
+                        .on("pagebeforeshow", function (event, data) {
                         _this.pageBeforeShow(event, data);
-                    }).on("pageshow", function (event, data) {
+                    })
+                        .on("pageshow", function (event, data) {
                         _this.pageShow(event, data);
-                    }).on("pagebeforehide", function (event, data) {
+                    })
+                        .on("pagebeforehide", function (event, data) {
                         _this.pageBeforeHide(event, data);
-                    }).on("pagehide", function (event, data) {
+                    })
+                        .on("pagehide", function (event, data) {
                         _this.pageHide(event, data);
-                    }).on("pageremove", function (event) {
+                    })
+                        .on("pageremove", function (event) {
                         _this.pageRemove(event);
                     });
                     _this.pageBeforeCreate(event);

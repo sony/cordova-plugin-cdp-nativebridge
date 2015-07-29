@@ -1,10 +1,7 @@
 ﻿/*!
  * cdp.tools.js 0.3.3
  *
- * Copyright 2015 Sony Corporation
- * Released under the MIT license
- *
- * Date: 2015-07-16T20:01:02
+ * Date: 2015-07-29T13:50:23
  */
 
 (function (root, factory) {
@@ -485,21 +482,24 @@ var CDP;
                 return window.devicePixelRatio;
             }
             else if (window.matchMedia) {
-                mediaQuery = "(-webkit-min-device-pixel-ratio: 1.5),\
+                mediaQuery
+                    = "(-webkit-min-device-pixel-ratio: 1.5),\
                     (min--moz-device-pixel-ratio: 1.5),\
                     (-o-min-device-pixel-ratio: 3/2),\
                     (min-resolution: 1.5dppx)";
                 if (window.matchMedia(mediaQuery).matches) {
                     return 1.5;
                 }
-                mediaQuery = "(-webkit-min-device-pixel-ratio: 2),\
+                mediaQuery
+                    = "(-webkit-min-device-pixel-ratio: 2),\
                     (min--moz-device-pixel-ratio: 2),\
                     (-o-min-device-pixel-ratio: 2/1),\
                     (min-resolution: 2dppx)";
                 if (window.matchMedia(mediaQuery).matches) {
                     return 2;
                 }
-                mediaQuery = "(-webkit-min-device-pixel-ratio: 0.75),\
+                mediaQuery
+                    = "(-webkit-min-device-pixel-ratio: 0.75),\
                     (min--moz-device-pixel-ratio: 0.75),\
                     (-o-min-device-pixel-ratio: 3/4),\
                     (min-resolution: 0.75dppx)";

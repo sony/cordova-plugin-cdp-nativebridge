@@ -1,10 +1,7 @@
 ﻿/*!
  * cdp.ui.listview.js 0.3.3
  *
- * Copyright 2015 Sony Corporation
- * Released under the MIT license
- *
- * Date: 2015-07-16T20:01:02
+ * Date: 2015-07-29T13:50:23
  */
 
 (function (root, factory) {
@@ -439,7 +436,8 @@ var CDP;
                 }
                 line = new UI.LineProfile(this._owner, Math.floor(height), initializer, options);
                 // _owner の管理下にあるときは速やかに追加
-                if (("registered" === this._status) && (null == this._owner.layoutKey || layoutKey === this._owner.layoutKey)) {
+                if (("registered" === this._status) &&
+                    (null == this._owner.layoutKey || layoutKey === this._owner.layoutKey)) {
                     this._owner._addLine(line, this.getLastLineIndex() + 1);
                     this._owner.update();
                 }
@@ -1284,7 +1282,8 @@ var CDP;
                 var factory = function (element, listviewOptions) {
                     var $owner = $(element);
                     var $map = $owner.find(_Config.SCROLL_MAP_SELECTOR);
-                    var $wrapper = $("<div class='" + _Config.WRAPPER_CLASS + "'></div>").css({
+                    var $wrapper = $("<div class='" + _Config.WRAPPER_CLASS + "'></div>")
+                        .css({
                         position: "absolute",
                         width: "100%",
                         height: "100%",
@@ -1301,7 +1300,7 @@ var CDP;
     })(UI = CDP.UI || (CDP.UI = {}));
 })(CDP || (CDP = {}));
 
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
@@ -1573,7 +1572,9 @@ var CDP;
                             return false;
                         }
                     });
-                    $inactiveMap = $("<section class='" + _Config.SCROLL_MAP_CLASS + " " + _Config.INACTIVE_CLASS + "'></section>").append($listItemViews).height(this._mapHeight);
+                    $inactiveMap = $("<section class='" + _Config.SCROLL_MAP_CLASS + " " + _Config.INACTIVE_CLASS + "'></section>")
+                        .append($listItemViews)
+                        .height(this._mapHeight);
                     $parent.append($inactiveMap);
                     this._$map.hide();
                 }
@@ -1601,10 +1602,12 @@ var CDP;
                 if (insertTo === this._lines.length) {
                     addTail = true;
                 }
+                // scroll map の更新
                 for (i = 0, n = lines.length; i < n; i++) {
                     deltaHeight += lines[i].height;
                 }
                 this.updateScrollMapHeight(deltaHeight);
+                // 挿入
                 for (i = lines.length - 1; i >= 0; i--) {
                     this._lines.splice(insertTo, 0, lines[i]);
                 }
@@ -1790,7 +1793,8 @@ var CDP;
                     }
                 });
                 // 優先 page の activate
-                highPriorityIndex.sort(function (lhs, rhs) {
+                highPriorityIndex
+                    .sort(function (lhs, rhs) {
                     if (lhs < rhs) {
                         return -1;
                     }
@@ -1800,7 +1804,8 @@ var CDP;
                     else {
                         return 0;
                     }
-                }).forEach(function (index) {
+                })
+                    .forEach(function (index) {
                     setTimeout(function () {
                         if (_this.isInitialized()) {
                             _this._pages[index] && _this._pages[index].activate();
@@ -1984,8 +1989,7 @@ var CDP;
                         setTop: false,
                         animate: _this._settings.enableAnimation,
                         time: _this._settings.animationDuration,
-                        callback: function () {
-                        },
+                        callback: function () { },
                     };
                     var operation = $.extend({}, defaultOptions, options);
                     var currentScope = {

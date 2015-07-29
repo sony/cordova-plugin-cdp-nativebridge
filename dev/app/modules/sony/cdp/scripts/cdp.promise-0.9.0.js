@@ -1,10 +1,7 @@
 ﻿/*!
  * cdp.promise.js 0.9.0
  *
- * Copyright 2015 Sony Corporation
- * Released under the MIT license
- *
- * Date: 2015-07-16T20:01:02
+ * Date: 2015-07-29T13:50:23
  */
 
 (function (root, factory) {
@@ -58,7 +55,8 @@ var CDP;
             var _this = this;
             if (promise.abort) {
                 this.dependency = promise;
-                promise.always(function () {
+                promise
+                    .always(function () {
                     _this.dependency = null;
                 });
             }
@@ -107,7 +105,8 @@ var CDP;
                 status: "pending",
                 args: null,
             });
-            deferred.then(function () {
+            deferred
+                .then(function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
@@ -121,7 +120,8 @@ var CDP;
                 }
                 results[index].status = "rejected";
                 results[index].args = args;
-            }).always(function () {
+            })
+                .always(function () {
                 if (isFinished()) {
                     df.resolve(results);
                 }
@@ -158,7 +158,8 @@ var CDP;
                 id: this._id++,
             };
             this._pool.push(cookie);
-            promise.always(function () {
+            promise
+                .always(function () {
                 _this._pool = _this._pool.filter(function (element) {
                     if (element.id !== cookie.id) {
                         return true;
