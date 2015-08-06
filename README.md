@@ -1,10 +1,15 @@
-﻿# cordova-plugin-nativebridge
+﻿# cordova-plugin-cdp-nativebridge
 
-## About cordova-plugin-nativebridge/cdp.nativebridge
+## What is Native Bridge
 
-`cordova-plugin-nativebridge`: cordova plugin module which achieves generic Native Bridge function.
+The libraries provides easier way to implement connection between JavaScript and Native code than the cordova original framework.
 
-`cdp.nativebridge`: The js module for which utilize cordova-plug-in-nativebridge.
+
+## About cordova-plugin-cdp-nativebridge/cdp.nativebridge
+
+`cordova-plugin-cdp-nativebridge`: cordova plugin module which achieves generic Native Bridge function.
+
+`cdp.nativebridge`: The js module for which utilize cordova-plugin-cdp-nativebridge.
 
 
 ### Repository structure
@@ -23,13 +28,18 @@ Folder and file structure of this repository is the following list.
 
 ### How to install
 
-#### Switch the Tag!
+cordova-plugin-cdp-nativebridge
 
-![switch](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-nativebridge/raw/master/docs/images/switch_the_tag.png)
+        $ npm install -g cordova
+        $ cordova plugin add cordova-plugin-cdp-nativebridge
 
-Please change to the named version tag by drop down list.
+cdp.nativebridge.js
 
-#### or build the moudles
+        $ npm install -g bower
+        $ bower install https://github.com/sony/cordova-plugin-cdp-nativebridge.git
+
+
+### How to build the modules
 
 If you want to use newest version, you can build the modules yourself as follow steps.
 
@@ -80,4 +90,16 @@ Please see the following link.
 
 ## License
 
-[TBD] We are planning to make these libraries MIT license.
+Copyright 2015 Sony Corporation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

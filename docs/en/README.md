@@ -1,68 +1,73 @@
 ﻿Developlers Guide
 ======
 
-The page which explains how to use the `cordova-plugin-nativebridge` and the `cdp.nativebridge.js`.
+The page which explains how to use the `cordova-plugin-cdp-nativebridge` and the `cdp.nativebridge.js`.
 
-- [Why is it necessary?](#1-why-is-it-necessary)
-- [Design Information](#2-design-information)
-    - [Module Structure](#2-1-module-structure)
-    - [Class Structure](#2-2-class-structure)
-    - [Calling agreement in Native Bridge classes](#2-3-calling-agreement-in-native-bridge-classes)
-- [How to Create/Use the Native Bridge class](#3-how-to-create-use-the-native-bridge-class)
-    - [JS layer](#3-1-js-layer)
-        - [The available method list in the JS layer](#3-1-1-the-available-method-list-in-the-js-layer)
-    - [Native layer (Android)](#3-2-native-layer-android)
-        - [Practice1: Threading](#3-2-1-practice1-threading)
-        - [Practice2: Canceling threading process](#3-2-2-practice2-canceling-threading-process)
-        - [Practice3: Cordova Plugin Compatible method calling](#3-2-3-practice3-cordova-plugin-compatible-method-calling)
-        - [The available method list in the Native layer](#3-2-4-the-available-method-list-in-the-native-layer)
-    - [Native layer (iOS)](#3-3-native-layer-ios)
-        - [Practice1: Threading](#3-3-1-practice1-threading)
-        - [Practice2: Canceling threading process](#3-3-2-practice2-canceling-threading-process)
-        - [Practice3: Cordova Plugin Compatible method calling](#3-3-3-practice3-cordova-plugin-compatible-method-calling)
-        - [The available method list in the Native layer](#3-3-4-the-available-method-list-in-the-native-layer)
+- [Why is it necessary?](#WHY)
+- [Design Information](#DEVINFO)
+    - [Module Structure](#MODULE)
+    - [Class Structure](#CLASS)
+    - [Calling agreement in Native Bridge classes](#CALLING_AGREEMENT)
+- [How to Create/Use the Native Bridge class](#HOW_TO)
+    - [JS layer](#JS)
+        - [The available method list in the JS layer](#JS_METHOD)
+    - [Native layer (Android)](#JAVA)
+        - [Practice1: Threading](#JAVA_ASYNC)
+        - [Practice2: Canceling threading process](#JAVA_ASYNC_CANCELING)
+        - [Practice3: Cordova Plugin Compatible method calling](#JAVA_COMPATIBLE)
+        - [The available method list in the Native layer](#JAVA_METHOD)
+    - [Native layer (iOS)](#OBJC)
+        - [Practice1: Threading](#OBJC_ASYNC)
+        - [Practice2: Canceling threading process](#OBJC_ASYNC_CANCELING)
+        - [Practice3: Cordova Plugin Compatible method calling](#OBJC_COMPATIBLE)
+        - [The available method list in the Native layer](#OBJC_METHOD)
 
-# 1:Why is it necessary?
+# <a name="WHY"/>1:Why is it necessary?
 
-You need to create cordova plugin when you want to use native function with cordova 3.x+ framework.
+Usually you need to create cordova plugin when you want to use native function with cordova 3.x+ framework.
 We think it is useful to create resusable moudle as plugin, but in the following situations, it is too much cost and over spec.
 
 - Case of just calling veriy small or simple native function.
 - Case of just connect with native code already implemented for translation. (When reusability is low even if it's made Plugin.)
 
-The `cordova-plugin-nativebridge` and `cdp.nativebridge.js` can resolve above problems.
+If you use the `cordova-plugin-cdp-nativebridge` and `cdp.nativebridge.js`, you should do only the following thing.
 
-- We add the functions by only 1 preparing general-purpose NativeBridge plugin, so we don't need cordova plugins per function.
-- It'll be [JS file : Native file] = [1:1], so the mechanism that we can mount intuitively is prepared.
+- 1. Install `cordova-plugin-cdp-nativebridge` as generic native bridge to your project.
+- 2. Create JavaScript (TypeScript) class from cdp.nativebridge.js as subclass, and add methods.
+- 3. Create Native class which corresponds to JavaScript class and add the methods which corresponds.
+
+That's all. There are no restrictions in the unit of the class. Please add JavaScript files and a Native files freely. You need not to prepare plugin.xml.
+
+We prepared for the easy system such as [JS file : Native file] = [1:1] relation.
 
 
-# 2: Design Information
+# <a name="DEVINFO"/>2: Design Information
 
-Before explaining how to use, We describe fundamental design of `cordova-plugin-nativebridge` and `cdp.nativebridge.js`.
+Before explaining how to use deeply, We describe fundamental design of `cordova-plugin-cdp-nativebridge` and `cdp.nativebridge.js`.
 
 
-## 2-1:Module Structure
+## <a name="MODULE"/>2-1:Module Structure
 
-![nativebridge_modules](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-nativebridge/raw/master/docs/images/nativebridge_modules.png)
+![nativebridge_modules](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/nativebridge_modules.png)
 
 | module/package                     |type                              | description                                                             |
 |:-----------------------------------|:---------------------------------|:------------------------------------------------------------------------|
 | cordova.js                         | 3rd js module                    | cordova framework                                                       |
 | jquery.js                          | 3rd js module                    | jQuery. Asynchronous utility  Deferred object is used.                  |
 | cdp.promise.js                     | CDP js module                    | CDP utility library. The module provides cancelable Promise object.     |
-| `cdp.nativebridge.js`              | CDP js module                    | Wrapper library for cordova-plugin-nativebridge.                        |
+| `cdp.nativebridge.js`              | CDP js module                    | Wrapper library for cordova-plugin-cdp-nativebridge.                    |
 | `cdp.plugin.nativebridge.js`       | CDP cordova plugin module        | General-purpose of the cordova plugin which achieves Native Bridge.     |
 | `com.sony.cdp.plugin.nativebridge` | CDP cordova plugin native source | Anroid native sources package of general-purpose of the cordova plugin. |
 | client_source.java                 | client source                    | Native implementation of client side.                                   |
 | client_source.js(.ts)              | client source                    | JavaScript implementation of client side.                               |
 
-- `cordova-plugin-nativebridge` as its name suggests is cordova plugin. This module is not depend on the other libraries.
+- `cordova-plugin-cdp-nativebridge` as its name suggests is cordova plugin. This module is not depend on the other libraries.
 - `cdp.nativebridge.js` is the JS module to which a symmetrical relation of JS-native is offered. This module is depend on the cdp.promise.js and jquery.js.
 
 
-## 2-2:Class Structure
+## <a name="CLASS"/>2-2:Class Structure
 
-![nativebridge_classes](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-nativebridge/raw/master/docs/images/nativebridge_classes.png)
+![nativebridge_classes](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/nativebridge_classes.png)
 
 | class                                         | description                                                                                                                                                       |
 |:----------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -79,14 +84,14 @@ The client neet to define the following:
 Then the class defined in JS layer starts to react to the class defined Native layer.
 
 
-![nativebridge_classes](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-nativebridge/raw/master/docs/images/bridge_gate.png)
+![nativebridge_classes](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/bridge_gate.png)
 
 
-## 2-3:Calling agreement in Native Bridge classes
+## <a name="CALLING_AGREEMENT"/>2-3:Calling agreement in Native Bridge classes
 
 The following figure is a conceptual diagram of a calling agreement in the class this framework offers.
 
-![nativebridge_calling_convention](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-nativebridge/raw/master/docs/images/nativebridge_calling_convention.png)
+![nativebridge_calling_convention](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/nativebridge_calling_convention.png)
 
 - It's possible to assume from a JS layer that the traffic to a Native layer is equal to a method call.
 - The other way, the traffic to a JS layer from the native layer, it's possible to consider as it is equal to the call back (or Promise if by useing `cdp.nativebridge.js`).
@@ -99,9 +104,9 @@ If you'd like to communicate by a method call from the Native to JS direction, y
 However please remember that the Native Bridge framework doesn't provide the function.
 
 
-# 3:How to Create/Use the Native Bridge class
+# <a name="HOW_TO"/>3:How to Create/Use the Native Bridge class
 
-## 3-1:JS layer
+## <a name="JS"/>3-1:JS layer
 
 An example of class definition of a JS layer is indicated below. (It's written by TypeScript.)
 
@@ -194,7 +199,7 @@ You can use the above-mentioned class as follows.
     }
 ```
 
-### 3-1-1:The available method list in the JS layer
+### <a name="JS_METHOD"/>3-1-1:The available method list in the JS layer
 
 - The class `CDP.NativeBridge.Gate` provides the methods and properties as follows.
 
@@ -212,7 +217,7 @@ You can use the above-mentioned class as follows.
 | `bridge: CDP.Plugin.NativeBridge` | This property is accessor for low level NativeBridge object in cordov plugin. This property is protected attribute. You can use `bridge.exec()` as Low-level API that is `cordova.exec()` compatible. |
 
 
-## 3-2:Native layer (Android)
+## <a name="JAVA"/>3-2:Native layer (Android)
 
 An example of JAVA class definition of a Native layer is indicated below.
 
@@ -277,7 +282,7 @@ The Gate class has same member property of CordovaPlugin. You can access the fol
 - `preferences`
 
 
-### 3-2-1:Practice1: Threading
+### <a name="JAVA_ASYNC"/>3-2-1:Practice1: Threading
 
 If you want to do asynchronous processing, you can acquire `context` and same way of a cordova plug-in as follows.
 
@@ -360,7 +365,7 @@ You can receive asynchronous processing as follows in JS layer.
     }
 ```
 
-### 3-2-2:Practice2: Canceling threading process
+### <a name="JAVA_ASYNC_CANCELING"/>3-2-2:Practice2: Canceling threading process
 
 When you implement asynchronous processing, you should consider to cancellation, too.
 
@@ -440,7 +445,7 @@ When you implement asynchronous processing, you should consider to cancellation,
     }
 ```
 
-### 3-2-3:Practice3: Cordova Plugin Compatible method calling
+### <a name="JAVA_COMPATIBLE"/>3-2-3:Practice3: Cordova Plugin Compatible method calling
 
 If you want to treat the implemented method with cordova official way, you can use Cordova Plugin Compatible way as follows.
 
@@ -494,7 +499,7 @@ If you want to treat the implemented method with cordova official way, you can u
     }
 ```
 
-### 3-2-4:The available method list in the Native layer
+### <a name="JAVA_METHOD"/>3-2-4:The available method list in the Native layer
 
 - `com.sony.cdp.plugin.nativebridge.Gate` class provides the methods as follows.
 
@@ -530,7 +535,7 @@ If you want to treat the implemented method with cordova official way, you can u
 | `threadId`        | `String`             | Calling thread ID is stored.                                                                     |
 
 
-## 3-3:Native layer (iOS)
+## <a name="OBJC"/>3-3:Native layer (iOS)
 
 An example of Objective-C class definition of a Native layer is indicated below.
 
@@ -581,7 +586,7 @@ The CDPGate class has same member property of CDVPlugin. You can access the foll
 - `commandDelegate`
 
 
-### 3-3-1:Practice1: Threading
+### <a name="OBJC_ASYNC"/>3-3-1:Practice1: Threading
 
 If you want to do asynchronous processing, you can acquire context and same way of a cordova plug-in as follows.
 
@@ -658,7 +663,7 @@ You can receive asynchronous processing as follows in JS layer. (same as 3-2 cha
     }
 ```
 
-### 3-3-2:Practice2: Canceling threading process
+### <a name="OBJC_ASYNC_CANCELING"/>3-3-2:Practice2: Canceling threading process
 
 When you implement asynchronous processing, you should consider to cancellation, too.
 
@@ -733,7 +738,7 @@ When you implement asynchronous processing, you should consider to cancellation,
 }
 ```
 
-### 3-3-3:Practice3: Cordova Plugin Compatible method calling
+### <a name="OBJC_COMPATIBLE"/>3-3-3:Practice3: Cordova Plugin Compatible method calling
 
 If you want to treat the implemented method with cordova official way, you can use Cordova Plugin Compatible way as follows.
 
@@ -787,7 +792,7 @@ If you want to treat the implemented method with cordova official way, you can u
 }
 ```
 
-### 3-3-4:The available method list in the Native layer
+### <a name="OBJC_METHOD"/>3-3-4:The available method list in the Native layer
 
 - `Plugins/CDPNativeBridge/CDPGate` class provides the methods as follows.
 

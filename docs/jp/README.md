@@ -1,68 +1,73 @@
 ﻿Developlers Guide
 ======
 
-`cordova-plugin-nativebridge` および `cdp.nativebridge.js` モジュールの使い方を解説するページです。
+`cordova-plugin-cdp-nativebridge` および `cdp.nativebridge.js` モジュールの使い方を解説するページです。
 
-- [なぜ必要なの?](#1)
-- [設計情報](#2)
-    - [モジュール構成](#2-1)
-    - [クラス構成](#2-2)
-    - [Native Bridge クラスの呼び出し規約](#2-3)
-- [Native Bridge クラスの作り方/使い方](#3-native-bridge)
-    - [JSレイヤ](#3-1-js)
-        - [JSレイヤ で使用可能なメソッド一覧](#3-1-1-js)
-    - [Nativeレイヤ (Android)](#3-2-native-android)
-        - [実践1: 非同期処理](#3-2-1-1)
-        - [実践2: 非同期処理のキャンセル対応](#3-2-2-2)
-        - [実践3: Cordova Plugin Compatible な呼び出し方](#3-2-3-3-cordova-plugin-compatible)
-        - [Nativeレイヤ で使用可能なメソッド一覧](#3-2-4-native)
-    - [Nativeレイヤ (iOS)](#3-3-native-ios)
-        - [実践1: 非同期処理](#3-3-1-1)
-        - [実践2: 非同期処理のキャンセル対応](#3-3-2-2)
-        - [実践3: Cordova Plugin Compatible な呼び出し方](#3-3-3-3-cordova-plugin-compatible)
-        - [Nativeレイヤ で使用可能なメソッド一覧](#3-3-4-native)
+- [なぜ必要なの?](#WHY)
+- [設計情報](#DEVINFO)
+    - [モジュール構成](#MODULE)
+    - [クラス構成](#CLASS)
+    - [Native Bridge クラスの呼び出し規約](#CALLING_AGREEMENT)
+- [Native Bridge クラスの作り方/使い方](#HOW_TO)
+    - [JSレイヤ](#JS)
+        - [JSレイヤ で使用可能なメソッド一覧](#JS_METHOD)
+    - [Nativeレイヤ (Android)](#JAVA)
+        - [実践1: 非同期処理](#JAVA_ASYNC)
+        - [実践2: 非同期処理のキャンセル対応](#JAVA_ASYNC_CANCELING)
+        - [実践3: Cordova Plugin Compatible な呼び出し方](#JAVA_COMPATIBLE)
+        - [Nativeレイヤ で使用可能なメソッド一覧](#JAVA_METHOD)
+    - [Nativeレイヤ (iOS)](#OBJC)
+        - [実践1: 非同期処理](#OBJC_ASYNC)
+        - [実践2: 非同期処理のキャンセル対応](#OBJC_ASYNC_CANCELING)
+        - [実践3: Cordova Plugin Compatible な呼び出し方](#OBJC_COMPATIBLE)
+        - [Nativeレイヤ で使用可能なメソッド一覧](#OBJC_METHOD)
 
-# 1:なぜ必要なの?
+# <a name="WHY"/>1:なぜ必要なの?
 
-`cordova 3.x+` から、JS Layer と Native Layer の通信を行うには、cordova plugin を作成する必要があります。
+`cordova 3.x+` から、JS Layer と Native Layer の通信を行うには、通常 cordova plugin を作成する必要があります。
 しかしながら、Plugin 機構は機能を再利用したい場合に非常に有効な手段となりますが、以下の場合にはオーバースペックで少々実装コストが高い傾向にあると考えます。
 
 - 雑多に簡単なNative 通信をしたいだけのとき
 - 既にある Native アプリのコードとつなぎたいとき (Plugin にしても、再利用性が低いとき)
 
-このような場合において、以下のように問題を解決するのが、`cordova-plugin-nativebridge` および `cdp.nativebridge.js` です。
+`cordova-plugin-cdp-nativebridge` と `cdp.nativebridge.js` を使用すると、以下のことをするだけ済むようになります。
 
-- 汎用 NativeBrige plugin を1つだけ用意することで、機能追加のたびに `cordova plugin` を必要としない。
-- [JS file : Native file] = [1:1] となるような、直感的に実装できる仕組みを用意する。
+- 1. `cordova-plugin-cdp-nativebridge` を汎用 NativeBridge plugin としてプロジェクトにインストールする。
+- 2. `cdp.nativebridge.js` から派生した JavaScript (TypeScript) のクラスを作成し、メソッドを追加する。
+- 3. JavaScriptクラスに対応した、Native クラスを作成し、対応したメソッドを追加する。
+
+これだけです。クラスの単位に制約はありません。あとは自由に JavaScript ファイルと Native ファイルを追加してください。plugin.xml を用意する必要もありません。
+
+本ライブラリは、[JS file : Native file] = [1:1] となるような、直感的に実装できる仕組みを提供します。
 
 
-# 2: 設計情報
+# 2: <a name="DEVINFO"/>設計情報
 
-使い方の前に、`cordova-plugin-nativebridge` と `cdp.nativebridge.js` の基本設計について触れておきます。
+詳細な使い方の前に、`cordova-plugin-cdp-nativebridge` と `cdp.nativebridge.js` の基本設計について触れておきます。
 
 
-## 2-1:モジュール構成
+## <a name="MODULE"/>2-1:モジュール構成
 
-![nativebridge_modules](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-nativebridge/raw/master/docs/images/nativebridge_modules.png)
+![nativebridge_modules](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/nativebridge_modules.png)
 
 | module/package                     |type                              | description                                                             |
 |:-----------------------------------|:---------------------------------|:------------------------------------------------------------------------|
 | cordova.js                         | 3rd js module                    | cordova 本体                                                            |
 | jquery.js                          | 3rd js module                    | jQuery. 非同期ユーティリティ Deferred を使用                            |
 | cdp.promise.js                     | CDP js module                    | CDP のユーティリティライブラリ cancel 可能な Promise オブジェクトを提供 |
-| `cdp.nativebridge.js`              | CDP js module                    | cordova-plugin-nativebridge のラッパー                                  |
+| `cdp.nativebridge.js`              | CDP js module                    | cordova-plugin-cdp-nativebridge のラッパー                              |
 | `cdp.plugin.nativebridge.js`       | CDP cordova plugin module        | 汎用 Native Bridge を実現する cordova plugin js module                  |
 | `com.sony.cdp.plugin.nativebridge` | CDP cordova plugin native source | 汎用 Native Bridge を実現する cordova plugin pakage (Android)           |
 | client_source.java                 | client source                    | クライアントが用意する Native 側のソース                                |
 | client_source.js(.ts)              | client source                    | クライアントが用意する JS 側のソース                                    |
 
-- `cordova-plugin-nativebridge` はその名のとおり cordova plugin です。他のライブラリには依存しておらず、単体で成立する plugin です。
+- `cordova-plugin-cdp-nativebridge` はその名のとおり cordova plugin です。他のライブラリには依存しておらず、単体で成立する plugin です。
 - `cdp.nativebridge.js` は JS-Native の対象性を実現するためのJS モジュールです。このモジュールは cdp.promise.js, jqury.js に依存します。
 
 
-## 2-2:クラス構成
+## <a name="CLASS"/>2-2:クラス構成
 
-![nativebridge_classes](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-nativebridge/raw/master/docs/images/nativebridge_classes.png)
+![nativebridge_classes](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/nativebridge_classes.png)
 
 | class                                         | description                                                                                                          |
 |:----------------------------------------------|:---------------------------------------------------------------------------------------------------------------------|
@@ -78,14 +83,14 @@
 
 すると、JSレイヤで定義したクラスがNativeレイヤで反応するようになります。
 
-![nativebridge_classes](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-nativebridge/raw/master/docs/images/bridge_gate.png)
+![nativebridge_classes](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/bridge_gate.png)
 
 
-## 2-3:Native Bridge クラスの呼び出し規約
+## <a name="CALLING_AGREEMENT"/>2-3:Native Bridge クラスの呼び出し規約
 
 このフレームワークが提供するクラスの呼び出し規約の概念図です。
 
-![nativebridge_calling_convention](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-nativebridge/raw/master/docs/images/nativebridge_calling_convention.png)
+![nativebridge_calling_convention](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/nativebridge_calling_convention.png)
 
 - JSレイヤからNativeレイヤへの通信は、メソッドコールと同等とみなすことができます。
 - 反対にNativeレイヤからJSレイヤへの通信は、コールバック (`cdp.nativebridge.js`からは Promise) と同等とみなすことができます。
@@ -97,9 +102,9 @@
 しかし本 Native Bridge フレームワークから機能は提供しないことを留めておいてください。
 
 
-# 3:Native Bridge クラスの作り方/使い方
+# <a name="HOW_TO"/>3:Native Bridge クラスの作り方/使い方
 
-## 3-1:JSレイヤ
+## <a name="JS"/>3-1:JSレイヤ
 
 JSレイヤのクラス定義の例を以下に示します。(TypeScript を使用しています。)
 
@@ -191,7 +196,7 @@ module SampleApp {
     }
 ```
 
-### 3-1-1:JSレイヤ で使用可能なメソッド一覧
+### <a name="JS_METHOD"/>3-1-1:JSレイヤ で使用可能なメソッド一覧
 
 - CDP.NativeBridge.Gate クラスが提供するメソッド/プロパティは以下です。
 
@@ -209,7 +214,7 @@ module SampleApp {
 | `bridge: CDP.Plugin.NativeBridge` | cordova plugin の NativeBridge オブジェクトにアクセスします。protected 属性です。低レベルな `cordova.exec()` 互換 API である、`bridge.exec()` が使用可能です。|
 
 
-## 3-2:Nativeレイヤ (Android)
+## <a name="JAVA"/>3-2:Nativeレイヤ (Android)
 
 NativeレイヤのJavaクラス定義の例を以下に示します。
 
@@ -273,7 +278,7 @@ Gate クラスは CordovaPlugin クラスと同じメンバ変数を持ってい
 - `webView`
 - `preferences`
 
-### 3-2-1:実践1: 非同期処理
+### <a name="JAVA_ASYNC"/>3-2-1:実践1: 非同期処理
 
 非同期処理がしたい場合は以下のように`context`を取得し、cordova プラグインの作法を踏襲できます。
 
@@ -357,7 +362,7 @@ Gate クラスは CordovaPlugin クラスと同じメンバ変数を持ってい
     }
 ```
 
-### 3-2-2:実践2: 非同期処理のキャンセル対応
+### <a name="JAVA_ASYNC_CANCELING"/>3-2-2:実践2: 非同期処理のキャンセル対応
 
 非同期処理はキャンセル対応する必要があります。
 
@@ -437,7 +442,7 @@ Gate クラスは CordovaPlugin クラスと同じメンバ変数を持ってい
     }
 ```
 
-### 3-2-3:実践3: Cordova Plugin Compatible な呼び出し方
+### <a name="JAVA_COMPATIBLE"/>3-2-3:実践3: Cordova Plugin Compatible な呼び出し方
 
 cordova 公式準拠のやり方を踏襲したい場合があります。このときは Cordova Plugin Compatible なメソッド呼び出しが利用可能です。
 
@@ -491,7 +496,7 @@ cordova 公式準拠のやり方を踏襲したい場合があります。この
     }
 ```
 
-### 3-2-4:Nativeレイヤ で使用可能なメソッド一覧
+### <a name="JAVA_METHOD"/>3-2-4:Nativeレイヤ で使用可能なメソッド一覧
 
 - com.sony.cdp.plugin.nativebridge.Gate クラスが提供するメソッドは以下です。
 
@@ -526,7 +531,7 @@ cordova 公式準拠のやり方を踏襲したい場合があります。この
 | `threadId`        | `String`             | 呼び出しスレッド情報が格納されています。                                           |
 
 
-## 3-3:Nativeレイヤ (iOS)
+## <a name="OBJC"/>3-3:Nativeレイヤ (iOS)
 
 Nativeレイヤの Objective-C クラス定義の例を以下に示します。
 
@@ -577,7 +582,7 @@ CDPGate クラスは CDVPlugin クラスと同じメンバ変数を持ってい�
 - `viewController`
 - `commandDelegate`
 
-### 3-3-1:実践1: 非同期処理
+### <a name="OBJC_ASYNC"/>3-3-1:実践1: 非同期処理
 
 非同期処理がしたい場合は以下のように`context`を取得し、cordova プラグインの作法を踏襲できます。
 
@@ -655,7 +660,7 @@ CDPGate クラスは CDVPlugin クラスと同じメンバ変数を持ってい�
     }
 ```
 
-### 3-3-2:実践2: 非同期処理のキャンセル対応
+### <a name="OBJC_ASYNC_CANCELING"/>3-3-2:実践2: 非同期処理のキャンセル対応
 
 非同期処理はキャンセル対応する必要があります。
 
@@ -730,7 +735,7 @@ CDPGate クラスは CDVPlugin クラスと同じメンバ変数を持ってい�
 }
 ```
 
-### 3-3-3:実践3: Cordova Plugin Compatible な呼び出し方
+### <a name="OBJC_COMPATIBLE"/>3-3-3:実践3: Cordova Plugin Compatible な呼び出し方
 
 cordova 公式準拠のやり方を踏襲したい場合があります。このときは Cordova Plugin Compatible なメソッド呼び出しが利用可能です。
 
@@ -784,7 +789,7 @@ cordova 公式準拠のやり方を踏襲したい場合があります。この
 }
 ```
 
-### 3-3-4:Nativeレイヤ で使用可能なメソッド一覧
+### <a name="OBJC_METHOD"/>3-3-4:Nativeレイヤ で使用可能なメソッド一覧
 
 - Plugins/CDPNativeBridge/CDPGate クラスが提供するメソッドは以下です。
  ※より自由にコールバックを操作するためには、CDPNativeBridgeMsgUtils の javadoc コメントを参照してください。
