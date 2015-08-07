@@ -91,8 +91,8 @@ NOTICES FOR Cordova Plugin Test Framework
 --------------------------------------------------------------------------------
 
  - Cordova Plugin Test Framework - ./dev/plugins/com.sony.cdp.plugin.test-framework/
+                                 - ./dev/app/cdvtests/
     https://github.com/apache/cordova-plugin-test-framework
 
     Released under the Apache License v2.0.
     https://github.com/apache/cordova-plugin-test-framework/blob/master/LICENSE
-
