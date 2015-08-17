@@ -28,6 +28,14 @@ Getting the source:
 
     $ git clone https://github.com/sony/cordova-plugin-cdp-nativebridge.git
 
+Update platforms:
+
+- You need to update cordova platform libraries just one time.
+
+    $ cd cordova-plugin-cdp-nativebridge/dev
+    $ cordova platform update <platform>
+
+
 Build with Compile:
 
     $ cd cordova-plugin-cdp-nativebridge/dev
