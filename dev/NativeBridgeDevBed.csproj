@@ -217,7 +217,9 @@
     <Content Include="build\tasks\package.common.proc.js" />
     <Content Include="config.xml" />
     <Content Include="Gruntfile.js" />
-    <Content Include="hooks\before_prepare\kick_grunt.js" />
+    <Content Include="hooks\before_platform_update\set_grunt.js" />
+    <Content Include="hooks\before_prepare\set_grunt.js" />
+    <Content Include="hooks\lib\kick_grunt.js" />
     <Content Include="platforms\android\src\com\sony\cdp\plugin\nativebridge\Gate.java" />
     <Content Include="platforms\android\src\com\sony\cdp\plugin\nativebridge\MessageUtils.java" />
     <Content Include="platforms\android\src\com\sony\cdp\plugin\nativebridge\MethodContext.java" />

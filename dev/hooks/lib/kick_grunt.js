@@ -1,8 +1,7 @@
-#!/usr/bin/env node 
+'use strict';
 
-// The line feed code of this file must be LF.
-
-(function() {
+exports.exec = function (supportCommand) {
+    var _supportCommand = supportCommand || [];
 
     var spawn = require('child_process').spawn;
     var _cmdline = (function () {
@@ -96,18 +95,11 @@
         * return the task string
         */
     function queryGruntTask() {
-        var supportCommand = [
-            { cordova: 'build',     regexp: /build/ig,      prefix: 'cordova_build_'     },
-            { cordova: 'emulate',   regexp: /emulate/ig,    prefix: 'cordova_build_'     },
-            { cordova: 'run',       regexp: /run/ig,        prefix: 'cordova_build_'     },
-            { cordova: 'prepare',   regexp: /prepare/ig,    prefix: 'cordova_prepare:'   },
-        ];
-
         var target = isDebug() ? 'debug' : 'release';
 
-        for (var i = 0, n = supportCommand.length; i < n; i++) {
-            if (null != _cmdline.match(supportCommand[i].regexp)) {
-                return supportCommand[i].prefix + target;
+        for (var i = 0, n = _supportCommand.length; i < n; i++) {
+            if (null != _cmdline.match(_supportCommand[i].regexp)) {
+                return _supportCommand[i].prefix + (_supportCommand[i].no_target ? "" : target);
             }
         }
         return null;
@@ -172,4 +164,4 @@
         });
     }
 
-})();
+};
