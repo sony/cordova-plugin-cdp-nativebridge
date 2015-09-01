@@ -51,4 +51,4 @@ When master module update, you can use a follow command to sync for this sample.
 
 # Spec
 
-![sample](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/devbed_spec.png)
+![sample](../docs/images/devbed_spec.png)

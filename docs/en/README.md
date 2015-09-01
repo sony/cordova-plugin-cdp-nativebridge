@@ -48,7 +48,7 @@ Before explaining how to use deeply, We describe fundamental design of `cordova-
 
 ## <a name="MODULE"/>2-1:Module Structure
 
-![nativebridge_modules](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/nativebridge_modules.png)
+![nativebridge_modules](../images/nativebridge_modules.png)
 
 | module/package                     |type                              | description                                                             |
 |:-----------------------------------|:---------------------------------|:------------------------------------------------------------------------|
@@ -67,7 +67,7 @@ Before explaining how to use deeply, We describe fundamental design of `cordova-
 
 ## <a name="CLASS"/>2-2:Class Structure
 
-![nativebridge_classes](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/nativebridge_classes.png)
+![nativebridge_classes](../images/nativebridge_classes.png)
 
 | class                                         | description                                                                                                                                                       |
 |:----------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -84,14 +84,14 @@ The client neet to define the following:
 Then the class defined in JS layer starts to react to the class defined Native layer.
 
 
-![nativebridge_classes](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/bridge_gate.png)
+![nativebridge_classes](../images/bridge_gate.png)
 
 
 ## <a name="CALLING_AGREEMENT"/>2-3:Calling agreement in Native Bridge classes
 
 The following figure is a conceptual diagram of a calling agreement in the class this framework offers.
 
-![nativebridge_calling_convention](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/nativebridge_calling_convention.png)
+![nativebridge_calling_convention](../images/nativebridge_calling_convention.png)
 
 - It's possible to assume from a JS layer that the traffic to a Native layer is equal to a method call.
 - The other way, the traffic to a JS layer from the native layer, it's possible to consider as it is equal to the call back (or Promise if by useing `cdp.nativebridge.js`).

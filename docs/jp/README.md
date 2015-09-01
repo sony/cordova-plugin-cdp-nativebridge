@@ -48,7 +48,7 @@
 
 ## <a name="MODULE"/>2-1:モジュール構成
 
-![nativebridge_modules](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/nativebridge_modules.png)
+![nativebridge_modules](../images/nativebridge_modules.png)
 
 | module/package                     |type                              | description                                                             |
 |:-----------------------------------|:---------------------------------|:------------------------------------------------------------------------|
@@ -67,7 +67,7 @@
 
 ## <a name="CLASS"/>2-2:クラス構成
 
-![nativebridge_classes](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/nativebridge_classes.png)
+![nativebridge_classes](../images/nativebridge_classes.png)
 
 | class                                         | description                                                                                                          |
 |:----------------------------------------------|:---------------------------------------------------------------------------------------------------------------------|
@@ -83,14 +83,14 @@
 
 すると、JSレイヤで定義したクラスがNativeレイヤで反応するようになります。
 
-![nativebridge_classes](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/bridge_gate.png)
+![nativebridge_classes](../images/bridge_gate.png)
 
 
 ## <a name="CALLING_AGREEMENT"/>2-3:Native Bridge クラスの呼び出し規約
 
 このフレームワークが提供するクラスの呼び出し規約の概念図です。
 
-![nativebridge_calling_convention](http://scm.sm.sony.co.jp/gitlab/cdp-jp/cordova-plugin-cdp-nativebridge/raw/master/docs/images/nativebridge_calling_convention.png)
+![nativebridge_calling_convention](../images/nativebridge_calling_convention.png)
 
 - JSレイヤからNativeレイヤへの通信は、メソッドコールと同等とみなすことができます。
 - 反対にNativeレイヤからJSレイヤへの通信は、コールバック (`cdp.nativebridge.js`からは Promise) と同等とみなすことができます。
