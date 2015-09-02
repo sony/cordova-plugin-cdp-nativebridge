@@ -34,7 +34,7 @@ exports.exec = function (supportCommand) {
             console.log('error: ' + er);
         }
 
-        npm.on('error', function (err) { ErrorHandler(err); });
+        npm.on('error', function (err) { errorHandler(err); });
         npm.on('close', function (code) {
             if (0 === code) {
                 console.log('*** End npm install ***\n');
@@ -58,7 +58,7 @@ exports.exec = function (supportCommand) {
 
         var grunt = spawn(gruntcmd, cmdTasks, { cwd: 'build', stdio: 'inherit' });
 
-        grunt.on('error', function (err) { ErrorHandler(err); });
+        grunt.on('error', function (err) { errorHandler(err); });
         grunt.on('close', function (code) {
             // Exit code from grunt refer to http://gruntjs.com/api/exit-codes.
             if (0 === code) {
@@ -73,7 +73,7 @@ exports.exec = function (supportCommand) {
     }
 
     // Error handler
-    function ErrorHandler(err) {
+    function errorHandler(err) {
         console.log('Error occurred: ' + err);
     }
 
