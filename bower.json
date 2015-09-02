@@ -23,8 +23,8 @@
         "RELEASENOTE.md",
         "plugin.xml"
     ],
-    "dependencies": {
-        "jquery": "http://github.com/jquery/jquery.git#2.1.3"
+    "devDependencies": {
+        "jquery": "~2.1.4"
     },
     "keywords": [
         "cdp.module",
