@@ -1,6 +1,6 @@
 ﻿## Release Notes
 
-### Release 1.0.0 (2015/09/07)
+### Release 1.0.0 (September 2015)
 
 * Rename cordova-plugin-cdp-nativebridge
 
@@ -8,7 +8,7 @@
   - cdp.promise.js
 
 
-### Release 0.9.0 (2015/05/11)
+### Release 0.9.0 (May 2015)
 
 Beta release.
 

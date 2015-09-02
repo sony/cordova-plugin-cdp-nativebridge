@@ -30,7 +30,7 @@ Getting the source:
 
 Update platforms:
 
-- You need to update cordova platform libraries just one time.
+You need to update cordova platform libraries just one time.
 
     $ cd cordova-plugin-cdp-nativebridge/dev
     $ cordova platform update <platform>

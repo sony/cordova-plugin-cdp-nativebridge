@@ -69,7 +69,7 @@ If you want to use newest version, you can build the modules yourself as follow 
 
 3. install cordova plugin
 
-        copy plugins direcotry to somewhere. ex: temp dir
+        copy release direcotry to somewhere. ex: temp dir
         
         $ cd <%your project root%>
         $ cordova plugin add <%temp%>/plugins/com.sony.cdp.nativebridge
