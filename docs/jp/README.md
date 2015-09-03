@@ -62,7 +62,7 @@
 | client_source.js(.ts)              | client source                    | クライアントが用意する JS 側のソース                                    |
 
 - `cordova-plugin-cdp-nativebridge` はその名のとおり cordova plugin です。他のライブラリには依存しておらず、単体で成立する plugin です。
-- `cdp.nativebridge.js` は JS-Native の対称性を実現するためのJS モジュールです。このモジュールは cdp.promise.js, jqury.js に依存します。
+- `cdp.nativebridge.js` は JS-Native の対称性を実現するためのJS モジュールです。このモジュールは cdp.promise.js, jquery.js に依存します。
 
 
 ## <a name="CLASS"/>2-2:クラス構成
