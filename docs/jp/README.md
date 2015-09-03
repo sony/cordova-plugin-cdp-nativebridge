@@ -573,7 +573,7 @@ Nativeレイヤの Objective-C クラス定義の例を以下に示します。
 ※注意点:
 - js の `boolean` 型は Objective-C の慣例に従い `BOOL` にマッピングされます。
     - Objective-C では C99 から使用可能な `bool` もありますが、iOS Framework 内では出番がほとんどありません。
-- 第2引数以降の Lable は使用できません。
+- 第2引数以降の Label は使用できません。
     - Objective-C では Label 情報も関数の型として認識されます。リフレクションで解決するには、js から指定する必要が出てきます。
     - Objective-C の入り口までは、js メソッドのメタファーがあると割り切ってください。
 
