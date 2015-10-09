@@ -101,6 +101,52 @@ module CDP {
 					}
 				});
 			}
+
+			/**
+			 * \~english
+			 * Helper function to correctly set up the prototype chain, for subclasses.
+			 * The function behavior is same as extend() function of Backbone.js.
+			 *
+			 * @param protoProps  {Object} [in] set prototype properties as object.
+			 * @param staticProps {Object} [in] set static properties as object.
+			 * @return {Object} subclass constructor.
+			 *
+			 * \~japanese
+			 * クラス継承のためのヘルパー関数
+			 * Backbone.js extend() 関数と同等
+			 *
+			 * @param protoProps  {Object} [in] prototype properties をオブジェクトで指定
+			 * @param staticProps {Object} [in] static properties をオブジェクトで指定
+			 * @return {Object} サブクラスのコンストラクタ
+			 */
+			public static extend(protoProps: Object, staticProps?: Object): Object {
+				var parent = this;
+				var child;
+
+				if (protoProps && protoProps.hasOwnProperty("constructor")) {
+					child = protoProps.constructor;
+				} else {
+					child = function () {
+						return parent.apply(this, arguments);
+					};
+				}
+
+				$.extend(child, parent, staticProps);
+
+				var Surrogate = function () {
+					this.constructor = child;
+				};
+				Surrogate.prototype = parent.prototype;
+				child.prototype = new Surrogate;
+
+				if (protoProps) {
+					$.extend(child.prototype, protoProps);
+				}
+
+				child.__super__ = parent.prototype;
+
+				return child;
+			}
 		}
 	}
 }

@@ -31,6 +31,9 @@ module CDP {
 
 			private _bridge: Plugin.NativeBridge;
 
+			//! For pure javascript extend helper.
+			private static extend = Utils.extend;
+
 			/**
 			 * constructor
 			 *

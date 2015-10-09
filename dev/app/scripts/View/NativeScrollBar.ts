@@ -46,5 +46,35 @@ module NativeBridgeDevBed {
 		}
 
 		var nativeScrollBarView = new NativeScrollBar();
+
+/*
+		// TODO: 削除 test
+		debugger;
+		var TestGate = (<any>CDP.NativeBridge.Gate).extend({
+			constructor: function (options) {
+				CDP.NativeBridge.Gate.call(this, {
+					name: "ScrollBar",
+					android: {
+						packageInfo: "com.sony.cdp.sample.ScrollBar",
+					},
+				});
+			},
+
+			showVertical: function () {
+				CDP.NativeBridge.Gate.prototype.exec.call("showVertical", <any>arguments);
+			},
+
+			hideVertical: function () {
+				var df = $.Deferred<void>();
+				CDP.NativeBridge.Gate.prototype.exec.call("hideVertical", <any>arguments)
+					.always(() => {
+						df.resolve();
+					});
+				return df.promise();
+			},
+		});
+
+		var testGate = new TestGate();
+*/
 	}
 }
