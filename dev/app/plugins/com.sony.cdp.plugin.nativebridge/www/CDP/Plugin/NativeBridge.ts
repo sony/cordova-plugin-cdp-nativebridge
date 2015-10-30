@@ -7,24 +7,39 @@ module CDP {
 
 		export module NativeBridge {
 			/**
+             * \~english
+			 * @interface PlatformInfo
+             * @brief platfrom information.
+             *
+             * \~japanese
 			 * @interface PlatformInfo
 			 * @brief Platform 情報
 			 */
 			export interface PlatformInfo {
-				packageInfo?: string;		//!< package 情報. 主クラス ex) "com.sony.cdp.nativebridge.hoge.Hoge" / NBPHoge
+				packageInfo?: string;		//!< package info. main class ex) "com.sony.cdp.nativebridge.hoge.Hoge" / NBPHoge
 			}
 
 			/**
+             * \~english
+			 * @interface Feature
+             * @brief feature information.
+             *
+             * \~japanese
 			 * @interface Feature
 			 * @brief 機能情報
 			 */
 			export interface Feature {
-				name: string;				//!< 拡張した主機能名
-				android?: PlatformInfo;		//!< platform 情報 (android)
-				ios?: PlatformInfo;			//!< platform 情報 (ios)
+				name: string;				//!< main feature name.
+				android?: PlatformInfo;		//!< platform info for android.
+				ios?: PlatformInfo;			//!< platform info for ios.
 			}
 
 			/**
+             * \~english
+			 * @interface ConstructOptions
+             * @brief NativeBridge class's consrtruction options.
+             *
+             * \~japanese
 			 * @interface ConstructOptions
 			 * @brief 初期化に指定するオプション
 			 */
@@ -32,36 +47,53 @@ module CDP {
 			}
 
 			/**
+             * \~english
+			 * @interface IResult
+			 * @brief NativeBridge base result information.
+             *
+             *
+             * \~japanese
 			 * @interface IResult
 			 * @brief NativeBridge の基底 Result 情報
 			 */
 			export interface IResult {
-				code: number;				//!< エラーコード
-				message?: string;			//!< メッセージ
-				name?: string;				//!< エラー名
-				taskId?: string;			//!< タスクID
-				params?: any[];				//!< 任意のパラメータ
+				code: number;				//!< error code.
+				message?: string;			//!< error message.
+				name?: string;				//!< error name.
+				taskId?: string;			//!< task id.
+				params?: any[];				//!< any parameters.
 			}
 
 			/**
+             * \~english
+			 * @interface ExecOptions
+             * @brief exec() method options.
+             *
+             * \~japanese
 			 * @interface ExecOptions
 			 * @brief exec() に渡すオプション
 			 */
 			export interface ExecOptions {
-				post?: boolean;				//!< callback へ post するか否か
-				compatible?: boolean;		//!< cordova 標準と同じ引数で Native を呼びたい場合には true. default: false. (binary 転送時に有用)
+				post?: boolean;				//!< use post callback or not.
+				compatible?: boolean;		//!< if set true, using cordova official way. default: false.
 			}
 
 			/**
+             * \~english
 			 * @interface ExecInfo
-			 * @brief cordova.exec() に渡す情報
+			 * @brief argument info for cordova.exec().
+			 *        used framework internal.
+             *
+             * \~japanese
+			 * @interface ExecInfo
+			 * @brief cordova.exec() に渡す情報. framework が使用
 			 */
 			export interface ExecInfo {
-				feature: Feature;			//!< 機能情報を格納
-				objectId: string;			//!< インスタンス固有のオブジェクトID
-				taskId: string;				//!< タスクID
-				method: string;				//!< 対象クラスのメソッド名
-				compatible: boolean;		//!< cordova 標準と同じ引数で Native をコール
+				feature: Feature;			//!< feature information.
+				objectId: string;			//!< object ID by instance.
+				taskId: string;				//!< task ID.
+				method: string;				//!< target method name.
+				compatible: boolean;		//!< cordova official way compatible flag.
 			}
 		}
 
@@ -79,9 +111,15 @@ module CDP {
 		var _utils = cordova.require("cordova/utils");
 
 		/**
+		 * \~english
+		 * @class NativeBridge
+		 * @brief Main class for "cdp.plugin.nativebridge" module.
+		 *        [JavaScript instance : Native instance] = [1 : 1].
+		 *
+		 * \~japanese
 		 * @class NativeBridge
 		 * @brief Native Bridge の主クラス
-		 *        [JavaScript instance : Native Instance] = [1 : 1] となる
+		 *        [JavaScript instance : Native instance] = [1 : 1] となる
 		 */
 		export class NativeBridge {
 
@@ -90,6 +128,13 @@ module CDP {
 			private _execTaskHistory: { [taskId: string]: boolean };
 
 			/**
+			 * \~english
+			 * constructor
+			 *
+			 * @param feature {Feature}           [in] feature information.
+			 * @param options {ConstructOptions?} [in] construction options.
+			 *
+			 * \~japanese
 			 * constructor
 			 *
 			 * @param feature {Feature}           [in] 機能情報
@@ -108,11 +153,23 @@ module CDP {
 			// public methods
 
 			/**
+			 * \~english
+			 * Execute task.
+			 * the function calls the Native class method from correspondent method name.
+			 *
+			 * @param success {Function}     [in] success callback.
+			 * @param fail    {Function}     [in] fail callback.
+			 * @param method  {String}       [in] method name of Native class
+			 * @param args    {Object[]}     [in] set arguments by array type.
+			 * @param options {ExecOptions?} [in] set exec options.
+			 * @return task ID {String} 
+			 *
+			 * \~japanese
 			 * タスクの実行
 			 * 指定した method 名に対応する Native Class の method を呼び出す。
 			 *
-			 * @param success {Function}     [in] success call back
-			 * @param fail    {Function}     [in] fail call back
+			 * @param success {Function}     [in] success callback
+			 * @param fail    {Function}     [in] fail callback
 			 * @param method  {String}       [in] Native Class のメソッド名を指定
 			 * @param args    {Object[]}     [in] 引数を配列で指定
 			 * @param options {ExecOptions?} [in] 実行オプションを指定
@@ -213,12 +270,21 @@ module CDP {
 			}
 
 			/**
+			 * \~english
+			 * Cancel task.
+			 *
+			 * @param taskId  {String}       [in] set task ID that returned exec(). if set null, all tasks will be cancelling.
+			 * @param options {ExecOptions?} [in] set execute options.
+			 * @param success {Function?}    [in] success callback.
+			 * @param fail    {Function?}    [in] fail callback.
+			 *
+			 * \~japanese
 			 * タスクのキャンセル
 			 *
 			 * @param taskId  {String}       [in] タスク ID を指定. exec() の戻り値. null 指定で全キャンセル
 			 * @param options {ExecOptions?} [in] 実行オプションを指定
-			 * @param success {Function?}    [in] success call back
-			 * @param fail    {Function?}    [in] fail call back
+			 * @param success {Function?}    [in] success callback
+			 * @param fail    {Function?}    [in] fail callback
 			 */
 			public cancel(taskId: string, options?: ExecOptions, success?: (result?: IResult) => void, fail?: (result?: IResult) => void): void {
 				var opt: any = NativeBridge._extend({ post: false }, options);
@@ -236,12 +302,21 @@ module CDP {
 			}
 
 			/**
+			 * \~english
+			 * Destruction for the instance.
+			 * release Native class reference. after that, exec() becomes invalid.
+			 *
+			 * @param options {ExecOptions?} [in] set execute options.
+			 * @param success {Function?}    [in] success callback.
+			 * @param fail    {Function?}    [in] fail callback.
+			 *
+			 * \~japanese
 			 * インスタンスの破棄
-			 * Native の参照を解除する。以降、exec は無効となる。
+			 * Native の参照を解除する。以降、exec() は無効となる。
 			 *
 			 * @param options {ExecOptions?} [in] 実行オプションを指定
-			 * @param success {Function?}    [in] success call back
-			 * @param fail    {Function?}    [in] fail call back
+			 * @param success {Function?}    [in] success callback
+			 * @param fail    {Function?}    [in] fail callback
 			 */
 			public dispose(options?: ExecOptions, success?: (result?: IResult) => void, fail?: (result?: IResult) => void): void {
 				var opt: any = NativeBridge._extend({ post: false }, options);
@@ -257,6 +332,12 @@ module CDP {
 			// public static methods
 
 			/**
+			 * \~english
+			 * Set priority for "backbutton" event.
+			 *
+			 * @param first {Boolean} [in] true: set first priority / false: default.
+			 *
+			 * \~japanese
 			 * "backbutton" イベントを優先設定
 			 *
 			 * @param first {Boolean} [in] true: 優先処理 / false: default

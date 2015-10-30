@@ -4,6 +4,11 @@ module CDP {
 	export module Plugin {
 		export module _NativeBridge {
 			/**
+             * \~english
+			 * @class Patch
+			 * @brief Utility class to apply patch code to the cordova instance.
+             *
+             * \~japanese
 			 * @class Patch
 			 * @brief cordova 本体への Patch を扱うユーティリティクラス
 			 */
@@ -14,10 +19,14 @@ module CDP {
 				// public static methods
 
 				/**
-				 * "backbutton" イベントを優先的に扱う patch コード
+				 * \~english
+				 * "backbutton" event is handled with priority.
+				 *
+				 * \~japanese
+				 * "backbutton" イベントを優先的に扱う
 				 */
 				public static setBackButtonPriority(first: boolean): void {
-					if (cordova) {
+					if (typeof cordova !== "undefined") {
 						if (first) {
 							if (null == Patch.s_fireDocumentEventOrg) {
 								Patch.s_fireDocumentEventOrg = (<any>cordova).fireDocumentEvent;
