@@ -23,6 +23,12 @@ module CDP {
 
 
 		/**
+		 * \~english
+		 * @class Gate
+		 * @brief The base class for NativeBridge communication.
+		 *        You can derive any Gate class from this class.
+		 *
+		 * \~japanese
 		 * @class Gate
 		 * @brief NativeBridge と通信するベースクラス
 		 *        このクラスから任意の Gate クラスを派生して実装可能
@@ -35,6 +41,13 @@ module CDP {
 			private static extend = Utils.extend;
 
 			/**
+			 * \~english
+			 * constructor
+			 *
+			 * @param feature {Feature}          [in] feature information.
+			 * @param options {ConstructOptions} [in] construction options.
+			 *
+			 * \~japanese
 			 * constructor
 			 *
 			 * @param feature {Feature}          [in] 初期化情報を指定
@@ -54,6 +67,16 @@ module CDP {
 			// override methods
 
 			/**
+			 * \~english
+			 * Execute task.
+			 * the function calls the Native class method from correspondent method name.
+			 *
+			 * @param method  {String}       [in] method name of Native class
+			 * @param args    {Object[]}     [in] set arguments by array type.
+			 * @param options {ExecOptions?} [in] set exec options.
+			 * @return {Promise} NativeBridge.Promise object.
+			 *
+			 * \~japanese
 			 * タスクの実行
 			 * 指定した method 名に対応する Native Class の method を呼び出す。
 			 *
@@ -94,10 +117,17 @@ module CDP {
 			}
 
 			/**
+			 * \~english
+			 * Cancel all tasks.
+			 *
+			 * @param options {ExecOptions?} [in] set execute options.
+			 * @return {jQueryPromise} jQuery.Promise object.
+			 *
+			 * \~japanese
 			 * すべてのタスクのキャンセル
 			 *
 			 * @param options {ExecOptions?} [in] 実行オプションを指定
-			 * @return {Promise} NativeBridge.Promise オブジェクト
+			 * @return {jQueryPromise} jQuery.Promise オブジェクト
 			 */
 			public cancel(options?: ExecOptions): JQueryPromise<IResult> {
 				var df = $.Deferred();
@@ -119,11 +149,19 @@ module CDP {
 			}
 
 			/**
+			 * \~english
+			 * Destruction for the instance.
+			 * release Native class reference. after that, exec() becomes invalid.
+			 *
+			 * @param options {ExecOptions?} [in] set execute options.
+			 * @return {jQueryPromise} jQuery.Promise object.
+			 *
+			 * \~japanese
 			 * インスタンスの破棄
 			 * Native の参照を解除する。以降、exec は無効となる。
 			 *
 			 * @param options {ExecOptions?} [in] 実行オプションを指定
-			 * @return {Promise} NativeBridge.Promise オブジェクト
+			 * @return {jQueryPromise} jQuery.Promise オブジェクト
 			 */
 			public dispose(options?: ExecOptions): JQueryPromise<IResult> {
 				var df = $.Deferred();
@@ -148,10 +186,17 @@ module CDP {
 			// protected methods
 
 			/**
+			 * \~english
+			 * Access to Plugin.NativeBridge object.
+			 * If you want to use low level exec(), you can use this accessor.
+			 *
+			 * @return {Plugin.NativeBridge} Plugin.NativeBridge instance.
+			 *
+			 * \~japanese
 			 * Plugin.NativeBridge オブジェクトへのアクセス
 			 * 低レベル exec() を使用したい場合に利用可能
 			 *
-			 * @return {Plugin.NativeBridge}
+			 * @return {Plugin.NativeBridge} Plugin.NativeBridge インスタンス.
 			 */
 			protected get bridge(): Plugin.NativeBridge {
 				return this._bridge;
@@ -160,7 +205,7 @@ module CDP {
 			///////////////////////////////////////////////////////////////////////
 			// private methods
 
-			//! Fatal Error オブジェクトの生成
+			//! Make fatal error object.
 			private makeFatal(): IResult {
 				var msg = TAG + "fatal error. 'com.sony.cdp.plugin.nativebridge' is not available.";
 				console.error(msg);

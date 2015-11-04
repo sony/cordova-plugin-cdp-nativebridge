@@ -12,6 +12,11 @@ import org.json.JSONObject;
 import android.util.Log;
 
 /**
+ * \~english
+ * @class NativeBridge
+ * @brief Entry class for the cdp.plugin.nativebridge.
+ *
+ * \~japanese
  * @class NativeBridge
  * @brief cdp.plugin.nativebridge のエントリクラス
  */
@@ -24,6 +29,15 @@ public final class NativeBridge extends CordovaPlugin {
     // Override: CordovaPlugin
 
     /**
+     * \~english
+     * Entry function of CordovaPlugin.
+     *
+     * @param action          The action to execute.
+     * @param args            The exec() arguments.
+     * @param callbackContext The callback context used when calling back into JavaScript.
+     * @return                Whether the action was valid.
+     *
+     * \~japanese
      * CordovaPlugin のエントリ関数
      *
      * @param action          The action to execute.
@@ -54,6 +68,13 @@ public final class NativeBridge extends CordovaPlugin {
     // private methods
 
     /**
+     * \~english
+     * "exec" task entry.
+     *
+     * @param context [in] MethodContext object.
+     * @throws JSONException
+     *
+     * \~japanese
      * "execTask" のエントリ
      *
      * @param context [in] MethodContext オブジェクト
@@ -78,6 +99,13 @@ public final class NativeBridge extends CordovaPlugin {
     }
 
     /**
+     * \~english
+     * "cancel" task entry.
+     *
+     * @param context [in] MethodContext object.
+     * @return target object ID.
+     *
+     * \~japanese
      * "cancelTask" のエントリ
      *
      * @param context [in] MethodContext オブジェクト
@@ -102,7 +130,13 @@ public final class NativeBridge extends CordovaPlugin {
     }
 
     /**
-     * "disposelTask" のエントリ
+     * \~english
+     * "dispose" task entry.
+     *
+     * @param context [in] MethodContext object.
+     *
+     * \~japanese
+     * "disposeTask" のエントリ
      *
      * @param context [in] MethodContext オブジェクト
      */
@@ -114,6 +148,14 @@ public final class NativeBridge extends CordovaPlugin {
     }
 
     /**
+     * \~english
+     * Get the Gate class instance.
+     *
+     * @param objectId  [in] Object ID.
+     * @param className [in] target class name.
+     * @return Gate instance.
+     *
+     * \~japanese
      * Gate クラスのインスタンスを取得
      *
      * @param objectId  [in] Object ID
@@ -132,6 +174,13 @@ public final class NativeBridge extends CordovaPlugin {
     }
 
     /**
+     * \~english
+     * Create Gate class instance from reflection.
+     *
+     * @param className [in] target class name.
+     * @return Gate instance.
+     *
+     * \~japanese
      * Gate クラスのインスタンスをリフレクションにより生成
      *
      * @param className [in] クラス名

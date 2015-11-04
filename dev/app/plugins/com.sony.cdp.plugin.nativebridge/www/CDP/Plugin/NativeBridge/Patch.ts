@@ -7,8 +7,8 @@ module CDP {
              * \~english
 			 * @class Patch
 			 * @brief Utility class to apply patch code to the cordova instance.
-             *
-             * \~japanese
+			 *
+			 * \~japanese
 			 * @class Patch
 			 * @brief cordova 本体への Patch を扱うユーティリティクラス
 			 */

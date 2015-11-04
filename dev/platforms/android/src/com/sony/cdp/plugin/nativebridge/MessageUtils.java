@@ -10,6 +10,11 @@ import android.util.Log;
 import android.util.SparseArray;
 
 /**
+ * \~english
+ * @class MessageUtils
+ * @brief The utility class for generating Cordova PluginResult of cdp.plugin.nativebridge.
+ *
+ * \~japanese
  * @class MessageUtils
  * @brief cdp.plugin.nativebridge の Cordova PluginResult メッセージを生成するユーティリティクラス
  */
@@ -35,6 +40,16 @@ public final class MessageUtils {
     // public static methods
 
     /**
+     * \~english
+     * Generate result information.
+     *
+     * @param code    [in] set result code.
+     * @param message [in] set string information.
+     * @param taskId  [in] set task ID.
+     * @param params  [in] set pamaeters as variant args.
+     * @return PluginResult as JSONObject.
+     *
+     * \~japanese
      * Result 情報を生成
      *
      * @param code    [in] Result Code を指定
@@ -76,6 +91,16 @@ public final class MessageUtils {
     }
 
     /**
+     * \~english
+     * Generate result information.
+     * helper function.
+     *
+     * @param message [in] set string information.
+     * @param taskId  [in] set task ID.
+     * @param params  [in] set pamaeters as variant args.
+     * @return PluginResult as JSONObject.
+     *
+     * \~japanese
      * Result 情報を生成
      * ヘルパー関数
      *
@@ -89,6 +114,15 @@ public final class MessageUtils {
     }
 
     /**
+     * \~english
+     * Generate result information.
+     * helper function.
+     *
+     * @param taskId  [in] set task ID.
+     * @param params  [in] set pamaeters as variant args.
+     * @return PluginResult as JSONObject.
+     *
+     * \~japanese
      * Result 情報を生成
      * ヘルパー関数
      *
@@ -101,6 +135,14 @@ public final class MessageUtils {
     }
 
     /**
+     * \~english
+     * Send success information.
+     * helper function.
+     *
+     * @param callbackContext [in] set CallbackContext.
+     * @param taskId          [in] set task ID.
+     *
+     * \~japanese
      * Success 情報を送信
      * ヘルパー関数
      *
@@ -112,6 +154,13 @@ public final class MessageUtils {
     }
 
     /**
+     * \~english
+     * Send success information.
+     *
+     * @param callbackContext [in] set CallbackContext.
+     * @param result          [in] JSONObject created by makeMessage().
+     *
+     * \~japanese
      * Success 情報を送信
      *
      * @param callbackContext [in] CallbackContext を指定
@@ -131,6 +180,16 @@ public final class MessageUtils {
     }
 
     /**
+     * \~english
+     * Send error information.
+     * helper function.
+     *
+     * @param callbackContext [in] set CallbackContext.
+     * @param taskId          [in] set task ID.
+     * @param code            [in] set result code.
+     * @param message         [in] set string information.
+     *
+     * \~japanese
      * Error 情報を送信
      * ヘルパー関数
      *
@@ -144,6 +203,13 @@ public final class MessageUtils {
     }
 
     /**
+     * \~english
+     * Send error information.
+     *
+     * @param callbackContext [in] set CallbackContext.
+     * @param result          [in] JSONObject created by makeMessage().
+     *
+     * \~japanese
      * Error 情報を送信
      *
      * @param callbackContext [in] CallbackContext を指定
@@ -165,7 +231,7 @@ public final class MessageUtils {
     ///////////////////////////////////////////////////////////////////////
     // private methods
 
-    //! テーブルの初期化
+    //! initialize error table.
     private synchronized static void init() {
         // double checked locking pattern
         if (null == mErrorTbl) {

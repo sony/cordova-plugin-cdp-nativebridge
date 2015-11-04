@@ -19,9 +19,15 @@ import android.util.Log;
 
 
 /**
+ * \~english
+ * @class Gate
+ * @brief The base class for NativeBridge communication.
+ *        You can derive any Gate class from this class.
+ *
+ * \~japanese
  * @class Gate
  * @brief NativeBridge と通信するベースクラス
- *         com.sony.cdp.plugin.nativebridge クライアントは本クラスから Gate クラスを派生する
+ *        com.sony.cdp.plugin.nativebridge クライアントは本クラスから Gate クラスを派生する
  */
 public class Gate {
     private static final String TAG = "[com.sony.cdp.plugin.nativebridge][Native][Gate] ";
@@ -37,11 +43,20 @@ public class Gate {
     // public methods
 
     /**
+     * \~english
+     * Initialize as CordovaPlugin.
+     * Cannot override this method.
+     *
+     * @param cordova     [in] CordovaInterface instance.
+     * @param webView     [in] CordovaWebView instance.
+     * @param preferences [in] CordovaPreferences instance.
+     *
+     * \~japanese
      * CordovaPlugin 相当の初期化
      * オーバーライド不可
      *
-     * @param cordova [in] CordovaInterface インスタンス
-     * @param webView [in] CordovaWebView インスタンス
+     * @param cordova     [in] CordovaInterface インスタンス
+     * @param webView     [in] CordovaWebView インスタンス
      * @param preferences [in] CordovaPreferences インスタンス
      */
     public final void privateInitialize(CordovaInterface cordova, CordovaWebView webView, CordovaPreferences preferences) {
@@ -52,6 +67,18 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Cordova compatible handler. (JSONArray version)
+     * This method is called from NativeBridge class.
+     * If compatible option is enabled, this method called from framework.
+     * You can override this method if you want.
+     *
+     * @param action          [in] action name.
+     * @param args            [in] arguments of exec().
+     * @param callbackContext [in] CallbackContext object. You can down cast to MethodContext.
+     * @return  action result status. true:succeeded / false: failed
+     *
+     * \~japanese
      * Cordova 互換ハンドラ (JSONArray 版)
      * NativeBridge からコールされる
      * compatible オプションが有効な場合、このメソッドがコールされる
@@ -67,6 +94,18 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Cordova compatible handler. (CordovaArgs version)
+     * This method is called from NativeBridge class.
+     * If compatible option is enabled, this method called from framework.
+     * You can override this method if you want.
+     *
+     * @param action          [in] action name.
+     * @param args            [in] arguments of exec().
+     * @param callbackContext [in] CallbackContext object. You can down cast to MethodContext.
+     * @return  action result status. true:succeeded / false: failed
+     *
+     * \~japanese
      * Cordova 互換ハンドラ (CordovaArgs 版)
      * NativeBridge からコールされる
      * compatible オプションが有効な場合、このメソッドがコールされる
@@ -83,6 +122,16 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Method invoke entry.
+     * This method is called from NativeBridge class.
+     *
+     * @param mehtodName    [in] target method name.
+     * @param args          [in] arguments of exec().
+     * @param context       [in] MethodContext object.
+     * @return error information.
+     *
+     * \~japanese
      * メソッド呼び出し
      * NativeBridge からコールされる
      *
@@ -134,10 +183,17 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * cancel entry.
+     * This method is called from NativeBridge class.
+     *
+     * @param context [in] MethodContext object.
+     *
+     * \~japanese
      * cancel 呼び出し
      * NativeBridge からコールされる。
      *
-     * @param context [in] metod context オブジェクト
+     * @param context [in] MethodContext オブジェクト
      */
     public final void cancel(final MethodContext context) {
         setCancelState(context.taskId);
@@ -149,6 +205,14 @@ public class Gate {
     // protected methods
 
     /**
+     * \~english
+     * Initialize as CordovaPlugin.
+     * You can override this method if you want.
+     *
+     * @param cordova [in] CordovaInterface instance.
+     * @param webView [in] CordovaWebView instance.
+     *
+     * \~japanese
      * CordovaPlugin 相当の初期化
      * オーバーライド可能
      *
@@ -160,6 +224,13 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Get MethodContext instance.
+     * Helper function for getContext(). The method set autoSendResult to false by default.
+     *
+     * @return MethodContext object.
+     *
+     * \~japanese
      * MethodContext の取得
      * getContext() のヘルパー関数。 既定で autoSendResult を false に設定する。
      *
@@ -170,6 +241,15 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Get MethodContext instance.
+     * Getting context is permitted only in the method called thread.
+     * In addition, this method becomes invalid if compatible is set to true.
+     *
+     * @param  autoSendResult [in] if set true, sendResult() is called by the framework automatically.
+     * @return MethodContext object.
+     *
+     * \~japanese
      * MethodContext の取得
      * method 呼び出されたスレッドからのみ MethodContext 取得が可能
      * compatible オプションを伴って呼ばれた場合は無効になる。
@@ -190,6 +270,15 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Return params.
+     * This method semantic is return statement.
+     * This method is accessible only from method entry thread.
+     * keepCallback flag is set to false.
+     *
+     * @param param [in] the value from Native to JavaScript.
+     *
+     * \~japanese
      * 結果を JavaScript へ返却
      * 関数の return ステートメント同等のセマンティックスを持つ
      * method 呼び出されたスレッドからのみコール可能
@@ -207,6 +296,16 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Notify params.
+     * Helper function.
+     * You can use this method from worker thread.
+     * keepCallback set to true automatically.
+     *
+     * @param context [in] MethodContext object.
+     * @param params  [in] the parameters as variant args.
+     *
+     * \~japanese
      * 値を JavaScript へ通知
      * sendPluginResult() のヘルパー関数。 既定で keepCallback を有効にする。
      *
@@ -218,6 +317,16 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Notify params.
+     * You can use this method from worker thread.
+     * Helper function.
+     *
+     * @param keepCallback [in] keepCallback value true/false.
+     * @param context      [in] MethodContext object.
+     * @param params       [in] the parameters as variant args.
+     *
+     * \~japanese
      * 値を JavaScript へ通知
      * sendPluginResult() のヘルパー関数
      *
@@ -237,6 +346,16 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Resolve params.
+     * Helper function.
+     * You can use this method from worker thread.
+     * keepCallback set to false automatically.
+     *
+     * @param context [in] MethodContext object.
+     * @param params  [in] the parameters as variant args.
+     *
+     * \~japanese
      * 値を JavaScript へ通知
      * ワーカースレッドから使用可能
      * keepCallback は false が指定される
@@ -253,6 +372,16 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Reject params.
+     * Helper function.
+     * You can use this method from worker thread.
+     * keepCallback set to false automatically.
+     *
+     * @param context [in] MethodContext object.
+     * @param params  [in] the parameters as variant args.
+     *
+     * \~japanese
      * 値を JavaScript へエラーを通知
      * ヘルパー関数
      * keepCallback は false が指定される
@@ -265,6 +394,17 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Reject params.
+     * You can use this method from worker thread.
+     * keepCallback set to false automatically.
+     *
+     * @param code    [in] set error code.
+     * @param message [in] set error message.
+     * @param context [in] MethodContext object.
+     * @param params  [in] the parameters as variant args.
+     *
+     * \~japanese
      * 値を JavaScript へエラーを通知
      * ワーカースレッドから使用可能
      * keepCallback は false が指定される
@@ -283,6 +423,12 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Register as cancelable task.
+     *
+     * @param context [in] MethodContext object.
+     *
+     * \~japanese
      * キャンセル可能タスクとして登録
      *
      * @param context [in] MethodContext オブジェクトを指定
@@ -294,6 +440,12 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Unregister as cancelable task.
+     *
+     * @param context [in] MethodContext object.
+     *
+     * \~japanese
      * キャンセル可能タスクとして登録解除
      *
      * @param context [in] MethodContext オブジェクトを指定
@@ -305,6 +457,12 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Check cancel state from context.
+     *
+     * @param context [in] MethodContext object.
+     *
+     * \~japanese
      * キャンセルされたか判定
      *
      * @param context [in] context オブジェクトを指定
@@ -316,6 +474,13 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Cancel event handler.
+     * You can override this method if you want.
+     *
+     * @param taskId [in] task ID.
+     *
+     * \~japanese
      * cancel イベントハンドラ
      * キャンセル処理を実装したいクライアントは本メソッドをオーバーライド可能
      *
@@ -329,6 +494,15 @@ public class Gate {
     // private methods
 
     /**
+     * \~english
+     * Normalize type information.
+     * The function change the object to primitive if needed.
+     * Numeric value is fixed as double.
+     *
+     * @param src [in] type information.
+     * @return normalized type information.
+     *
+     * \~japanese
      * 型の正規化
      * オブジェクトをプリミティブに変換する
      * 数値型は、すべて double にする (JavaScript との対象性より)
@@ -354,6 +528,12 @@ public class Gate {
     }
 
     /**
+     * \~english
+     * Update cancel information.
+     *
+     * @param taskId [in] task ID.
+     *
+     * \~japanese
      * キャンセル情報を更新
      *
      * @param taskId [in] タスク ID

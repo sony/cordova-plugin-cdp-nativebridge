@@ -7,11 +7,11 @@ module CDP {
 
 		export module NativeBridge {
 			/**
-             * \~english
+			 * \~english
 			 * @interface PlatformInfo
-             * @brief platfrom information.
-             *
-             * \~japanese
+			 * @brief platfrom information.
+			 *
+			 * \~japanese
 			 * @interface PlatformInfo
 			 * @brief Platform 情報
 			 */
@@ -20,11 +20,11 @@ module CDP {
 			}
 
 			/**
-             * \~english
+			 * \~english
 			 * @interface Feature
-             * @brief feature information.
-             *
-             * \~japanese
+			 * @brief feature information.
+			 *
+			 * \~japanese
 			 * @interface Feature
 			 * @brief 機能情報
 			 */
@@ -35,11 +35,11 @@ module CDP {
 			}
 
 			/**
-             * \~english
+			 * \~english
 			 * @interface ConstructOptions
-             * @brief NativeBridge class's consrtruction options.
-             *
-             * \~japanese
+			 * @brief NativeBridge class's consrtruction options.
+			 *
+			 * \~japanese
 			 * @interface ConstructOptions
 			 * @brief 初期化に指定するオプション
 			 */
@@ -47,12 +47,12 @@ module CDP {
 			}
 
 			/**
-             * \~english
+			 * \~english
 			 * @interface IResult
 			 * @brief NativeBridge base result information.
-             *
-             *
-             * \~japanese
+			 *
+			 *
+			 * \~japanese
 			 * @interface IResult
 			 * @brief NativeBridge の基底 Result 情報
 			 */
@@ -65,11 +65,11 @@ module CDP {
 			}
 
 			/**
-             * \~english
+			 * \~english
 			 * @interface ExecOptions
-             * @brief exec() method options.
-             *
-             * \~japanese
+			 * @brief exec() method options.
+			 *
+			 * \~japanese
 			 * @interface ExecOptions
 			 * @brief exec() に渡すオプション
 			 */
@@ -79,12 +79,12 @@ module CDP {
 			}
 
 			/**
-             * \~english
+			 * \~english
 			 * @interface ExecInfo
 			 * @brief argument info for cordova.exec().
 			 *        used framework internal.
-             *
-             * \~japanese
+			 *
+			 * \~japanese
 			 * @interface ExecInfo
 			 * @brief cordova.exec() に渡す情報. framework が使用
 			 */

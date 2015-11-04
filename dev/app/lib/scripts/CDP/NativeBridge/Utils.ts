@@ -7,6 +7,11 @@ module CDP {
 		var TAG: string = "[CDP.NativeBridge.Utils] ";
 
 		/**
+		 * \~english
+		 * @class Utils
+		 * @brief The utility class for CDP.NativeBridge.
+		 *
+		 * \~japanese
 		 * @class Utils
 		 * @brief CDP.NativeBridge が使用するユーティリティクラス
 		 */
@@ -18,6 +23,12 @@ module CDP {
 			// public static methods
 
 			/**
+			 * \~english
+			 * Defines error code map from the plugin result to CDP.NativeBridge result code.
+			 *
+			 * @param errorCode {String} [in] set result code string. ex): "SUCCESS_OK"
+			 *
+			 * \~japanese
 			 * plugin の Result Code を CDP.NativeBridge にマップする
 			 *
 			 * @param errorCode {String} [in] Result Code 文字列を指定 ex): "SUCCESS_OK"
@@ -37,6 +48,10 @@ module CDP {
 			}
 
 			/**
+			 * \~english
+			 * Wait for cordova "deviceready" event fired.
+			 *
+			 * \~japanese
 			 * cordova が 使用可能になるまで待機
 			 */
 			public static waitForPluginReady(): JQueryPromise<void> {
@@ -66,6 +81,13 @@ module CDP {
 			}
 
 			/**
+			 * \~english
+			 * Create NativeBridge.Promise object from jQueryDeferred object.
+			 *
+			 * @param df {JQueryDeferred} [in] set jQueryDeferred instance.
+			 * @return   {Promise} NativeBridge.Promise object.
+			 *
+			 * \~japanese
 			 * Promise オブジェクトの作成
 			 * jQueryDeferred オブジェクトから、NativeBridge.Promise オブジェクトを作成する
 			 *

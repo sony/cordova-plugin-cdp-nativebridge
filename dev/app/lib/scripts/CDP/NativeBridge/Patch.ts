@@ -2,7 +2,7 @@
 	export module NativeBridge {
 
 		///////////////////////////////////////////////////////////////////////
-		// closure methods: debug 支援用
+		// closure methods: for debug support.
 
 		((global) => {
 			if (global.Config.DEBUG && !global.orientation) {

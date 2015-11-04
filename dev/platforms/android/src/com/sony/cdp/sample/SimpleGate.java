@@ -13,6 +13,11 @@ import com.sony.cdp.plugin.nativebridge.MethodContext;
 
 
 /**
+ * \~english
+ * @class SimpleGate
+ * @brief Sample for gate derived class.
+ *
+ * \~japanese
  * @class SimpleGate
  * @brief サンプル Gate クラス
  */
@@ -23,6 +28,17 @@ public class SimpleGate extends Gate {
     // public mehtods
 
     /**
+     * \~english
+     * Sample method.
+     * You can receive method with arguments that called from JavaScript layer.
+     * Numeric value is fixed as double.
+     *
+     * you can use follow method for returning value.
+     *  - returnParams()
+     *
+     * @throws JSONException
+     *
+     * \~japanese
      * サンプルメソッド
      * JavaScript レイヤで指定したメソッドと引数を受けることができる
      * 数値は double 固定
@@ -40,15 +56,30 @@ public class SimpleGate extends Gate {
     }
 
     /**
+     * \~english
+     * Sample method.
+     * void version.
+     *
+     * \~japanese
      * サンプルメソッド
      * void 版
-     *
      */
     public void voidMethod() {
         Log.d(TAG, "void voidMethod(void), called.");
     }
 
     /**
+     * \~english
+     * Sample mehtod (Threading)
+     * If argument type defined with "final", the framework can resolve refrection.
+     * You can get MethodContext object that is compatible CallbackContext by calling getContext().
+     *
+     * You can use the follow methods in worker thread.
+     *  - notifyParams()
+     *  - resolveParams()
+     *  - rejectParams()
+     *
+     * \~japanese
      * サンプルメソッド (スレッドを扱う例)
      * 引数に "final" を指定しても、リフレクションコール可能
      * getContext() より、MethodContextにアクセスが可能
@@ -58,7 +89,6 @@ public class SimpleGate extends Gate {
      *  - resolveParams()
      *  - rejectParams()
      * がそれぞれ使用可能
-     *
      */
     public void threadMethod(final double arg1, final boolean arg2, final String arg3, final JSONObject arg4) {
         // context の取得は呼び出し thread でのみ有効
@@ -83,6 +113,11 @@ public class SimpleGate extends Gate {
     }
 
     /**
+     * \~english
+     * Example of worker thread and canceling.
+     * This sample notifies progress information by 100 [msec] until cancel() is called.
+     *
+     * \~japanese
      * ワーカースレッドとキャンセルの例
      * cancel() がコールされるまで、100 [msec] ごとに進捗を通知するサンプル
      */
@@ -116,7 +151,7 @@ public class SimpleGate extends Gate {
         });
     }
 
-    //! キャンセルイベントハンドラ
+    //! Cancel event handler.
     @Override
     protected void onCancel(String taskId) {
         Log.d(TAG, "cancel task: " + taskId);
@@ -126,6 +161,18 @@ public class SimpleGate extends Gate {
     // Override: NativeBridge
 
     /**
+     * \~english
+     * Cordova compatible handler.
+     * The method called from NativeBridge.
+     * Them method called when compatible option is enabled.
+     * The client can override this method.
+     *
+     * @param action          [in] action name.
+     * @param args            [in] exec() arguments.
+     * @param callbackContext [in] CallbackContext object. you can do down-cast to MethodContext object always.
+     * @return success or failure true:success / false: failure
+     *
+     * \~japanese
      * Cordova 互換ハンドラ
      * NativeBridge からコールされる
      * compatible オプションが有効な場合、このメソッドがコールされる
@@ -158,4 +205,3 @@ public class SimpleGate extends Gate {
         return false;
     }
 }
-

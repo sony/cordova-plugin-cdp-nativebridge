@@ -7,6 +7,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * \~english
+ * @class MethodContext
+ * @brief The class stores method's context information.
+ *        cordova CallbackContext compatible.
+ *
+ * \~japanese
  * @class MethodContext
  * @brief Method のコンテキストを格納するクラス
  *         cordova CallbackContext 互換
@@ -22,6 +28,15 @@ public final class MethodContext extends CallbackContext {
     public        boolean  needSendResult = true;
 
     /**
+     * \~english
+     * constructor
+     *
+     * @param callbackId [in] set callback ID.
+     * @param webView    [in] set CordovaWebView instance.
+     * @param args       [in] set the arguments which received NativeBridge.
+     * @throws JSONException
+     *
+     * \~japanese
      * constructor
      *
      * @param callbackId [in] callback ID を指定
@@ -45,6 +60,14 @@ public final class MethodContext extends CallbackContext {
     // private methods
 
     /**
+     * \~english
+     * Translate to method arguments from raw arguments.
+     *
+     * @param rawArgs [in] the arguments which set cordova.exec().
+     * @return JSONArray argument list (1 base).
+     * @throws JSONException
+     *
+     * \~japanese
      * 生引数をメソッド引数に変換
      *
      * @param rawArgs [in] cordova.exec() に指定された引数
