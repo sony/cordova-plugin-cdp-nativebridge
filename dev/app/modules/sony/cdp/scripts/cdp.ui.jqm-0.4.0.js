@@ -1,7 +1,7 @@
 ﻿/*!
- * cdp.ui.jqm.js 0.3.0
+ * cdp.ui.jqm.js 0.4.0
  *
- * Date: 2015-07-29T13:50:23
+ * Date: 2015-11-06T09:54:43
  */
 
 
@@ -366,8 +366,7 @@ var CDP;
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 /* tslint:disable:max-line-length */
 var CDP;

@@ -30,6 +30,12 @@ interface PopupOptions {
     theme?: string;
     tolerance?: string;
     transition?: string;
+    // [CDP modified]: add inteface.
+    x?: number|string;
+    y?: number | string;
+    dismissible?: boolean;
+    create?: (event: JQueryEventObject, ui: any) => any;
+    afterclose?: (event: JQueryEventObject, ui: any) => any;
 }
 
 interface PopupEvents {
@@ -161,7 +167,7 @@ interface CheckboxRadioOptions {
 }
 
 interface CheckboxRadioEvents {
-    createp?: JQueryMobileEvent;
+    create?: JQueryMobileEvent;
 }
 
 interface SelectMenuOptions {
@@ -171,6 +177,7 @@ interface SelectMenuOptions {
     iconshadow?: boolean;
     initSelector?: string;
     inline?: boolean;
+    hidePlaceholderMenuItems: boolean;
     mini?: boolean;
     nativeMenu?: boolean;
     overlayTheme?: string;
@@ -184,7 +191,11 @@ interface SelectMenuEvents {
 }
 
 interface ListViewOptions {
+    autodividers?: boolean;
+    autodividersSelector?: (jq?: JQuery) => string;
     countTheme?: string;
+    defaults?: boolean;
+    disabled?: boolean;
     dividerTheme?: string;
     filter?: boolean;
     filterCallback?: Function;
@@ -302,6 +313,8 @@ interface ChangePageOptions {
     showLoadMsg?: boolean;
     transition?: string;
     type?: string;
+    // [CDP modified]: add inteface.
+	fromHashChange?: boolean;
 }
 
 interface LoadPageOptions {
@@ -433,7 +446,7 @@ interface JQuery {
     button(command: string): JQuery;
     button(options?: ButtonOptions): JQuery;
     button(events: ButtonEvents): JQuery;
-
+    
     buttonMarkup(options?: ButtonOptions): JQuery;
 
     collapsible(): JQuery;
@@ -468,8 +481,8 @@ interface JQuery {
     selectmenu(): JQuery;
     selectmenu(command: string): JQuery;
     selectmenu(command: string, update: boolean): JQuery;
-    selectmenu(options: CheckboxRadioOptions): JQuery;
-    selectmenu(events: CheckboxRadioEvents): JQuery;
+    selectmenu(options: SelectMenuOptions): JQuery;
+    selectmenu(events: SelectMenuEvents): JQuery;
 
     listview(): JQuery;
     listview(command: string): JQuery;
@@ -490,7 +503,7 @@ interface JQuery {
     controlgroup(options: ControlgroupOptions): JQuery;
 
     // [CDP modified]: add inteface.
-    page(command?: any): JQuery;
+    page(command?: any, ...args: any[]): any;
     jqmData(key: string): any;
     jqmData(key: string, value: any): JQuery;
     jqmRemoveData(key: string): JQuery;

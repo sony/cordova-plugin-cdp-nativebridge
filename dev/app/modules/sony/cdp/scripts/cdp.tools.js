@@ -1,7 +1,7 @@
 ﻿/*!
- * cdp.tools.js 0.3.3
+ * cdp.tools.js 0.3.6
  *
- * Date: 2015-07-29T13:50:23
+ * Date: 2015-11-06T09:54:43
  */
 
 (function (root, factory) {
@@ -473,6 +473,47 @@ var CDP;
         }
         Tools.mixin = mixin;
         /**
+         * \~english
+         * Helper function to correctly set up the prototype chain, for subclasses.
+         * The function behavior is same as extend() function of Backbone.js.
+         *
+         * @param protoProps  {Object} [in] set prototype properties as object.
+         * @param staticProps {Object} [in] set static properties as object.
+         * @return {Object} subclass constructor.
+         *
+         * \~japanese
+         * クラス継承のためのヘルパー関数
+         * Backbone.js extend() 関数と同等
+         *
+         * @param protoProps  {Object} [in] prototype properties をオブジェクトで指定
+         * @param staticProps {Object} [in] static properties をオブジェクトで指定
+         * @return {Object} サブクラスのコンストラクタ
+         */
+        function extend(protoProps, staticProps) {
+            var parent = this;
+            var child;
+            if (protoProps && protoProps.hasOwnProperty("constructor")) {
+                child = protoProps.constructor;
+            }
+            else {
+                child = function () {
+                    return parent.apply(this, arguments);
+                };
+            }
+            $.extend(child, parent, staticProps);
+            var Surrogate = function () {
+                this.constructor = child;
+            };
+            Surrogate.prototype = parent.prototype;
+            child.prototype = new Surrogate;
+            if (protoProps) {
+                $.extend(child.prototype, protoProps);
+            }
+            child.__super__ = parent.prototype;
+            return child;
+        }
+        Tools.extend = extend;
+        /**
          * DPI 取得
          */
         function getDevicePixcelRatio() {
@@ -482,24 +523,24 @@ var CDP;
                 return window.devicePixelRatio;
             }
             else if (window.matchMedia) {
-                mediaQuery
-                    = "(-webkit-min-device-pixel-ratio: 1.5),\
+                mediaQuery =
+                    "(-webkit-min-device-pixel-ratio: 1.5),\
                     (min--moz-device-pixel-ratio: 1.5),\
                     (-o-min-device-pixel-ratio: 3/2),\
                     (min-resolution: 1.5dppx)";
                 if (window.matchMedia(mediaQuery).matches) {
                     return 1.5;
                 }
-                mediaQuery
-                    = "(-webkit-min-device-pixel-ratio: 2),\
+                mediaQuery =
+                    "(-webkit-min-device-pixel-ratio: 2),\
                     (min--moz-device-pixel-ratio: 2),\
                     (-o-min-device-pixel-ratio: 2/1),\
                     (min-resolution: 2dppx)";
                 if (window.matchMedia(mediaQuery).matches) {
                     return 2;
                 }
-                mediaQuery
-                    = "(-webkit-min-device-pixel-ratio: 0.75),\
+                mediaQuery =
+                    "(-webkit-min-device-pixel-ratio: 0.75),\
                     (min--moz-device-pixel-ratio: 0.75),\
                     (-o-min-device-pixel-ratio: 3/4),\
                     (min-resolution: 0.75dppx)";

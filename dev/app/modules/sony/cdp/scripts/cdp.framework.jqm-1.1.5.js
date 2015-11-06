@@ -1,7 +1,7 @@
 ﻿/*!
- * cdp.framework.jqm.js 1.1.3
+ * cdp.framework.jqm.js 1.1.5
  *
- * Date: 2015-07-29T13:50:23
+ * Date: 2015-11-06T09:54:42
  */
 
 
@@ -1546,20 +1546,20 @@ var CDP;
                 }
                 // jQuery の共通設定
                 config.jquery();
-                // jQuery Mobile の global 設定
-                $(document).on("mobileinit", function () {
-                    config.jquerymobile();
-                });
                 // AMD でない環境では初期化はここまで。
                 if (!CDP.isAMD()) {
                     console.warn("need to init for 'jquery.mobile', 'i18Next' and 'CDP.Framework.Router' manually, because cdp.framework depends on require.js.");
                     _initialized = true;
                     return df.resolve();
                 }
-                require(["jquery.mobile"], function () {
+                // jQuery Mobile の初期化
+                $(document).on("mobileinit", function () {
+                    // config の反映
+                    config.jquerymobile();
                     // i18next の初期化
                     $.i18n.init({ resGetPath: config.i18nDataPath() })
-                        .done(function () {
+                        .always(function (info) {
+                        // i18next の初期化時のエラーは無視する. info が array の場合、エラー情報が格納されている.
                         $(document)
                             .one("pagebeforechange", function (event, data) {
                             data.options.showLoadMsg = false;
@@ -1577,12 +1577,10 @@ var CDP;
                             console.error("error. CDP.Framework.Router.initialize() failed.");
                             df.reject();
                         }
-                    })
-                        .fail(function () {
-                        console.error("error. $.i18n.init() failed.");
-                        df.reject();
                     });
                 });
+                // jQuery Mobile のロード
+                require(["jquery.mobile"]);
             });
             return df.promise();
         }

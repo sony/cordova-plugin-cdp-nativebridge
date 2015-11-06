@@ -1,7 +1,7 @@
 ﻿/*!
- * cdp.ui.listview.js 0.3.3
+ * cdp.ui.listview.js 0.4.0
  *
- * Date: 2015-07-29T13:50:23
+ * Date: 2015-11-06T09:54:43
  */
 
 (function (root, factory) {
@@ -44,115 +44,6 @@
             ListViewGlobalConfig.DATA_PAGE_INDEX = "data-page-index";
             ListViewGlobalConfig.DATA_CONTAINER_INDEX = "data-container-index";
         })(ListViewGlobalConfig = UI.ListViewGlobalConfig || (UI.ListViewGlobalConfig = {}));
-    })(UI = CDP.UI || (CDP.UI = {}));
-})(CDP || (CDP = {}));
-
-var CDP;
-(function (CDP) {
-    var UI;
-    (function (UI) {
-        /**
-         * @class _ListViewUtils
-         * @brief 内部で使用する便利関数
-         *        Tools からの最低限の流用
-         */
-        var _ListViewUtils;
-        (function (_ListViewUtils) {
-            /**
-             * css の vender 拡張 prefix を返す
-             *
-             * @return {Array} prefix
-             */
-            _ListViewUtils.cssPrefixes = ["-webkit-", "-moz-", "-ms-", "-o-", ""];
-            /**
-             * css の matrix の値を取得.
-             *
-             * @param element {jQuery} [in] 対象の jQuery オブジェクト
-             * @param type    {String} [in] matrix type string [translateX | translateY | scaleX | scaleY]
-             * @return {Number} value
-             */
-            _ListViewUtils.getCssMatrixValue = function (element, type) {
-                var transX = 0;
-                var transY = 0;
-                var scaleX = 0;
-                var scaleY = 0;
-                for (var i = 0; i < _ListViewUtils.cssPrefixes.length; i++) {
-                    var matrix = $(element).css(_ListViewUtils.cssPrefixes[i] + "transform");
-                    if (matrix) {
-                        var is3dMatrix = matrix.indexOf("3d") !== -1 ? true : false;
-                        matrix = matrix.replace("matrix3d", "").replace("matrix", "").replace(/[^\d.,-]/g, "");
-                        var arr = matrix.split(",");
-                        transX = Number(arr[is3dMatrix ? 12 : 4]);
-                        transY = Number(arr[is3dMatrix ? 13 : 5]);
-                        scaleX = Number(arr[0]);
-                        scaleY = Number(arr[is3dMatrix ? 5 : 3]);
-                        break;
-                    }
-                }
-                switch (type) {
-                    case "translateX":
-                        return isNaN(transX) ? 0 : transX;
-                    case "translateY":
-                        return isNaN(transY) ? 0 : transY;
-                    case "scaleX":
-                        return isNaN(scaleX) ? 1 : scaleX;
-                    case "scaleY":
-                        return isNaN(scaleY) ? 1 : scaleY;
-                    default:
-                        return 0;
-                }
-            };
-            /**
-             * "transitionend" のイベント名配列を返す
-             *
-             * @return {Array} transitionend イベント名
-             */
-            _ListViewUtils.transitionEnd = "transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd";
-            /**
-             * transition 設定
-             *
-             * @private
-             * @param {Object} element
-             */
-            _ListViewUtils.setTransformsTransitions = function (element, prop, msec, timingFunction) {
-                var $element = $(element);
-                var transitions = {};
-                var second = (msec / 1000) + "s";
-                var animation = " " + second + " " + timingFunction;
-                var transform = ", transform" + animation;
-                for (var i = 0; i < _ListViewUtils.cssPrefixes.length; i++) {
-                    transitions[_ListViewUtils.cssPrefixes[i] + "transition"] = prop + animation + transform;
-                }
-                $element.css(transitions);
-            };
-            /**
-             * transition 設定の削除
-             *
-             * @private
-             * @param {Object} element
-             */
-            _ListViewUtils.clearTransitions = function (element) {
-                var $element = $(element);
-                $element.off(_ListViewUtils.transitionEnd);
-                var transitions = {};
-                for (var i = 0; i < _ListViewUtils.cssPrefixes.length; i++) {
-                    transitions[_ListViewUtils.cssPrefixes[i] + "transition"] = "";
-                }
-                $element.css(transitions);
-            };
-            /**
-             * Math.abs よりも高速な abs
-             */
-            _ListViewUtils.abs = function (x) {
-                return x >= 0 ? x : -x;
-            };
-            /**
-             * Math.max よりも高速な max
-             */
-            _ListViewUtils.max = function (lhs, rhs) {
-                return lhs >= rhs ? lhs : rhs;
-            };
-        })(_ListViewUtils = UI._ListViewUtils || (UI._ListViewUtils = {}));
     })(UI = CDP.UI || (CDP.UI = {}));
 })(CDP || (CDP = {}));
 
@@ -199,12 +90,14 @@ var CDP;
                     var options;
                     this._$base = this.prepareBaseElement();
                     options = $.extend({}, {
-                        $el: this._$base,
+                        el: this._$base,
                         owner: this._owner,
                         lineProfile: this,
                     }, this._info);
                     this._instance = new this._initializer(options);
-                    this._$base.show();
+                    if ("none" === this._$base.css("display")) {
+                        this._$base.css("display", "block");
+                    }
                 }
                 this.updatePageIndex(this._$base);
                 if ("visible" !== this._$base.css("visibility")) {
@@ -230,7 +123,7 @@ var CDP;
                     this._instance.remove();
                     this._instance = null;
                     this._$base.addClass(_Config.RECYCLE_CLASS);
-                    this._$base.hide();
+                    this._$base.css("display", "none");
                     this._$base = null;
                 }
             };
@@ -329,6 +222,7 @@ var CDP;
                 var $base;
                 var $map = this._owner.getScrollMapElement();
                 var $recycle = this._owner.findRecycleElements().first();
+                var itemTagName = this._owner.getListViewOptions().itemTagName;
                 if (null != this._$base) {
                     console.warn(TAG + "this._$base is not null.");
                     return this._$base;
@@ -339,8 +233,8 @@ var CDP;
                     $base.removeClass(_Config.RECYCLE_CLASS);
                 }
                 else {
-                    $base = $("<div class='" + _Config.LISTITEM_BASE_CLASS + "'></div>");
-                    $base.hide();
+                    $base = $("<" + itemTagName + " class='" + _Config.LISTITEM_BASE_CLASS + "'></" + itemTagName + ">");
+                    $base.css("display", "none");
                     $map.append($base);
                 }
                 // 高さの更新
@@ -763,6 +657,170 @@ var CDP;
 
 
 
+
+var CDP;
+(function (CDP) {
+    var UI;
+    (function (UI) {
+        /**
+         * Backbone.View の新規合成
+         *
+         * @param base    {Backbone.View}                 [in] prototype chain 最下位の View クラス
+         * @param derives {Backbone.View|Backbone.View[]} [in] 派生されるの View クラス
+         * @return {Backbone.View|Backbone.View[]} 新規に生成された View のコンストラクタ
+         */
+        function composeViews(base, derives) {
+            var _composed = base;
+            var _derives = (derives instanceof Array ? derives : [derives]);
+            _derives.forEach(function (derive) {
+                var seed = {};
+                _.extendOwn(seed, derive.prototype);
+                delete seed.constructor;
+                _composed = _composed.extend(seed);
+            });
+            return _composed;
+        }
+        UI.composeViews = composeViews;
+        /**
+         * Backbone.View の合成
+         * prototype chain を作る合成
+         *
+         * @param derived {Backbone.View}                 [in] prototype chain 最上位の View クラス
+         * @param bases   {Backbone.View|Backbone.View[]} [in] 合成元のView クラス
+         */
+        function deriveViews(derived, bases) {
+            var _composed;
+            var _bases = (bases instanceof Array ? bases : [bases]);
+            if (2 <= _bases.length) {
+                _composed = composeViews(_bases[0], _bases.slice(1));
+            }
+            else {
+                _composed = _bases[0];
+            }
+            derived = composeViews(_composed, derived);
+        }
+        UI.deriveViews = deriveViews;
+        /**
+         * Backbone.View の合成
+         * prototype chain を作らない合成
+         *
+         * @param derived {Backbone.View}                 [in] 元となる View クラス
+         * @param bases   {Backbone.View|Backbone.View[]} [in] 合成元のView クラス
+         */
+        function mixinViews(derived, bases) {
+            var _bases = (bases instanceof Array ? bases : [bases]);
+            _bases.forEach(function (base) {
+                Object.getOwnPropertyNames(base.prototype).forEach(function (name) {
+                    derived.prototype[name] = base.prototype[name];
+                });
+            });
+        }
+        UI.mixinViews = mixinViews;
+        //___________________________________________________________________________________________________________________//
+        /**
+         * @class _ListViewUtils
+         * @brief 内部で使用する便利関数
+         *        Tools からの最低限の流用
+         */
+        var _ListViewUtils;
+        (function (_ListViewUtils) {
+            /**
+             * css の vender 拡張 prefix を返す
+             *
+             * @return {Array} prefix
+             */
+            _ListViewUtils.cssPrefixes = ["-webkit-", "-moz-", "-ms-", "-o-", ""];
+            /**
+             * css の matrix の値を取得.
+             *
+             * @param element {jQuery} [in] 対象の jQuery オブジェクト
+             * @param type    {String} [in] matrix type string [translateX | translateY | scaleX | scaleY]
+             * @return {Number} value
+             */
+            _ListViewUtils.getCssMatrixValue = function (element, type) {
+                var transX = 0;
+                var transY = 0;
+                var scaleX = 0;
+                var scaleY = 0;
+                for (var i = 0; i < _ListViewUtils.cssPrefixes.length; i++) {
+                    var matrix = $(element).css(_ListViewUtils.cssPrefixes[i] + "transform");
+                    if (matrix) {
+                        var is3dMatrix = matrix.indexOf("3d") !== -1 ? true : false;
+                        matrix = matrix.replace("matrix3d", "").replace("matrix", "").replace(/[^\d.,-]/g, "");
+                        var arr = matrix.split(",");
+                        transX = Number(arr[is3dMatrix ? 12 : 4]);
+                        transY = Number(arr[is3dMatrix ? 13 : 5]);
+                        scaleX = Number(arr[0]);
+                        scaleY = Number(arr[is3dMatrix ? 5 : 3]);
+                        break;
+                    }
+                }
+                switch (type) {
+                    case "translateX":
+                        return isNaN(transX) ? 0 : transX;
+                    case "translateY":
+                        return isNaN(transY) ? 0 : transY;
+                    case "scaleX":
+                        return isNaN(scaleX) ? 1 : scaleX;
+                    case "scaleY":
+                        return isNaN(scaleY) ? 1 : scaleY;
+                    default:
+                        return 0;
+                }
+            };
+            /**
+             * "transitionend" のイベント名配列を返す
+             *
+             * @return {Array} transitionend イベント名
+             */
+            _ListViewUtils.transitionEnd = "transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd";
+            /**
+             * transition 設定
+             *
+             * @private
+             * @param {Object} element
+             */
+            _ListViewUtils.setTransformsTransitions = function (element, prop, msec, timingFunction) {
+                var $element = $(element);
+                var transitions = {};
+                var second = (msec / 1000) + "s";
+                var animation = " " + second + " " + timingFunction;
+                var transform = ", transform" + animation;
+                for (var i = 0; i < _ListViewUtils.cssPrefixes.length; i++) {
+                    transitions[_ListViewUtils.cssPrefixes[i] + "transition"] = prop + animation + transform;
+                }
+                $element.css(transitions);
+            };
+            /**
+             * transition 設定の削除
+             *
+             * @private
+             * @param {Object} element
+             */
+            _ListViewUtils.clearTransitions = function (element) {
+                var $element = $(element);
+                $element.off(_ListViewUtils.transitionEnd);
+                var transitions = {};
+                for (var i = 0; i < _ListViewUtils.cssPrefixes.length; i++) {
+                    transitions[_ListViewUtils.cssPrefixes[i] + "transition"] = "";
+                }
+                $element.css(transitions);
+            };
+            /**
+             * Math.abs よりも高速な abs
+             */
+            _ListViewUtils.abs = function (x) {
+                return x >= 0 ? x : -x;
+            };
+            /**
+             * Math.max よりも高速な max
+             */
+            _ListViewUtils.max = function (lhs, rhs) {
+                return lhs >= rhs ? lhs : rhs;
+            };
+        })(_ListViewUtils = UI._ListViewUtils || (UI._ListViewUtils = {}));
+    })(UI = CDP.UI || (CDP.UI = {}));
+})(CDP || (CDP = {}));
 
 var CDP;
 (function (CDP) {
@@ -1303,8 +1361,7 @@ var CDP;
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var CDP;
 (function (CDP) {
@@ -1332,7 +1389,7 @@ var CDP;
                 this._lineProfile = options.lineProfile;
             }
             ///////////////////////////////////////////////////////////////////////
-            // Override: ListItemView
+            // Implements: ListItemView
             // 描画: framework から呼び出されるため、オーバーライド必須
             ListItemView.prototype.render = function () {
                 console.warn(TAG + "need override 'render()' method.");
@@ -1370,6 +1427,20 @@ var CDP;
                     }
                 }
                 return this;
+            };
+            ///////////////////////////////////////////////////////////////////////
+            // Implements: IComposableView
+            /**
+             * すでに定義された Backbone.View を基底クラスに設定し、extend を実行する。
+             *
+             * @param derives         {Backbone.View|Backbone.View[]} [in] 合成元の View クラス
+             * @param properties      {Object}                        [in] prototype プロパティ
+             * @param classProperties {Object}                        [in] static プロパティ
+             * @return {Backbone.View|Backbone.View[]} 新規に生成された View のコンストラクタ
+             */
+            ListItemView.compose = function (derives, properties, classProperties) {
+                var composed = UI.composeViews(ListItemView, derives);
+                return composed.extend(properties, classProperties);
             };
             ///////////////////////////////////////////////////////////////////////
             // Override: Backbone.View
@@ -1456,6 +1527,7 @@ var CDP;
                     enableAnimation: true,
                     animationDuration: 0,
                     baseDepth: "auto",
+                    itemTagName: "div",
                     removeItemWithTransition: true,
                     useDummyInactiveScrollMap: false,
                 };
@@ -1542,7 +1614,7 @@ var CDP;
                         if (_this._scroller) {
                             _this._scroller.scrollTo(_this._lastActivePageContext.pos, false, 0);
                         }
-                        clearOffset(_this._$map).show();
+                        clearOffset(_this._$map).css("display", "block");
                     })();
                     if (this._settings.useDummyInactiveScrollMap) {
                         this.prepareInactiveMap().remove();
@@ -1576,7 +1648,7 @@ var CDP;
                         .append($listItemViews)
                         .height(this._mapHeight);
                     $parent.append($inactiveMap);
-                    this._$map.hide();
+                    this._$map.css("display", "none");
                 }
                 return $inactiveMap;
             };
@@ -2324,6 +2396,9 @@ var CDP;
                     var delegates = this.events ? true : false;
                     this.setElement(options.$el, delegates);
                 }
+                else if (this.$el) {
+                    this._scrollMgr.initialize(this.$el, this.$el.height());
+                }
             }
             ListView.prototype.setElement = function (element, delegate) {
                 if (this._scrollMgr) {
@@ -2397,7 +2472,7 @@ var CDP;
             Object.defineProperty(ListView.prototype, "backupData", {
                 // バックアップデータにアクセス
                 get: function () {
-                    return this._scrollMgr.backupData;
+                    return this._scrollMgr ? this._scrollMgr.backupData : null;
                 },
                 enumerable: true,
                 configurable: true
@@ -2429,7 +2504,7 @@ var CDP;
                 this._scrollMgr.ensureVisible(index, options);
             };
             ///////////////////////////////////////////////////////////////////////
-            // implements: IListViewFramework:
+            // Implements: IListViewFramework:
             // Scroll Map の高さを取得
             ListView.prototype.getScrollMapHeight = function () {
                 return this._scrollMgr.getScrollMapHeight();
@@ -2453,6 +2528,20 @@ var CDP;
             // ListViewOptions を取得. framework が使用する.
             ListView.prototype.getListViewOptions = function () {
                 return this._scrollMgr.getListViewOptions();
+            };
+            ///////////////////////////////////////////////////////////////////////
+            // Implements: IComposableView
+            /**
+             * すでに定義された Backbone.View を基底クラスに設定し、extend を実行する。
+             *
+             * @param derives         {Backbone.View|Backbone.View[]} [in] 合成元の View クラス
+             * @param properties      {Object}                        [in] prototype プロパティ
+             * @param classProperties {Object}                        [in] static プロパティ
+             * @return {Backbone.View|Backbone.View[]} 新規に生成された View のコンストラクタ
+             */
+            ListView.compose = function (derives, properties, classProperties) {
+                var composed = UI.composeViews(ListView, derives);
+                return composed.extend(properties, classProperties);
             };
             return ListView;
         })(Backbone.View);

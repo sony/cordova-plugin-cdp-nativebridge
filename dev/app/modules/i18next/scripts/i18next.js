@@ -1,5 +1,5 @@
-// i18next, v1.7.7
-// Copyright (c)2014 Jan Mühlemann (jamuhl).
+// i18next, v1.10.1
+// Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
 (function (root, factory) {
@@ -13,7 +13,7 @@
 
       define(['jquery'], factory);
 
-    } 
+    }
 }(this, function ($) {
 
     // add indexOf to non ECMA-262 standard compliant browsers
@@ -111,15 +111,15 @@
                             f.extend(store, fetched);
                             sync._storeLocal(fetched);
     
-                            cb(null, store);
+                            cb(err, store);
                         });
                     } else {
-                        cb(null, store);
+                        cb(err, store);
                     }
                 });
             } else {
                 sync._fetch(lngs, options, function(err, store){
-                    cb(null, store);
+                    cb(err, store);
                 });
             }
         },
@@ -133,7 +133,7 @@
                 var todo = lngs.length;
     
                 f.each(lngs, function(key, lng) {
-                    var local = window.localStorage.getItem('res_' + lng);
+                    var local = f.localStorage.getItem('res_' + lng);
     
                     if (local) {
                         local = JSON.parse(local);
@@ -196,7 +196,7 @@
             } else {
                 // Call this once our translation has returned.
                 var loadComplete = function(err, data) {
-                    cb(null, data);
+                    cb(err, data);
                 };
     
                 if(typeof options.customLoad == 'function'){
@@ -207,6 +207,7 @@
                     // load all needed stuff once
                     f.ajax({
                         url: url,
+                        cache: options.cache,
                         success: function(data, status, xhr) {
                             f.log('loaded: ' + url);
                             loadComplete(null, data);
@@ -216,7 +217,8 @@
                             loadComplete('failed loading resource.json error: ' + error);
                         },
                         dataType: "json",
-                        async : options.getAsync
+                        async : options.getAsync,
+                        timeout: options.ajaxTimeout
                     });
                 }    
             }
@@ -226,6 +228,7 @@
             var url = applyReplacement(options.resGetPath, { lng: lng, ns: ns });
             f.ajax({
                 url: url,
+                cache: options.cache,
                 success: function(data, status, xhr) {
                     f.log('loaded: ' + url);
                     done(null, data);
@@ -244,7 +247,8 @@
                     done(error, {});
                 },
                 dataType: "json",
-                async : options.getAsync
+                async : options.getAsync,
+                timeout: options.ajaxTimeout
             });
         },
     
@@ -292,7 +296,8 @@
                         f.log('failed posting missing key \'' + key + '\' to: ' + item.url);
                     },
                     dataType: "json",
-                    async : o.postAsync
+                    async : o.postAsync,
+                    timeout: o.ajaxTimeout
                 });
             }
         },
@@ -310,15 +315,19 @@
         fallbackNS: [],
         detectLngQS: 'setLng',
         detectLngFromLocalStorage: false,
-        ns: 'translation',
+        ns: {
+            namespaces: ['translation'],
+            defaultNs: 'translation'
+        },
         fallbackOnNull: true,
         fallbackOnEmpty: false,
         fallbackToDefaultNS: false,
+        showKeyIfEmpty: false,
         nsseparator: ':',
         keyseparator: '.',
         selectorAttr: 'data-i18n',
         debug: false,
-        
+    
         resGetPath: 'locales/__lng__/__ns__.json',
         resPostPath: 'locales/add/__lng__/__ns__',
     
@@ -358,6 +367,7 @@
         postProcess: undefined,
         parseMissingKey: undefined,
         missingKeyHandler: sync.postMissing,
+        ajaxTimeout: 0,
     
         shortcutFunction: 'sprintf' // or: defaultValue
     };
@@ -791,8 +801,12 @@
             if (lng === 'nb-NO' || lng === 'nn-NO' || lng === 'nb-no' || lng === 'nn-no') lng_index = 1;
             return lng_index;
         },
-        toLanguages: function(lng) {
+        toLanguages: function(lng, fallbackLng) {
             var log = this.log;
+    
+            fallbackLng = fallbackLng || o.fallbackLng;
+            if (typeof fallbackLng === 'string')
+                fallbackLng = [fallbackLng];
     
             function applyCase(l) {
                 var ret = l;
@@ -829,8 +843,8 @@
                 addLanguage(applyCase(lng));
             }
     
-            for (var i = 0; i < o.fallbackLng.length; i++) {
-                if (languages.indexOf(o.fallbackLng[i]) === -1 && o.fallbackLng[i]) languages.push(applyCase(o.fallbackLng[i]));
+            for (var i = 0; i < fallbackLng.length; i++) {
+                if (languages.indexOf(fallbackLng[i]) === -1 && fallbackLng[i]) languages.push(applyCase(fallbackLng[i]));
             }
             return languages;
         },
@@ -853,17 +867,27 @@
                         f.log('failed to set value for key "' + key + '" to localStorage.');
                     }
                 }
+            },
+            getItem: function(key, value) {
+                if (window.localStorage) {
+                    try {
+                        return window.localStorage.getItem(key, value);
+                    } catch (e) {
+                        f.log('failed to get value for key "' + key + '" from localStorage.');
+                        return undefined;
+                    }
+                }
             }
         }
     };
     function init(options, cb) {
-        
+    
         if (typeof options === 'function') {
             cb = options;
             options = {};
         }
         options = options || {};
-        
+    
         // override defaults with passed in options
         f.extend(o, options);
         delete o.fixLng; /* passed in each time */
@@ -919,7 +943,11 @@
         pluralExtensions.setCurrentLng(currentLng);
     
         // add JQuery extensions
-        if ($ && o.setJqueryExt) addJqueryFunct();
+        if ($ && o.setJqueryExt) {
+            addJqueryFunct && addJqueryFunct();
+        } else {
+           addJqueryLikeFunctionality && addJqueryLikeFunctionality();
+        }
     
         // jQuery deferred
         var deferred;
@@ -954,11 +982,15 @@
             resStore = store;
             initialized = true;
     
-            if (cb) cb(lngTranslate);
-            if (deferred) deferred.resolve(lngTranslate);
+            if (cb) cb(err, lngTranslate);
+            if (deferred) (!err ? deferred.resolve : deferred.reject)(err || lngTranslate);
         });
     
         if (deferred) return deferred.promise();
+    }
+    
+    function isInitialized() {
+        return initialized;
     }
     function preload(lngs, cb) {
         if (typeof lngs === 'string') lngs = [lngs];
@@ -986,6 +1018,9 @@
         } else {
             f.extend(resStore[lng][ns], resources);
         }
+        if (o.useLocalStorage) {
+            sync._storeLocal(resStore);
+        }
     }
     
     function hasResourceBundle(lng, ns) {
@@ -1006,6 +1041,15 @@
         return hasValues;
     }
     
+    function getResourceBundle(lng, ns) {
+        if (typeof ns !== 'string') {
+            ns = o.ns.defaultNs;
+        }
+    
+        resStore[lng] = resStore[lng] || {};
+        return f.extend({}, resStore[lng][ns]);
+    }
+    
     function removeResourceBundle(lng, ns) {
         if (typeof ns !== 'string') {
             ns = o.ns.defaultNs;
@@ -1013,6 +1057,9 @@
     
         resStore[lng] = resStore[lng] || {};
         resStore[lng][ns] = {};
+        if (o.useLocalStorage) {
+            sync._storeLocal(resStore);
+        }
     }
     
     function addResource(lng, ns, key, value) {
@@ -1041,6 +1088,9 @@
                 node = node[keys[x]];
             }
             x++;
+        }
+        if (o.useLocalStorage) {
+            sync._storeLocal(resStore);
         }
     }
     
@@ -1151,6 +1201,17 @@
         resStore = {};
         setLng(currentLng, cb);
     }
+    
+    function noConflict() {
+        
+        window.i18next = window.i18n;
+    
+        if (conflictReference) {
+            window.i18n = conflictReference;
+        } else {
+            delete window.i18n;
+        }
+    }
     function addJqueryFunct() {
         // $.t shortcut
         $.t = $.t || translate;
@@ -1239,6 +1300,69 @@
                     localize($(this), options);
                 });
             });
+        };
+    }
+    function addJqueryLikeFunctionality() {
+    
+        function parse(ele, key, options) {
+            if (key.length === 0) return;
+    
+            var attr = 'text';
+    
+            if (key.indexOf('[') === 0) {
+                var parts = key.split(']');
+                key = parts[1];
+                attr = parts[0].substr(1, parts[0].length-1);
+            }
+    
+            if (key.indexOf(';') === key.length-1) {
+                key = key.substr(0, key.length-2);
+            }
+    
+            if (attr === 'html') {
+                ele.innerHTML = translate(key, options);
+            } else if (attr === 'text') {
+                ele.textContent = translate(key, options);
+            } else if (attr === 'prepend') {
+                ele.insertAdjacentHTML(translate(key, options), 'afterbegin');
+            } else if (attr === 'append') {
+                ele.insertAdjacentHTML(translate(key, options), 'beforeend');
+            } else {
+                ele.setAttribute(attr, translate(key, options));
+            }
+        }
+    
+        function localize(ele, options) {
+            var key = ele.getAttribute(o.selectorAttr);
+            if (!key && typeof key !== 'undefined' && key !== false) key = ele.textContent || ele.value;
+            if (!key) return;
+    
+            var target = ele
+              , targetSelector = ele.getAttribute("i18n-target");
+            if (targetSelector) {
+                target = ele.querySelector(targetSelector) || ele;
+            }
+            
+            if (key.indexOf(';') >= 0) {
+                var keys = key.split(';'), index = 0, length = keys.length;
+                
+                for ( ; index < length; index++) {
+                    if (keys[index] !== '') parse(target, keys[index], options);
+                }
+    
+            } else {
+                parse(target, key, options);
+            }
+        }
+    
+        // fn
+        i18n.translateObject = function (object, options) {
+            // localize childs
+            var elements =  object.querySelectorAll('[' + o.selectorAttr + ']');
+            var index = 0, length = elements.length;
+            for ( ; index < length; index++) {
+                localize(elements[index], options);
+            }
         };
     }
     function applyReplacement(str, replacementHash, nestedKey, options) {
@@ -1383,6 +1507,10 @@
     
         if (potentialKeys === undefined || potentialKeys === null || potentialKeys === '') return '';
     
+        if (typeof potentialKeys === 'number') {
+            potentialKeys = String(potentialKeys);
+        }
+    
         if (typeof potentialKeys === 'string') {
             potentialKeys = [potentialKeys];
         }
@@ -1419,11 +1547,27 @@
             }
         }
     
-        var postProcessor = options.postProcess || o.postProcess;
-        if (found !== undefined && postProcessor) {
-            if (postProcessors[postProcessor]) {
-                found = postProcessors[postProcessor](found, key, options);
-            }
+        var postProcessorsToApply;
+        if (typeof o.postProcess === 'string' && o.postProcess !== '') {
+            postProcessorsToApply = [o.postProcess];
+        } else if (typeof o.postProcess === 'array' || typeof o.postProcess === 'object') {
+            postProcessorsToApply = o.postProcess;
+        } else {
+            postProcessorsToApply = [];
+        }
+    
+        if (typeof options.postProcess === 'string' && options.postProcess !== '') {
+            postProcessorsToApply = postProcessorsToApply.concat([options.postProcess]);
+        } else if (typeof options.postProcess === 'array' || typeof options.postProcess === 'object') {
+            postProcessorsToApply = postProcessorsToApply.concat(options.postProcess);
+        }
+    
+        if (found !== undefined && postProcessorsToApply.length) {
+            postProcessorsToApply.forEach(function(postProcessor) {
+                if (postProcessors[postProcessor]) {
+                    found = postProcessors[postProcessor](found, key, options);
+                }
+            });
         }
     
         // process notFound if function exists
@@ -1440,9 +1584,13 @@
             notFound = applyReplacement(notFound, options);
             notFound = applyReuse(notFound, options);
     
-            if (postProcessor && postProcessors[postProcessor]) {
+            if (postProcessorsToApply.length) {
                 var val = _getDefaultValue(key, options);
-                found = postProcessors[postProcessor](val, key, options);
+                postProcessorsToApply.forEach(function(postProcessor) {
+                    if (postProcessors[postProcessor]) {
+                        found = postProcessors[postProcessor](val, key, options);
+                    }
+                });
             }
         }
     
@@ -1500,6 +1648,7 @@
         if (needsPlural(options, lngs[0])) {
             optionWithoutCount = f.extend({ lngs: [lngs[0]]}, options);
             delete optionWithoutCount.count;
+            optionWithoutCount._origLng = optionWithoutCount._origLng || optionWithoutCount.lng || lngs[0];
             delete optionWithoutCount.lng;
             optionWithoutCount.defaultValue = o.pluralNotFound;
     
@@ -1529,12 +1678,21 @@
                 var clone = lngs.slice();
                 clone.shift();
                 options = f.extend(options, { lngs: clone });
+                options._origLng = optionWithoutCount._origLng;
                 delete options.lng;
                 // retry with fallbacks
                 translated = translate(ns + o.nsseparator + key, options);
                 if (translated != o.pluralNotFound) return translated;
             } else {
-                return translated;
+                optionWithoutCount.lng = optionWithoutCount._origLng;
+                delete optionWithoutCount._origLng;
+                translated = translate(ns + o.nsseparator + key, optionWithoutCount);
+    
+                return applyReplacement(translated, {
+                    count: options.count,
+                    interpolationPrefix: options.interpolationPrefix,
+                    interpolationSuffix: options.interpolationSuffix
+                });
             }
         }
     
@@ -1563,7 +1721,7 @@
                 value = value && value[keys[x]];
                 x++;
             }
-            if (value !== undefined) {
+            if (value !== undefined && (!o.showKeyIfEmpty || value !== '')) {
                 var valueType = Object.prototype.toString.apply(value);
                 if (typeof value === 'string') {
                     value = applyReplacement(value, options);
@@ -1617,6 +1775,7 @@
                     }
                 }
             } else {
+                options.ns = o.ns.defaultNs;
                 found = _find(key, options); // fallback to default NS
             }
             options.isFallbackLookup = false;
@@ -1655,7 +1814,10 @@
     
         // get from localStorage
         if (o.detectLngFromLocalStorage && typeof window !== 'undefined' && window.localStorage) {
-            userLngChoices.push(window.localStorage.getItem('i18next_lng'));
+            var lang = f.localStorage.getItem('i18next_lng');
+            if (lang) {
+                userLngChoices.push(lang);
+            }
         }
     
         // get from navigator
@@ -2084,10 +2246,12 @@
     });
     // public api interface
     i18n.init = init;
+    i18n.isInitialized = isInitialized;
     i18n.setLng = setLng;
     i18n.preload = preload;
     i18n.addResourceBundle = addResourceBundle;
     i18n.hasResourceBundle = hasResourceBundle;
+    i18n.getResourceBundle = getResourceBundle;
     i18n.addResource = addResource;
     i18n.addResources = addResources;
     i18n.removeResourceBundle = removeResourceBundle;
@@ -2103,11 +2267,13 @@
     i18n.functions = f;
     i18n.lng = lng;
     i18n.addPostProcessor = addPostProcessor;
+    i18n.applyReplacement = f.applyReplacement;
     i18n.options = o;
+    i18n.noConflict = noConflict;
 
     $.i18n = i18n;
     $.t = i18n.t;
-        
+
     return i18n;
 
 }));
