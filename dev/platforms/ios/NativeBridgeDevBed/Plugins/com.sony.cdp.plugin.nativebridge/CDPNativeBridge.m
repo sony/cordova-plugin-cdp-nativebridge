@@ -17,13 +17,9 @@
 //////////////////////////////////////////////////////
 // Initialzier
 
-- (CDVPlugin*)initWithWebView:(UIWebView *)theWebView
+- (void)pluginInitialize
 {
-    self = [super initWithWebView:theWebView];
-    if (self) {
-        _gates = [@{} mutableCopy];
-    }
-    return self;
+    _gates = [@{} mutableCopy];
 }
 
 //////////////////////////////////////////////////////

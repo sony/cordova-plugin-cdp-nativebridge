@@ -59,7 +59,7 @@
     NSString* name = [CDPNativeBridgeMsgUtils resultCode2String:code]
     ? [self resultCode2String:code] : [NSString stringWithFormat:@"ERROR_CUSTOM:0x%x", (int)code];
     
-    result[@"code"] = [NSNumber numberWithInt:code];
+    result[@"code"] = [NSNumber numberWithInteger:code];
     result[@"name"] = name;
     if (message) {
         result[@"message"] = message;

@@ -21,11 +21,11 @@
  *
  * @param plugin [in] plugin instance
  */
-- (id)initWithPlugin:(const CDVPlugin*)plugin
+- (id)initWithPlugin:(CDVPlugin*)plugin
 {
     self = [super init];
     if (self) {
-        self.webView = plugin.webView;
+        self.plugin = plugin;
         self.viewController = plugin.viewController;
         self.commandDelegate = plugin.commandDelegate;
         _currentContext = nil;
@@ -294,7 +294,7 @@
  */
 - (void) dispose
 {
-    _webView = nil;
+    _plugin = nil;
     _viewController = nil;
     _commandDelegate = nil;
 }
