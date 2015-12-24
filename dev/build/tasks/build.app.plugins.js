@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     var fs = require('fs'),
         path = require('path'),
         jsdom = require('jsdom'),
-        window = jsdom.jsdom().parentWindow,
+        window = jsdom.jsdom().defaultView,
         $ = require('jquery')(window);
 
     grunt.extendConfig({

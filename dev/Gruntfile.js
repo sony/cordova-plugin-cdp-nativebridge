@@ -4,7 +4,7 @@
 module.exports = function (grunt) {
 
     var jsdom = require('jsdom'),
-        window = jsdom.jsdom().parentWindow,
+        window = jsdom.jsdom().defaultView,
         $ = require('jquery')(window);
 
     // Project configuration.
