@@ -16,6 +16,7 @@ module.exports = function (grunt) {
         // config variable entries: directory
         plugins: 'plugins',                 // app/plugins default directory.
         plugins_www: 'www',                 // app/plugins/{id}/www default directory
+        plugins_src: 'src',                 // app/plugins/{id}/src default directory
 
         // internal variable
         app_plugins_pkgdir: 'plugins',      // cordova original plugins dir name.
@@ -45,6 +46,7 @@ module.exports = function (grunt) {
                 files: {
                     src: [
                         '<%= app_plugins_pkgdir %>/<%= app_plugins_work_id %>/<%= plugins_www %>/**',
+                        '<%= app_plugins_pkgdir %>/<%= app_plugins_work_id %>/<%= plugins_src %>/**',
                         '<%= app_plugins_pkgdir %>/<%= app_plugins_work_id %>/plugin.xml',
                     ],
                 },
@@ -429,8 +431,10 @@ module.exports = function (grunt) {
 
 
     // task unit
-    grunt.registerTask('app_plugins_prepare_release',   ['copy:app_plugins_prepare',    'app_plugins_set_root_dir:release',    'app_plugins_set_targets', 'app_plugins_set_work_plugins', 'app_plugins_clean']);
-    grunt.registerTask('app_plugins_prepare_debug',     [                               'app_plugins_set_root_dir:debug',      'app_plugins_set_targets', 'app_plugins_set_work_plugins', 'app_plugins_clean']);
+    grunt.registerTask('app_plugins_prepare_native_src', ['app_plugins_set_work_plugins', 'app_plugins_set_native_src', 'app_plugins_copy_native_src:prepare']);
+
+    grunt.registerTask('app_plugins_prepare_release',   ['copy:app_plugins_prepare', 'app_plugins_set_root_dir:release', 'app_plugins_set_targets', 'app_plugins_set_work_plugins', 'app_plugins_clean', 'app_plugins_prepare_native_src']);
+    grunt.registerTask('app_plugins_prepare_debug',     [                            'app_plugins_set_root_dir:debug',   'app_plugins_set_targets', 'app_plugins_set_work_plugins', 'app_plugins_clean', 'app_plugins_prepare_native_src']);
 
     grunt.registerTask('app_plugins_build_release',     ['app_plugins_set_work_plugins', 'app_plugins_build_plugins', 'app_plugins_minify']);
     grunt.registerTask('app_plugins_build_debug',       ['app_plugins_set_work_plugins', 'app_plugins_build_plugins'                      ]);

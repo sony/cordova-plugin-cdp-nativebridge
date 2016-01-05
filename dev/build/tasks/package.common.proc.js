@@ -7,6 +7,15 @@ module.exports = function (grunt) {
     var fs = require("fs"),
         path = require("path");
 
+    // judge license text function. started "!" only.
+    var isLicenseComment = function (node, comment) {
+        if (0 === comment.value.indexOf('!')) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     grunt.extendConfig({
 
         pkgcomp_srcmap_enable: true,
@@ -157,7 +166,7 @@ module.exports = function (grunt) {
             pkgcomp: {
                 options: {
                     banner: '<%= pkgcomp_banner %>',
-                    preserveComments: 'some',
+                    preserveComments: isLicenseComment,
                     sourceMap: '<%= pkgcomp_srcmap_enable %>',
                     sourceMapName: function (src) {
                         return src.replace(/\.js$/i, '.map');
@@ -178,7 +187,7 @@ module.exports = function (grunt) {
             pkgcomp_plugins: {
                 options: {
                     banner: '<%= pkgcomp_banner %>',
-                    preserveComments: 'some',
+                    preserveComments: isLicenseComment,
                 },
                 files: [
                     {
