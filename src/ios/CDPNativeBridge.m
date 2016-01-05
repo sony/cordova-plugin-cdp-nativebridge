@@ -17,13 +17,9 @@
 //////////////////////////////////////////////////////
 // Initialzier
 
-- (CDVPlugin*)initWithWebView:(UIWebView *)theWebView
+- (void)pluginInitialize
 {
-    self = [super initWithWebView:theWebView];
-    if (self) {
-        _gates = [@{} mutableCopy];
-    }
-    return self;
+    _gates = [@{} mutableCopy];
 }
 
 //////////////////////////////////////////////////////
@@ -108,7 +104,7 @@
             [CDPNativeBridgeMsgUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_CLASS_NOT_FOUND andMessage:errorMsg];
         } else {
             [gate cancel:context];
-            [CDPNativeBridgeMsgUtils sendSuccessResultWithContext:context andResult:[CDPNativeBridgeMsgUtils makeMessaggeWithTaskId:nil]];
+            [CDPNativeBridgeMsgUtils sendSuccessResultWithContext:context andResult:[CDPNativeBridgeMsgUtils makeMessageWithTaskId:nil]];
             objectId = context.objectId;
         }
     }

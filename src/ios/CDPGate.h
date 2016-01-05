@@ -8,7 +8,7 @@
 
 @interface CDPGate : NSObject
 
-@property (nonatomic, weak) UIWebView* webView;
+@property (nonatomic, weak) CDVPlugin* plugin;
 @property (nonatomic, weak) UIViewController* viewController;
 @property (nonatomic, weak) id <CDVCommandDelegate> commandDelegate;
 
@@ -20,7 +20,7 @@
  *
  * @param plugin [in] plugin instance
  */
-- (id)initWithPlugin:(const CDVPlugin*)plugin;
+- (id)initWithPlugin:(CDVPlugin*)plugin;
 
 //////////////////////////////////////////////////////
 // public methods: execTask
