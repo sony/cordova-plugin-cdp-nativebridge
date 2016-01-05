@@ -1,7 +1,7 @@
 ﻿/*!
  * cdp.plugin.nativebridge.js 1.1.0-dev
  *
- * Date: 2016-01-05T10:22:58
+ * Date: 2016-01-05T17:09:47
  */
 
 var CDP;
