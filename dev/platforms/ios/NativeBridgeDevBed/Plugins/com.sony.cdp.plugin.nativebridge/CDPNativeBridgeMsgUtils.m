@@ -49,7 +49,7 @@
  * @param params  [in] return parameters
  * @return message object
  */
-+ (NSDictionary*) makeMessaggeWithCode:(NSInteger)code
++ (NSDictionary*) makeMessageWithCode:(NSInteger)code
                             andMessage:(NSString*)message
                              andTaskId:(NSString*)taskId
                              andParams:(NSArray*)params
@@ -82,11 +82,11 @@
  * @param taskId    [in] task ID
  * @return message object
  */
-+ (NSDictionary*) makeMessaggeWithCode:(NSInteger)code
++ (NSDictionary*) makeMessageWithCode:(NSInteger)code
                             andMessage:(NSString*)message
                              andTaskId:(NSString*)taskId
 {
-    return [self makeMessaggeWithCode:code andMessage:message andTaskId:taskId andParams:nil];
+    return [self makeMessageWithCode:code andMessage:message andTaskId:taskId andParams:nil];
 }
 
 /**
@@ -97,10 +97,10 @@
  * @param taskId    [in] task ID
  * @return message object
  */
-+ (NSDictionary*) makeMessaggeWithMessage:(NSString*)message
++ (NSDictionary*) makeMessageWithMessage:(NSString*)message
                                 andTaskId:(NSString*)taskId
 {
-    return [self makeMessaggeWithMessage:message andTaskId:taskId andParams:nil];
+    return [self makeMessageWithMessage:message andTaskId:taskId andParams:nil];
 }
 
 /**
@@ -112,11 +112,11 @@
  * @param params  [in] return parameters
  * @return message object
  */
-+ (NSDictionary*) makeMessaggeWithMessage:(NSString*)message
++ (NSDictionary*) makeMessageWithMessage:(NSString*)message
                                 andTaskId:(NSString*)taskId
                                 andParams:(NSArray*)params
 {
-    return [self makeMessaggeWithCode:CDP_NATIVEBRIDGE_SUCCESS_OK andMessage:message andTaskId:taskId andParams:params];
+    return [self makeMessageWithCode:CDP_NATIVEBRIDGE_SUCCESS_OK andMessage:message andTaskId:taskId andParams:params];
 }
 
 /**
@@ -126,9 +126,9 @@
  * @param taskId    [in] task ID
  * @return message object
  */
-+ (NSDictionary*) makeMessaggeWithTaskId:(NSString*)taskId
++ (NSDictionary*) makeMessageWithTaskId:(NSString*)taskId
 {
-    return [self makeMessaggeWithTaskId:taskId andParams:nil];
+    return [self makeMessageWithTaskId:taskId andParams:nil];
 }
 
 /**
@@ -139,10 +139,10 @@
  * @param params [in] return parameters
  * @return message object
  */
-+ (NSDictionary*) makeMessaggeWithTaskId:(NSString*)taskId
++ (NSDictionary*) makeMessageWithTaskId:(NSString*)taskId
                                andParams:(NSArray*)params
 {
-    return [self makeMessaggeWithCode:CDP_NATIVEBRIDGE_SUCCESS_OK andMessage:nil andTaskId:taskId andParams:params];
+    return [self makeMessageWithCode:CDP_NATIVEBRIDGE_SUCCESS_OK andMessage:nil andTaskId:taskId andParams:params];
 }
 
 /**
@@ -166,7 +166,7 @@
  */
 + (void) sendSuccessResultWithContext:(const CDPMethodContext*)context andTaskId:(NSString*)taskId
 {
-    [self sendSuccessResultWithContext:context andResult:[self makeMessaggeWithTaskId:taskId andParams:nil]];
+    [self sendSuccessResultWithContext:context andResult:[self makeMessageWithTaskId:taskId andParams:nil]];
 }
 
 /**
@@ -182,7 +182,7 @@
                             andCode:(NSInteger)code
                          andMessage:(NSString*)message
 {
-    [self sendErrorResultWithContext:context andResult:[self makeMessaggeWithCode:code andMessage:message andTaskId:taskId]];
+    [self sendErrorResultWithContext:context andResult:[self makeMessageWithCode:code andMessage:message andTaskId:taskId]];
 }
 
 /**

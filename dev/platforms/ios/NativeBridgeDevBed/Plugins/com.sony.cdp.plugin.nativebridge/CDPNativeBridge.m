@@ -104,7 +104,7 @@
             [CDPNativeBridgeMsgUtils sendErrorResultWithContext:context andTaskId:context.taskId andCode:CDP_NATIVEBRIDGE_ERROR_CLASS_NOT_FOUND andMessage:errorMsg];
         } else {
             [gate cancel:context];
-            [CDPNativeBridgeMsgUtils sendSuccessResultWithContext:context andResult:[CDPNativeBridgeMsgUtils makeMessaggeWithTaskId:nil]];
+            [CDPNativeBridgeMsgUtils sendSuccessResultWithContext:context andResult:[CDPNativeBridgeMsgUtils makeMessageWithTaskId:nil]];
             objectId = context.objectId;
         }
     }

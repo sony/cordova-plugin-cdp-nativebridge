@@ -40,7 +40,7 @@ static const NSInteger CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND    = 0x0009;
  * @param params  [in] return parameters
  * @return message object
  */
-+ (NSDictionary*) makeMessaggeWithCode:(NSInteger)code
++ (NSDictionary*) makeMessageWithCode:(NSInteger)code
                             andMessage:(NSString*)message
                              andTaskId:(NSString*)taskId
                              andParams:(NSArray*)params;
@@ -53,7 +53,7 @@ static const NSInteger CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND    = 0x0009;
  * @param taskId    [in] task ID
  * @return message object
  */
-+ (NSDictionary*) makeMessaggeWithCode:(NSInteger)code
++ (NSDictionary*) makeMessageWithCode:(NSInteger)code
                             andMessage:(NSString*)message
                              andTaskId:(NSString*)taskId;
 
@@ -65,7 +65,7 @@ static const NSInteger CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND    = 0x0009;
  * @param taskId    [in] task ID
  * @return message object
  */
-+ (NSDictionary*) makeMessaggeWithMessage:(NSString*)message
++ (NSDictionary*) makeMessageWithMessage:(NSString*)message
                                 andTaskId:(NSString*)taskId;
 
 /**
@@ -77,7 +77,7 @@ static const NSInteger CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND    = 0x0009;
  * @param params  [in] return parameters
  * @return message object
  */
-+ (NSDictionary*) makeMessaggeWithMessage:(NSString*)message
++ (NSDictionary*) makeMessageWithMessage:(NSString*)message
                                 andTaskId:(NSString*)taskId
                                 andParams:(NSArray*)params;
 
@@ -88,7 +88,7 @@ static const NSInteger CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND    = 0x0009;
  * @param taskId    [in] task ID
  * @return message object
  */
-+ (NSDictionary*) makeMessaggeWithTaskId:(NSString*)taskId;
++ (NSDictionary*) makeMessageWithTaskId:(NSString*)taskId;
 
 /**
  * make return message object
@@ -98,7 +98,7 @@ static const NSInteger CDP_NATIVEBRIDGE_ERROR_METHOD_NOT_FOUND    = 0x0009;
  * @param params [in] return parameters
  * @return message object
  */
-+ (NSDictionary*) makeMessaggeWithTaskId:(NSString*)taskId
++ (NSDictionary*) makeMessageWithTaskId:(NSString*)taskId
                                andParams:(NSArray*)params;
 
 /**
