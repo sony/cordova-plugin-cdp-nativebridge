@@ -59,7 +59,7 @@ module CDP {
 						this._bridge = new Plugin.NativeBridge(feature, options);
 					})
 					.fail(() => {
-						throw Error(TAG + "'com.sony.cdp.plugin.nativebridge' required.");
+						throw Error(TAG + "'cordova-plugin-cdp-nativebridge' required.");
 					});
 			}
 
@@ -207,7 +207,7 @@ module CDP {
 
 			//! Make fatal error object.
 			private makeFatal(): IResult {
-				var msg = TAG + "fatal error. 'com.sony.cdp.plugin.nativebridge' is not available.";
+				var msg = TAG + "fatal error. 'cordova-plugin-cdp-nativebridge' is not available.";
 				console.error(msg);
 				return {
 					code: null,

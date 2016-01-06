@@ -68,7 +68,7 @@ module CDP {
 							Utils.s_pluginReady = true;
 							df.resolve();
 						} else {
-							console.error(TAG + "'com.sony.cdp.plugin.nativebridge' cordova plugin required.");
+							console.error(TAG + "'cordova-plugin-cdp-nativebridge' cordova plugin required.");
 							df.reject();
 						}
 					});

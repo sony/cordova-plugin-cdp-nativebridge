@@ -1,7 +1,7 @@
 ﻿/*!
  * cdp.nativebridge.js 1.1.0-dev
  *
- * Date: 2016-01-05T17:09:50
+ * Date: 2016-01-06T13:35:30
  */
 
 (function (root, factory) {
@@ -89,7 +89,7 @@ var CDP;
                             df.resolve();
                         }
                         else {
-                            console.error(TAG + "'com.sony.cdp.plugin.nativebridge' cordova plugin required.");
+                            console.error(TAG + "'cordova-plugin-cdp-nativebridge' cordova plugin required.");
                             df.reject();
                         }
                     });
@@ -239,7 +239,7 @@ var CDP;
                     _this._bridge = new CDP.Plugin.NativeBridge(feature, options);
                 })
                     .fail(function () {
-                    throw Error(TAG + "'com.sony.cdp.plugin.nativebridge' required.");
+                    throw Error(TAG + "'cordova-plugin-cdp-nativebridge' required.");
                 });
             }
             ///////////////////////////////////////////////////////////////////////
@@ -374,7 +374,7 @@ var CDP;
             // private methods
             // Make fatal error object.
             Gate.prototype.makeFatal = function () {
-                var msg = TAG + "fatal error. 'com.sony.cdp.plugin.nativebridge' is not available.";
+                var msg = TAG + "fatal error. 'cordova-plugin-cdp-nativebridge' is not available.";
                 console.error(msg);
                 return {
                     code: null,
