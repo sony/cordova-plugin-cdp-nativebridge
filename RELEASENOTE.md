@@ -6,10 +6,10 @@
   - change plugin ID from `com.sony.cdp.plugin.nativebridge` to `cordova-plugin-cdp-nativebridge`.
     - If you already installed, please uninstall follow steps.
 
-
-    $ cordova plugin remove com.sony.cdp.plugin.nativebridge
-    $ cordova plugin add cordova-plugin-cdp-nativebridge
-
+```
+$ cordova plugin remove com.sony.cdp.plugin.nativebridge
+$ cordova plugin add cordova-plugin-cdp-nativebridge
+```
 
 * [cdp.nativebridge.js] Implemented extend helper function for pure javascript in Gate class.
 
