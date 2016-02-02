@@ -53,7 +53,7 @@ If you want to use newest version, you can build the modules yourself as follow 
 
         root/
             release/
-                modules/                            js bower moudle here.
+                modules/                            js bower modules here.
                      include/                       d.ts files here.
                      jquery/                        jquery here.
                      sony/
@@ -69,7 +69,7 @@ If you want to use newest version, you can build the modules yourself as follow 
 
 3. install cordova plugin
 
-        copy release direcotry to somewhere. ex: temp dir
+        copy release directory to somewhere. ex: temp dir
         
         $ cd <%your project root%>
         $ cordova plugin add <%temp%>/plugins/com.sony.cdp.nativebridge
