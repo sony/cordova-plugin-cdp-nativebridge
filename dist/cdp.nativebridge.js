@@ -1,7 +1,7 @@
 ﻿/*!
  * cdp.nativebridge.js 1.1.0-dev
  *
- * Date: 2016-01-06T13:35:30
+ * Date: 2016-02-02T18:54:52
  */
 
 (function (root, factory) {
