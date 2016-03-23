@@ -4,27 +4,16 @@
         "uninstalled": []
     },
     "config_munge": {
-        "files": {
-            "res/xml/config.xml": {
-                "parents": {
-                    "/*": [
-                        {
-                            "xml": "<feature name=\"NativeBridge\"><param name=\"android-package\" value=\"com.sony.cdp.plugin.nativebridge.NativeBridge\" /></feature>",
-                            "count": 1
-                        }
-                    ]
-                }
-            }
-        }
+        "files": {}
     },
     "installed_plugins": {
-        "com.sony.cdp.plugin.nativebridge.tests": {
-            "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
-        },
-        "com.sony.cdp.plugin.nativebridge": {
-            "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
-        },
         "com.sony.cdp.plugin.test-framework": {
+            "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
+        },
+        "cordova-plugin-cdp-nativebridge": {
+            "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
+        },
+        "cordova-plugin-cdp-nativebridge-tests": {
             "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
         }
     },

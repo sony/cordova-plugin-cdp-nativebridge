@@ -18,13 +18,13 @@
         }
     },
     "installed_plugins": {
-        "com.sony.cdp.plugin.nativebridge.tests": {
-            "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
-        },
         "com.sony.cdp.plugin.test-framework": {
             "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
         },
         "cordova-plugin-cdp-nativebridge": {
+            "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
+        },
+        "cordova-plugin-cdp-nativebridge-tests": {
             "PACKAGE_NAME": "com.sony.cdp.plugin.nativebridge.testbed"
         }
     },
@@ -37,23 +37,19 @@
         },
         {
             "file": "plugins/com.sony.cdp.plugin.test-framework/www/tests.js",
-            "id": "com.sony.cdp.plugin.test-framework.cdvtests",
-            "pluginId": "com.sony.cdp.plugin.test-framework"
+            "id": "com.sony.cdp.plugin.test-framework.cdvtests"
         },
         {
             "file": "plugins/com.sony.cdp.plugin.test-framework/www/jasmine_helpers.js",
-            "id": "com.sony.cdp.plugin.test-framework.jasmine_helpers",
-            "pluginId": "com.sony.cdp.plugin.test-framework"
+            "id": "com.sony.cdp.plugin.test-framework.jasmine_helpers"
         },
         {
             "file": "plugins/com.sony.cdp.plugin.test-framework/www/medic.js",
-            "id": "com.sony.cdp.plugin.test-framework.medic",
-            "pluginId": "com.sony.cdp.plugin.test-framework"
+            "id": "com.sony.cdp.plugin.test-framework.medic"
         },
         {
             "file": "plugins/com.sony.cdp.plugin.test-framework/www/main.js",
-            "id": "com.sony.cdp.plugin.test-framework.main",
-            "pluginId": "com.sony.cdp.plugin.test-framework"
+            "id": "com.sony.cdp.plugin.test-framework.main"
         },
         {
             "file": "plugins/cordova-plugin-cdp-nativebridge/www/cdp.plugin.nativebridge.js",
@@ -61,11 +57,15 @@
             "clobbers": [
                 "CDP.Plugin.NativeBridge"
             ]
+        },
+        {
+            "file": "plugins/cordova-plugin-cdp-nativebridge-tests/www/tests.js",
+            "id": "cordova-plugin-cdp-nativebridge-tests.tests"
         }
     ],
     "plugin_metadata": {
-        "com.sony.cdp.plugin.nativebridge.tests": "1.0.1",
         "com.sony.cdp.plugin.test-framework": "1.0.1-dev-cdp",
-        "cordova-plugin-cdp-nativebridge": "1.1.0-dev"
+        "cordova-plugin-cdp-nativebridge": "1.1.0",
+        "cordova-plugin-cdp-nativebridge-tests": "1.0.1"
     }
 }
