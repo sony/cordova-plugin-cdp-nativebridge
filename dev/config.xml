@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.sony.cdp.plugin.nativebridge.testbed" ios-CFBundleIdentifier="jp.co.sony.cdp.nativebridge.testbed" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <preference name="DisallowOverscroll" value="true"/>
-  <preference name="Orientation" value="all"/>
+  <platform name="ios">
+      <preference name="Orientation" value="all"/>
+  </platform>
   <name>NativeBridgeDevBed</name>
   <description>
         A sample Apache Cordova application that responds to the deviceready event.
