@@ -5,9 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
-		17DA693FCF35428DB23861C8 /* CDPNativeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 831FCC0F06604AB1858164B3 /* CDPNativeBridge.m */; };
 		1D3623260D0F684500981E51 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
@@ -41,10 +39,11 @@
 		7E7966E51810823500FA85AD /* icon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DB1810823500FA85AD /* icon-76@2x.png */; };
 		7E7966E61810823500FA85AD /* icon-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DC1810823500FA85AD /* icon-small.png */; };
 		7E7966E71810823500FA85AD /* icon-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DD1810823500FA85AD /* icon-small@2x.png */; };
-		88A5820D206B4BC68D2EE44A /* CDPGate.m in Sources */ = {isa = PBXBuildFile; fileRef = 767606EB874A4667B408CBF5 /* CDPGate.m */; };
-		C7CD3DB68AAC425084782D56 /* CDPNativeBridgeMsgUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FB3EF5E68D42BFBAF351A6 /* CDPNativeBridgeMsgUtils.m */; };
 		D4A0D8761607E02300AEF8BB /* Default-568h@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */; };
-		DCB662E4C94F4DECB08CEEF1 /* CDPMethodContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 449A4C5041E24C478BA13B70 /* CDPMethodContext.m */; };
+		7BCB8DB4DAEA44EF8D31DD1D /* CDPNativeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 80DD9CD8229D480DBD57AF83 /* CDPNativeBridge.m */; };
+		CA45BFF6A69441518790BE19 /* CDPMethodContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 65C8A8B835F24464B4470C3C /* CDPMethodContext.m */; };
+		AA7A123CC61D4036AF0B2521 /* CDPGate.m in Sources */ = {isa = PBXBuildFile; fileRef = C1A2C509C2A5406480D60B44 /* CDPGate.m */; };
+		3E7561A38D0A4F9BBEC2BE8B /* CDPNativeBridgeMsgUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = FC91AF1F43C5493E88FC8CA1 /* CDPNativeBridgeMsgUtils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,7 +64,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		125F9AECAD6146CF9327FB25 /* CDPGate.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = CDPGate.h; path = "cordova-plugin-cdp-nativebridge/CDPGate.h"; sourceTree = "<group>"; };
 		1D3623240D0F684500981E51 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* NativeBridgeDevBed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NativeBridgeDevBed.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -92,13 +90,8 @@
 		30C1856519D5FC0A00212699 /* icon-60@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-60@3x.png"; sourceTree = "<group>"; };
 		30FC414816E50CA1004E6F35 /* icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-72@2x.png"; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* NativeBridgeDevBed-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NativeBridgeDevBed-Prefix.pch"; sourceTree = "<group>"; };
-		3EDC331C92D44C1AA7A124DD /* CDPMethodContext.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = CDPMethodContext.h; path = "cordova-plugin-cdp-nativebridge/CDPMethodContext.h"; sourceTree = "<group>"; };
-		408A4D217EDA40639DAD396A /* CDPNativeBridge.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = CDPNativeBridge.h; path = "cordova-plugin-cdp-nativebridge/CDPNativeBridge.h"; sourceTree = "<group>"; };
-		449A4C5041E24C478BA13B70 /* CDPMethodContext.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = CDPMethodContext.m; path = "cordova-plugin-cdp-nativebridge/CDPMethodContext.m"; sourceTree = "<group>"; };
 		4706C7A41AE4DDDF0069D8B4 /* SMPSimpleGate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMPSimpleGate.m; sourceTree = "<group>"; };
 		5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
-		6D83D573B7AD406799F429D1 /* CDPNativeBridgeMsgUtils.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = CDPNativeBridgeMsgUtils.h; path = "cordova-plugin-cdp-nativebridge/CDPNativeBridgeMsgUtils.h"; sourceTree = "<group>"; };
-		767606EB874A4667B408CBF5 /* CDPGate.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = CDPGate.m; path = "cordova-plugin-cdp-nativebridge/CDPGate.m"; sourceTree = "<group>"; };
 		7E7966D41810823500FA85AD /* icon-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-40.png"; sourceTree = "<group>"; };
 		7E7966D51810823500FA85AD /* icon-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-40@2x.png"; sourceTree = "<group>"; };
 		7E7966D61810823500FA85AD /* icon-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-50.png"; sourceTree = "<group>"; };
@@ -109,14 +102,20 @@
 		7E7966DB1810823500FA85AD /* icon-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-76@2x.png"; sourceTree = "<group>"; };
 		7E7966DC1810823500FA85AD /* icon-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-small.png"; sourceTree = "<group>"; };
 		7E7966DD1810823500FA85AD /* icon-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-small@2x.png"; sourceTree = "<group>"; };
-		831FCC0F06604AB1858164B3 /* CDPNativeBridge.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = CDPNativeBridge.m; path = "cordova-plugin-cdp-nativebridge/CDPNativeBridge.m"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* NativeBridgeDevBed-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "NativeBridgeDevBed-Info.plist"; path = "../NativeBridgeDevBed-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
-		A3FB3EF5E68D42BFBAF351A6 /* CDPNativeBridgeMsgUtils.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = CDPNativeBridgeMsgUtils.m; path = "cordova-plugin-cdp-nativebridge/CDPNativeBridgeMsgUtils.m"; sourceTree = "<group>"; };
 		D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x~iphone.png"; sourceTree = "<group>"; };
 		EB87FDF21871DA7A0020F90C /* merges */ = {isa = PBXFileReference; lastKnownFileType = folder; name = merges; path = ../../merges; sourceTree = "<group>"; };
 		EB87FDF31871DA8E0020F90C /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = www; path = ../../www; sourceTree = "<group>"; };
 		EB87FDF41871DAF40020F90C /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = ../../config.xml; sourceTree = "<group>"; };
 		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = NativeBridgeDevBed/config.xml; sourceTree = "<group>"; };
+		80DD9CD8229D480DBD57AF83 /* CDPNativeBridge.m */ = {isa = PBXFileReference; name = "CDPNativeBridge.m"; path = "cordova-plugin-cdp-nativebridge/CDPNativeBridge.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		65C8A8B835F24464B4470C3C /* CDPMethodContext.m */ = {isa = PBXFileReference; name = "CDPMethodContext.m"; path = "cordova-plugin-cdp-nativebridge/CDPMethodContext.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		C1A2C509C2A5406480D60B44 /* CDPGate.m */ = {isa = PBXFileReference; name = "CDPGate.m"; path = "cordova-plugin-cdp-nativebridge/CDPGate.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		FC91AF1F43C5493E88FC8CA1 /* CDPNativeBridgeMsgUtils.m */ = {isa = PBXFileReference; name = "CDPNativeBridgeMsgUtils.m"; path = "cordova-plugin-cdp-nativebridge/CDPNativeBridgeMsgUtils.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		C0CB20DFAF1142E18BC603B6 /* CDPNativeBridge.h */ = {isa = PBXFileReference; name = "CDPNativeBridge.h"; path = "cordova-plugin-cdp-nativebridge/CDPNativeBridge.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		249738EAAA9E45EF83B21785 /* CDPMethodContext.h */ = {isa = PBXFileReference; name = "CDPMethodContext.h"; path = "cordova-plugin-cdp-nativebridge/CDPMethodContext.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		A6F6FAE17F384DEF93BD6AB8 /* CDPGate.h */ = {isa = PBXFileReference; name = "CDPGate.h"; path = "cordova-plugin-cdp-nativebridge/CDPGate.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		D163DBE2CE274FFB8E4C6AC4 /* CDPNativeBridgeMsgUtils.h */ = {isa = PBXFileReference; name = "CDPNativeBridgeMsgUtils.h"; path = "cordova-plugin-cdp-nativebridge/CDPNativeBridgeMsgUtils.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,14 +216,14 @@
 			isa = PBXGroup;
 			children = (
 				474156C61CA2981600217333 /* cordova-plugin-cdp-nativebridge */,
-				831FCC0F06604AB1858164B3 /* CDPNativeBridge.m */,
-				449A4C5041E24C478BA13B70 /* CDPMethodContext.m */,
-				767606EB874A4667B408CBF5 /* CDPGate.m */,
-				A3FB3EF5E68D42BFBAF351A6 /* CDPNativeBridgeMsgUtils.m */,
-				408A4D217EDA40639DAD396A /* CDPNativeBridge.h */,
-				3EDC331C92D44C1AA7A124DD /* CDPMethodContext.h */,
-				125F9AECAD6146CF9327FB25 /* CDPGate.h */,
-				6D83D573B7AD406799F429D1 /* CDPNativeBridgeMsgUtils.h */,
+				80DD9CD8229D480DBD57AF83 /* CDPNativeBridge.m */,
+				65C8A8B835F24464B4470C3C /* CDPMethodContext.m */,
+				C1A2C509C2A5406480D60B44 /* CDPGate.m */,
+				FC91AF1F43C5493E88FC8CA1 /* CDPNativeBridgeMsgUtils.m */,
+				C0CB20DFAF1142E18BC603B6 /* CDPNativeBridge.h */,
+				249738EAAA9E45EF83B21785 /* CDPMethodContext.h */,
+				A6F6FAE17F384DEF93BD6AB8 /* CDPGate.h */,
+				D163DBE2CE274FFB8E4C6AC4 /* CDPNativeBridgeMsgUtils.h */,
 			);
 			name = Plugins;
 			path = NativeBridgeDevBed/Plugins;
@@ -426,10 +425,10 @@
 				4706C7A51AE4DDDF0069D8B4 /* SMPSimpleGate.m in Sources */,
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
-				17DA693FCF35428DB23861C8 /* CDPNativeBridge.m in Sources */,
-				DCB662E4C94F4DECB08CEEF1 /* CDPMethodContext.m in Sources */,
-				88A5820D206B4BC68D2EE44A /* CDPGate.m in Sources */,
-				C7CD3DB68AAC425084782D56 /* CDPNativeBridgeMsgUtils.m in Sources */,
+				7BCB8DB4DAEA44EF8D31DD1D /* CDPNativeBridge.m in Sources */,
+				CA45BFF6A69441518790BE19 /* CDPMethodContext.m in Sources */,
+				AA7A123CC61D4036AF0B2521 /* CDPGate.m in Sources */,
+				3E7561A38D0A4F9BBEC2BE8B /* CDPNativeBridgeMsgUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
