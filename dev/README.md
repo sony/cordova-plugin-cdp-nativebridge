@@ -5,6 +5,12 @@
 
 This is a basic sample implementation of `cdp.nativebridge.js` and unit test application.
 
+## Requires
+
+* cordova 6.0+.
+* [node.js](https://nodejs.org) 4.x+.
+* Xcode 6.x or greater. Download it at http://developer.apple.com/downloads or the Mac App Store. 
+
 # How to use?
 
 ## Preparation

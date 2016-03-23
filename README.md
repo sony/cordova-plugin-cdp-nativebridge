@@ -17,7 +17,9 @@ Folder and file structure of this repository is the following list.
 
     root/
         dev/                                        // Folder contains development bed projects for this libraries
+        dist/                                       // [Bower module] bower distribution modules here.
         docs/                                       // Folder contains specification documents for this libraries
+        release/                                    // built modules here.
         src/                                        // *[Plugin module] the plugin native source directory.
         www/                                        // *[Plugin module] the plugin js source directory.
         tests/                                      // *[Plugin module] the plugin jasmine test plugin directory.

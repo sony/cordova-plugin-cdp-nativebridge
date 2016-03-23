@@ -1,6 +1,6 @@
 ﻿## Release Notes
 
-### Release 1.1.0 (upcoming)
+### Release 1.1.0 (March 2016)
 
 * Fixed plugin ID
   - change plugin ID from `com.sony.cdp.plugin.nativebridge` to `cordova-plugin-cdp-nativebridge`.
@@ -66,13 +66,19 @@ gate.coolMethod();
 * Updated dev environment
   - Support for
     - Node.js 4.0+
-    - TypeScript 1.6+
-    - Cordova-CLI 5.2+
+    - TypeScript 1.8+
+    - Cordova-CLI 6.0+
 
 * [iOS] Fixed CDPGate I/F for cordova-ios 4+ ready.
   - replace the weak reference member from UIWebView* to CDVPlugin*.
 
 * Added English method comments
+
+* Document Generator Support (experimental)
+
+        $ cd dev
+        $ npm install
+        $ grunt doc
 
 
 ### Release 1.0.0 (September 2015)
