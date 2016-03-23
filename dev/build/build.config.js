@@ -21,5 +21,6 @@ module.exports = function (grunt) {
 
         // config variable typedoc targets
         ci_doc_ts_targets: ['app/lib/scripts/CDP/**/*.ts', 'app/plugins/com.sony.cdp.plugin.nativebridge/www/CDP/**/*.ts'],
+        ci_doc_docdir:  '../docs/typedoc',
     });
 };

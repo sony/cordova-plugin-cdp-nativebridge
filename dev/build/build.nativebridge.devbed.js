@@ -191,6 +191,8 @@ module.exports = function (grunt) {
         'clean:tmpdir'
     ]);
 
+    grunt.registerTask('doc',       ['ci_doc']);
+
     grunt.registerTask('build',     ['clean', 'dev_debug']);
     grunt.registerTask('default',   ['clean', 'deploy']);
 };

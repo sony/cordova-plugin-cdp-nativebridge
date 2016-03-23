@@ -4,7 +4,7 @@ module CDP {
 	export module Plugin {
 		export module _NativeBridge {
 			/**
-             * \~english
+			 * \~english
 			 * @class Patch
 			 * @brief Utility class to apply patch code to the cordova instance.
 			 *
