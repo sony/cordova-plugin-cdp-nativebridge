@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-cdp-nativebridge",
-  "version": "1.1.0-dev",
+  "version": "1.1.0",
   "description": "Cordova Generic Native Bridge Plugin.",
   "cordova": {
     "id": "cordova-plugin-cdp-nativebridge",

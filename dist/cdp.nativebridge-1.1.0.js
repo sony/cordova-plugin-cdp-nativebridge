@@ -1,7 +1,7 @@
 ﻿/*!
- * cdp.nativebridge.js 1.1.0-dev
+ * cdp.nativebridge.js 1.1.0
  *
- * Date: 2016-02-02T18:54:52
+ * Date: 2016-03-23T11:47:49
  */
 
 (function (root, factory) {
@@ -186,7 +186,7 @@ var CDP;
             };
             Utils.s_pluginReady = false;
             return Utils;
-        })();
+        }());
         NativeBridge.Utils = Utils;
     })(NativeBridge = CDP.NativeBridge || (CDP.NativeBridge = {}));
 })(CDP || (CDP = {}));
@@ -385,7 +385,7 @@ var CDP;
             // For pure javascript extend helper.
             Gate.extend = NativeBridge.Utils.extend;
             return Gate;
-        })();
+        }());
         NativeBridge.Gate = Gate;
     })(NativeBridge = CDP.NativeBridge || (CDP.NativeBridge = {}));
 })(CDP || (CDP = {}));

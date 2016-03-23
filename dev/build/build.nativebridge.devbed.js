@@ -5,6 +5,8 @@
 
 module.exports = function (grunt) {
 
+    var PLUGIN_NAME = "cordova-plugin-cdp-nativebridge";
+
     grunt.extendConfig({
 
         // all work directories cleaning
@@ -37,25 +39,25 @@ module.exports = function (grunt) {
                 files: [
                     {// cdp.plugin.nativebridge js source files.
                         expand: true,
-                        cwd: '<%= tmpdir %>/<%= pkgcomp_work_pkg_dir %>/<%= plugins %>/com.sony.cdp.plugin.nativebridge/www',
+                        cwd: '<%= tmpdir %>/<%= pkgcomp_work_pkg_dir %>/<%= plugins %>/' + PLUGIN_NAME  + '/www',
                         src: ['**'],
                         dest: '../www',
                     },
                     {// cdp.plugin.nativebridge native source files
                         expand: true,
-                        cwd: '<%= tmpdir %>/<%= pkgcomp_work_pkg_dir %>/<%= plugins %>/com.sony.cdp.plugin.nativebridge/src',
+                        cwd: '<%= tmpdir %>/<%= pkgcomp_work_pkg_dir %>/<%= plugins %>/' + PLUGIN_NAME + '/src',
                         src: ['**'],
                         dest: '../src',
                     },
                     {// cdp.plugin.nativebridge plugin.xml
                         expand: true,
-                        cwd: '<%= tmpdir %>/<%= pkgcomp_work_pkg_dir %>/<%= plugins %>/com.sony.cdp.plugin.nativebridge',
+                        cwd: '<%= tmpdir %>/<%= pkgcomp_work_pkg_dir %>/<%= plugins %>/' + PLUGIN_NAME,
                         src: ['plugin.xml'],
                         dest: '../',
                     },
                     {// cdp.plugin.nativebridge.tests
                         expand: true,
-                        cwd: '<%= tmpdir %>/<%= pkgcomp_work_pkg_dir %>/<%= plugins %>/com.sony.cdp.plugin.nativebridge.tests',
+                        cwd: '<%= tmpdir %>/<%= pkgcomp_work_pkg_dir %>/<%= plugins %>/' + PLUGIN_NAME + '-tests',
                         src: ['**/*.xml', '**/*.js', '!**/*.min.js'],
                         dest: '../tests',
                     },
@@ -107,25 +109,25 @@ module.exports = function (grunt) {
                         expand: true,
                         cwd: '../www',
                         src: ['**'],
-                        dest: '../release/plugins/com.sony.cdp.plugin.nativebridge/www',
+                        dest: '../release/plugins/' + PLUGIN_NAME + '/www',
                     },
                     {// cdp.plugin.nativebridge native source files
                         expand: true,
                         cwd: '../src',
                         src: ['**'],
-                        dest: '../release/plugins/com.sony.cdp.plugin.nativebridge/src',
+                        dest: '../release/plugins/' + PLUGIN_NAME + '/src',
                     },
                     {// cdp.plugin.nativebridge plugin.xml
                         expand: true,
                         cwd: '../',
                         src: ['plugin.xml'],
-                        dest: '../release/plugins/com.sony.cdp.plugin.nativebridge',
+                        dest: '../release/plugins/' + PLUGIN_NAME,
                     },
                     {// cdp.plugin.nativebridge.tests
                         expand: true,
                         cwd: '../tests',
                         src: ['**'],
-                        dest: '../release/plugins/com.sony.cdp.plugin.nativebridge/tests',
+                        dest: '../release/plugins/' + PLUGIN_NAME + '/tests',
                     },
                     {// cdp.nativebridge
                         expand: true,

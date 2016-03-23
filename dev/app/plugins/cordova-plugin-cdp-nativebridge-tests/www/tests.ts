@@ -1,6 +1,6 @@
 /// <reference path="../../../modules/include/jasmine.d.ts" />
 /// <reference path="../../../modules/include/cordova.d.ts" />
-/// <reference path="../../../plugins/com.sony.cdp.plugin.nativebridge/www/cdp.plugin.nativebridge.d.ts" />
+/// <reference path="../../../plugins/cordova-plugin-cdp-nativebridge/www/cdp.plugin.nativebridge.d.ts" />
 
 /* tslint:disable:max-line-length */
 

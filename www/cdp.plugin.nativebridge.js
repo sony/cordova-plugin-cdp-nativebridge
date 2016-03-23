@@ -1,7 +1,7 @@
 ﻿/*!
  * cdp.plugin.nativebridge.js 1.1.0-dev
  *
- * Date: 2016-02-02T18:54:48
+ * Date: 2016-03-23T11:47:45
  */
 
 var CDP;
@@ -53,7 +53,7 @@ var CDP;
                     }
                 };
                 return Patch;
-            })();
+            }());
             _NativeBridge.Patch = Patch;
         })(_NativeBridge = Plugin._NativeBridge || (Plugin._NativeBridge = {}));
     })(Plugin = CDP.Plugin || (CDP.Plugin = {}));
@@ -352,7 +352,7 @@ var CDP;
                 return dst;
             };
             return NativeBridge;
-        })();
+        }());
         Plugin.NativeBridge = NativeBridge;
         ///////////////////////////////////////////////////////////////////////
         // closure methods

@@ -1,5 +1,5 @@
 ﻿/// <reference path="../../../../modules/include/cdp.promise.d.ts" />
-/// <reference path="../../../../plugins/com.sony.cdp.plugin.nativebridge/www/cdp.plugin.nativebridge.d.ts" />
+/// <reference path="../../../../plugins/cordova-plugin-cdp-nativebridge/www/cdp.plugin.nativebridge.d.ts" />
 
 module CDP {
 	export module NativeBridge {
