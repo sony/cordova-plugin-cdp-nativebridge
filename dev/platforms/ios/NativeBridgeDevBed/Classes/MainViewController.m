@@ -19,7 +19,7 @@
 
 //
 //  MainViewController.h
-//  NativeBridgeDevBed
+//  HelloCordova
 //
 //  Created by ___FULLUSERNAME___ on ___DATE___.
 //  Copyright ___ORGANIZATIONNAME___ ___YEAR___. All rights reserved.
@@ -96,36 +96,6 @@
 - (UIWebView*) newCordovaViewWithFrame:(CGRect)bounds
 {
     return[super newCordovaViewWithFrame:bounds];
-}
-*/
-
-#pragma mark UIWebDelegate implementation
-
-- (void)webViewDidFinishLoad:(UIWebView*)theWebView
-{
-    // Black base color for background matches the native apps
-    theWebView.backgroundColor = [UIColor blackColor];
-
-    return [super webViewDidFinishLoad:theWebView];
-}
-
-/* Comment out the block below to over-ride */
-
-/*
-
-- (void) webViewDidStartLoad:(UIWebView*)theWebView
-{
-    return [super webViewDidStartLoad:theWebView];
-}
-
-- (void) webView:(UIWebView*)theWebView didFailLoadWithError:(NSError*)error
-{
-    return [super webView:theWebView didFailLoadWithError:error];
-}
-
-- (BOOL) webView:(UIWebView*)theWebView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType
-{
-    return [super webView:theWebView shouldStartLoadWithRequest:request navigationType:navigationType];
 }
 */
 

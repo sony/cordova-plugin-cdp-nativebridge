@@ -19,7 +19,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UpgradeBackupLocation />
-    <TypeScriptToolsVersion>1.6</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -104,12 +104,12 @@
     <TypeScriptCompile Include="app\modules\include\plugins\StatusBar.d.ts" />
     <TypeScriptCompile Include="app\modules\include\plugins\Vibration.d.ts" />
     <TypeScriptCompile Include="app\modules\include\plugins\WebSQL.d.ts" />
-    <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge.tests\www\tests.ts" />
-    <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\cdp.plugin.nativebridge.d.ts" />
-    <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\cdp.plugin.nativebridge.ts" />
-    <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\Include.ts" />
-    <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge.ts" />
-    <TypeScriptCompile Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge\Patch.ts" />
+    <TypeScriptCompile Include="app\plugins\cordova-plugin-cdp-nativebridge-tests\www\tests.ts" />
+    <TypeScriptCompile Include="app\plugins\cordova-plugin-cdp-nativebridge\www\cdp.plugin.nativebridge.d.ts" />
+    <TypeScriptCompile Include="app\plugins\cordova-plugin-cdp-nativebridge\www\cdp.plugin.nativebridge.ts" />
+    <TypeScriptCompile Include="app\plugins\cordova-plugin-cdp-nativebridge\www\CDP\Plugin\Include.ts" />
+    <TypeScriptCompile Include="app\plugins\cordova-plugin-cdp-nativebridge\www\CDP\Plugin\NativeBridge.ts" />
+    <TypeScriptCompile Include="app\plugins\cordova-plugin-cdp-nativebridge\www\CDP\Plugin\NativeBridge\Patch.ts" />
     <TypeScriptCompile Include="app\scripts\app.ts" />
     <TypeScriptCompile Include="app\scripts\config.ts" />
     <TypeScriptCompile Include="app\scripts\init.ts" />
@@ -156,23 +156,8 @@
     <Content Include="app\modules\sony\cdp\scripts\cdp.ui.jqm.js" />
     <Content Include="app\modules\sony\cdp\scripts\cdp.ui.listview.js" />
     <Content Include="app\modules\underscore\scripts\underscore.js" />
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge.tests\plugin.xml" />
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge.tests\www\tests.js">
-      <DependentUpon>tests.ts</DependentUpon>
-    </Content>
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\plugin.xml" />
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\cdp.plugin.nativebridge.js">
-      <DependentUpon>cdp.plugin.nativebridge.ts</DependentUpon>
-    </Content>
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\Include.js">
-      <DependentUpon>Include.ts</DependentUpon>
-    </Content>
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge.js">
-      <DependentUpon>NativeBridge.ts</DependentUpon>
-    </Content>
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge\Patch.js">
-      <DependentUpon>Patch.ts</DependentUpon>
-    </Content>
+    <Content Include="app\plugins\cordova-plugin-cdp-nativebridge-tests\plugin.xml" />
+    <Content Include="app\plugins\cordova-plugin-cdp-nativebridge\plugin.xml" />
     <Content Include="app\scripts\app.js">
       <DependentUpon>app.ts</DependentUpon>
     </Content>
@@ -200,7 +185,8 @@
     <Content Include="app\templates\menu.html" />
     <Content Include="app\templates\native-scrollbar.html" />
     <Content Include="BANNER.txt" />
-    <Content Include="build\grunt-nativebridge.js" />
+    <Content Include="build\build.config.js" />
+    <Content Include="build\build.nativebridge.devbed.js" />
     <Content Include="build\tasks\build.app.plugins.js" />
     <Content Include="build\tasks\build.application.js" />
     <Content Include="build\tasks\build.banner.js" />
@@ -214,6 +200,8 @@
     <Content Include="build\tasks\build.minify.js" />
     <Content Include="build\tasks\build.scss.js" />
     <Content Include="build\tasks\build.typescript.js" />
+    <Content Include="build\tasks\ci.documents.js" />
+    <Content Include="build\tasks\ci.tests.js" />
     <Content Include="build\tasks\package.common.proc.js" />
     <Content Include="config.xml" />
     <Content Include="Gruntfile.js" />
@@ -227,10 +215,10 @@
     <Content Include="platforms\android\src\com\sony\cdp\plugin\nativebridge\testbed\CordovaApp.java" />
     <Content Include="platforms\android\src\com\sony\cdp\sample\ScrollBar.java" />
     <Content Include="platforms\android\src\com\sony\cdp\sample\SimpleGate.java" />
-    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPGate.h" />
-    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPMethodContext.h" />
-    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPNativeBridge.h" />
-    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPNativeBridgeMsgUtils.h" />
+    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\cordova-plugin-cdp-nativebridge\CDPGate.h" />
+    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\cordova-plugin-cdp-nativebridge\CDPMethodContext.h" />
+    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\cordova-plugin-cdp-nativebridge\CDPNativeBridge.h" />
+    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\cordova-plugin-cdp-nativebridge\CDPNativeBridgeMsgUtils.h" />
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\plugin.xml" />
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\www\assets\index.html" />
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\www\assets\jasmine-2.2.0\boot.js" />
@@ -315,27 +303,12 @@
     <Content Include="test-runner.bat" />
     <Content Include="tests\jasmine\testem.json" />
     <Content Include="tests\jshint\jshintrc.json" />
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\cdp.plugin.nativebridge.js.map">
-      <DependentUpon>cdp.plugin.nativebridge.ts</DependentUpon>
-    </Content>
     <Content Include="app\lib\scripts\cdp.nativebridge.js.map">
       <DependentUpon>cdp.nativebridge.ts</DependentUpon>
     </Content>
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\Include.js.map">
-      <DependentUpon>Include.ts</DependentUpon>
-    </Content>
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge.js.map">
-      <DependentUpon>NativeBridge.ts</DependentUpon>
-    </Content>
     <Content Include="plugins\android.json" />
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge\www\CDP\Plugin\NativeBridge\Patch.js.map">
-      <DependentUpon>Patch.ts</DependentUpon>
-    </Content>
     <Content Include="app\lib\scripts\CDP\NativeBridge\Gate.js.map">
       <DependentUpon>Gate.ts</DependentUpon>
-    </Content>
-    <Content Include="app\plugins\com.sony.cdp.plugin.nativebridge.tests\www\tests.js.map">
-      <DependentUpon>tests.ts</DependentUpon>
     </Content>
     <Content Include="app\scripts\View\Main.js.map">
       <DependentUpon>Main.ts</DependentUpon>
@@ -363,9 +336,6 @@
     <Content Include="package.json" />
     <Content Include="platforms\ios\NativeBridgeDevBed\Samples\SMPSimpleGate.m" />
     <Content Include="README.md" />
-    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPGate.m" />
-    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPMethodContext.m" />
-    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPNativeBridge.m" />
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\.fetch.json" />
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\LICENSE" />
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\NOTICE" />
@@ -394,7 +364,10 @@
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\www\assets\topcoat-0.7.5\NOTICE" />
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\www\assets\topcoat-0.7.5\package.json" />
     <Content Include="plugins\com.sony.cdp.plugin.test-framework\www\assets\topcoat-0.7.5\README.md" />
-    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\com.sony.cdp.plugin.nativebridge\CDPNativeBridgeMsgUtils.m" />
+    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\cordova-plugin-cdp-nativebridge\CDPGate.m" />
+    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\cordova-plugin-cdp-nativebridge\CDPMethodContext.m" />
+    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\cordova-plugin-cdp-nativebridge\CDPNativeBridge.m" />
+    <Content Include="platforms\ios\NativeBridgeDevBed\Plugins\cordova-plugin-cdp-nativebridge\CDPNativeBridgeMsgUtils.m" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

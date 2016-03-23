@@ -3,25 +3,11 @@
  */
 module.exports = function (grunt) {
 
-    var jsdom = require('jsdom'),
-        window = jsdom.jsdom().defaultView,
-        $ = require('jquery')(window);
+    var _ = require('lodash');
 
     // Project configuration.
     var config = {
         pkg: grunt.file.readJSON('package.json'),
-
-        // config variable entries: root
-        orgsrc: 'app',
-        tmpdir: 'temp',
-        pkgdir: 'www',
-
-        // config variable entries: directory
-        modules: 'modules',             // 3rd module directory
-        resources: 'res',               // resource directory
-        templates: 'templates',         // html directory
-        scripts: 'scripts',             // js/ts/(coffee) directory
-        stylesheets: 'stylesheets',     // css/sass/(less) directory
     };
 
     // create "custom_tasks" prop to root object if needed.
@@ -39,11 +25,15 @@ module.exports = function (grunt) {
         for (var prop in additionalConfig) {
             if (additionalConfig.hasOwnProperty(prop)) {
                 if (config[prop]) {
-                    config[prop] = $.extend(true, config[prop], additionalConfig[prop]);
+                    if (typeof config[prop] === 'string') {
+                        config[prop] = additionalConfig[prop];
+                    } else {
+                        config[prop] = _.extend(config[prop], additionalConfig[prop]);
+                    }
                 } else {
                     var tmpConfig = {};
                     tmpConfig[prop] = additionalConfig[prop];
-                    config = $.extend(true, config, tmpConfig);
+                    config = _.extend(config, tmpConfig);
                 }
             }
         }
