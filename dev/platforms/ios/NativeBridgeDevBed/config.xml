@@ -32,6 +32,7 @@
         <param name="ios-package" value="CDPNativeBridge" />
     </feature>
     <preference name="DisallowOverscroll" value="true" />
+    <preference name="Orientation" value="all" />
     <name>NativeBridgeDevBed</name>
     <description>
         A sample Apache Cordova application that responds to the deviceready event.
