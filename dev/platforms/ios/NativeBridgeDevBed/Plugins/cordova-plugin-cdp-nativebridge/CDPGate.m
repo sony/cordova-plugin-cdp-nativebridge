@@ -26,6 +26,7 @@
     self = [super init];
     if (self) {
         self.plugin = plugin;
+        self.webView = plugin.webView;
         self.viewController = plugin.viewController;
         self.commandDelegate = plugin.commandDelegate;
         _currentContext = nil;
@@ -295,6 +296,7 @@
 - (void) dispose
 {
     _plugin = nil;
+    _webView = nil;
     _viewController = nil;
     _commandDelegate = nil;
 }
