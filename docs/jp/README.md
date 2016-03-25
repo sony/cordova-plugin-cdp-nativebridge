@@ -322,7 +322,7 @@ Gate クラスは CordovaPlugin クラスと同じメンバ変数を持ってい
                 } catch (JSONException e) {
                     errorMsg = "Invalid JSON object";
                     Log.e(TAG, errorMsg, e);
-                    // resolveParams は jQuery.Deferred.reject() と同じセマンティクスを持つ
+                    // rejectParams は jQuery.Deferred.reject() と同じセマンティクスを持つ
                     // このメソッドで keepCallback = false となる
                     rejectParams(MessageUtils.ERROR_FAIL, errorMsg, context);
                 }

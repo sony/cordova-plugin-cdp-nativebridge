@@ -17,7 +17,7 @@ Folder and file structure of this repository is the following list.
 
     root/
         dev/                                        // Folder contains development bed projects for this libraries
-        dist/                                       // [Bower module] bower distribution modules here.
+        dist/                                       // [Bower module] bower distribution modules (cdp.nativebrige.js) here.
         docs/                                       // Folder contains specification documents for this libraries
         release/                                    // built modules here.
         src/                                        // *[Plugin module] the plugin native source directory.

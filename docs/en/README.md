@@ -325,7 +325,7 @@ If you want to do asynchronous processing, you can acquire `context` and same wa
                 } catch (JSONException e) {
                     errorMsg = "Invalid JSON object";
                     Log.e(TAG, errorMsg, e);
-                    // resolveParams has same semantics as jQuery.Deferred.reject().
+                    // rejectParams has same semantics as jQuery.Deferred.reject().
                     // the framework set "keepCallback = false" when this method called.
                     rejectParams(MessageUtils.ERROR_FAIL, errorMsg, context);
                 }
