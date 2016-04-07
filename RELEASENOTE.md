@@ -1,5 +1,12 @@
 ﻿## Release Notes
 
+### Release 1.2.0 (upcoming)
+
+* Support plugin event received methods on Gate class in native layer.
+
+* Update dev environment.
+
+
 ### Release 1.1.0 (March 2016)
 
 * Fixed plugin ID

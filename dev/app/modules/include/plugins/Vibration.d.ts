@@ -7,10 +7,10 @@
 // Licensed under the MIT license.
 
 interface Notification {
-	/**
-	 * Vibrates the device for the specified amount of time.
-	 * @param time Milliseconds to vibrate the device. Ignored on iOS.
-	 */
+    /**
+     * Vibrates the device for the specified amount of time.
+     * @param time Milliseconds to vibrate the device. Ignored on iOS.
+     */
     vibrate(time: number): void
     /**
      * Vibrates the device with a given pattern.

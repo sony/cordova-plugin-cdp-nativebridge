@@ -9,6 +9,7 @@
 @interface CDPGate : NSObject
 
 @property (nonatomic, weak) CDVPlugin* plugin;
+@property (nonatomic, weak) UIView* webView;
 @property (nonatomic, weak) UIViewController* viewController;
 @property (nonatomic, weak) id <CDVCommandDelegate> commandDelegate;
 

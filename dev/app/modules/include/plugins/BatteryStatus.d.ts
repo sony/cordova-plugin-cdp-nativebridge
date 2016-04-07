@@ -118,8 +118,8 @@ interface Window {
 
 /** Object, that passed into battery event listener */
 interface BatteryStatusEvent extends Event {
-	/* The percentage of battery charge (0-100). */
+    /* The percentage of battery charge (0-100). */
     level: number;
-	/* A boolean that indicates whether the device is plugged in. */
+    /* A boolean that indicates whether the device is plugged in. */
     isPlugged: boolean;
 }

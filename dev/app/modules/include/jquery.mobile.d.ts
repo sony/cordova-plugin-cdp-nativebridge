@@ -314,7 +314,7 @@ interface ChangePageOptions {
     transition?: string;
     type?: string;
     // [CDP modified]: add inteface.
-	fromHashChange?: boolean;
+    fromHashChange?: boolean;
 }
 
 interface LoadPageOptions {
