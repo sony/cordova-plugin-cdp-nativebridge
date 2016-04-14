@@ -64,7 +64,7 @@ If you want to use newest version, you can build the modules yourself as follow 
                                 cdp.nativebridge.js *: nativebridge module.
                                 cdp.promise.js         dependency module.
                 plugins/
-                    com.sony.cdp.plugin.nativebridge/  cordova plugin
+                    cordova-plugin-cdp-nativebridge/   cordova plugin
                         src/
                         www/
                         plugin.xml
