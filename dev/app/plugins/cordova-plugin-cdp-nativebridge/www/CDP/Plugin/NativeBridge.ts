@@ -29,9 +29,9 @@ module CDP {
              * @brief 機能情報
              */
             export interface Feature {
-                name: string;                //!< main feature name.
-                android?: PlatformInfo;        //!< platform info for android.
-                ios?: PlatformInfo;            //!< platform info for ios.
+                name: string;               //!< main feature name.
+                android?: PlatformInfo;     //!< platform info for android.
+                ios?: PlatformInfo;         //!< platform info for ios.
             }
 
             /**
@@ -56,12 +56,10 @@ module CDP {
              * @interface IResult
              * @brief NativeBridge の基底 Result 情報
              */
-            export interface IResult {
-                code: number;                //!< error code.
-                message?: string;            //!< error message.
-                name?: string;                //!< error name.
+            export interface IResult extends Error {
+                code: number;               //!< error code.
                 taskId?: string;            //!< task id.
-                params?: any[];                //!< any parameters.
+                params?: any[];             //!< any parameters.
             }
 
             /**
@@ -74,8 +72,8 @@ module CDP {
              * @brief exec() に渡すオプション
              */
             export interface ExecOptions {
-                post?: boolean;                //!< use post callback or not.
-                compatible?: boolean;        //!< if set true, using cordova official way. default: false.
+                post?: boolean;             //!< use post callback or not.
+                compatible?: boolean;       //!< if set true, using cordova official way. default: false.
             }
 
             /**
@@ -350,16 +348,16 @@ module CDP {
             // const valiable
 
             // Result code
-            public static get SUCCESS_OK(): number                { return 0x0000; }
+            public static get SUCCESS_OK(): number              { return 0x0000; }
             public static get SUCCESS_PROGRESS(): number        { return 0x0001; }
-            public static get ERROR_FAIL(): number                { return 0x0002; }
+            public static get ERROR_FAIL(): number              { return 0x0002; }
             public static get ERROR_CANCEL(): number            { return 0x0003; }
-            public static get ERROR_INVALID_ARG(): number        { return 0x0004; }
-            public static get ERROR_NOT_IMPLEMENT(): number        { return 0x0005; }
-            public static get ERROR_NOT_SUPPORT(): number        { return 0x0006; }
+            public static get ERROR_INVALID_ARG(): number       { return 0x0004; }
+            public static get ERROR_NOT_IMPLEMENT(): number     { return 0x0005; }
+            public static get ERROR_NOT_SUPPORT(): number       { return 0x0006; }
             public static get ERROR_INVALID_OPERATION(): number { return 0x0007; }
-            public static get ERROR_CLASS_NOT_FOUND(): number    { return 0x0008; }
-            public static get ERROR_METHOD_NOT_FOUND(): number    { return 0x0009; }
+            public static get ERROR_CLASS_NOT_FOUND(): number   { return 0x0008; }
+            public static get ERROR_METHOD_NOT_FOUND(): number  { return 0x0009; }
 
             ///////////////////////////////////////////////////////////////////////
             // private methods

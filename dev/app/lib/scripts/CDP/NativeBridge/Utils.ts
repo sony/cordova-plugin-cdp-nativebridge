@@ -99,7 +99,12 @@ module CDP {
                     _bridge: null,
                     _taskId: null,
                     abort: function (info?: any): void {
-                        var detail = $.extend({ message: "abort" }, info);
+                        var detail = $.extend({
+                            code: NativeBridge.ERROR_CANCEL,
+                            message: "abort",
+                            name: TAG + "ERROR_CANCEL",
+                            taskId: this._taskId,
+                        }, info);
 
                         var cancel = () => {
                             if (null != this._bridge && null != this._taskId) {

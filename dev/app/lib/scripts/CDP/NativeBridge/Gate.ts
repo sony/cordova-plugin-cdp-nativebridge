@@ -7,16 +7,16 @@ module CDP {
 
         // Result code
 
-        export var SUCCESS_OK: number;                Utils.defineResultCode("SUCCESS_OK");
+        export var SUCCESS_OK: number;              Utils.defineResultCode("SUCCESS_OK");
         export var SUCCESS_PROGRESS: number;        Utils.defineResultCode("SUCCESS_PROGRESS");
-        export var ERROR_FAIL: number;                Utils.defineResultCode("ERROR_FAIL");
+        export var ERROR_FAIL: number;              Utils.defineResultCode("ERROR_FAIL");
         export var ERROR_CANCEL: number;            Utils.defineResultCode("ERROR_CANCEL");
-        export var ERROR_INVALID_ARG: number;        Utils.defineResultCode("ERROR_INVALID_ARG");
-        export var ERROR_NOT_IMPLEMENT: number;        Utils.defineResultCode("ERROR_NOT_IMPLEMENT");
-        export var ERROR_NOT_SUPPORT: number;        Utils.defineResultCode("ERROR_NOT_SUPPORT");
-        export var ERROR_INVALID_OPERATION: number;    Utils.defineResultCode("ERROR_INVALID_OPERATION");
-        export var ERROR_CLASS_NOT_FOUND: number;    Utils.defineResultCode("ERROR_CLASS_NOT_FOUND");
-        export var ERROR_METHOD_NOT_FOUND: number;    Utils.defineResultCode("ERROR_METHOD_NOT_FOUND");
+        export var ERROR_INVALID_ARG: number;       Utils.defineResultCode("ERROR_INVALID_ARG");
+        export var ERROR_NOT_IMPLEMENT: number;     Utils.defineResultCode("ERROR_NOT_IMPLEMENT");
+        export var ERROR_NOT_SUPPORT: number;       Utils.defineResultCode("ERROR_NOT_SUPPORT");
+        export var ERROR_INVALID_OPERATION: number; Utils.defineResultCode("ERROR_INVALID_OPERATION");
+        export var ERROR_CLASS_NOT_FOUND: number;   Utils.defineResultCode("ERROR_CLASS_NOT_FOUND");
+        export var ERROR_METHOD_NOT_FOUND: number;  Utils.defineResultCode("ERROR_METHOD_NOT_FOUND");
 
 
         //___________________________________________________________________________________________________________________//
